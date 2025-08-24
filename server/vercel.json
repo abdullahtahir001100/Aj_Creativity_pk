@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/server.js"
+    }
+  ],
+ "env": {
+  "MONGODB_URI": "mongodb+srv://at4105168:2FWz679VE0UmJpL4@cluster0.czsqioy.mongodb.net/aj_creativity?retryWrites=true&w=majority",
+  "PORT": "5000"
+}
+
+}

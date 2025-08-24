@@ -141,4 +141,4 @@ app.delete("/api/orders/:id", async (req, res) => {
 // ======================
 // Server Start
 // ======================
-module.exports = app;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

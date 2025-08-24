@@ -29,16 +29,8 @@ export default function Dashboard() {
   const [orderSubTab, setOrderSubTab] = useState("pending");
 
   useEffect(() => {
-    fetch("/api/orders")
-      .then(async (res) => {
-        const text = await res.text();
-        try {
-          return JSON.parse(text);
-        } catch (error) {
-          console.error("❌ Failed to parse JSON:", text);
-          throw error;
-        }
-      })
+    fetch("http://localhost:5000/api/orders")
+      .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.orders)) {
           setOrders(data.orders);
@@ -59,7 +51,7 @@ export default function Dashboard() {
   const handleRemove = async (id) => {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
     try {
-      const res = await fetch(`/api/orders/${id}`, {
+      const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -76,7 +68,7 @@ export default function Dashboard() {
 
   const handleComplete = async (id) => {
     try {
-      const res = await fetch(`/api/orders/${id}/status`, {
+      const res = await fetch(`http://localhost:5000/api/orders/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "completed" }),

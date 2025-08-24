@@ -91,14 +91,7 @@ export default function PaymentPage() {
         const response = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`
         );
-        const responseText = await response.text();
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (jsonError) {
-        console.error("❌ Failed to parse JSON response:", responseText);
-        throw jsonError;
-      }
+        const data = await response.json();
         if (data.length > 0) {
           const lat = parseFloat(data[0].lat);
           const lon = parseFloat(data[0].lon);
@@ -141,7 +134,7 @@ export default function PaymentPage() {
     }
 
     try {
-      const response = await fetch("/api/orders", {
+      const response = await fetch("http://localhost:5000/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -165,14 +158,7 @@ export default function PaymentPage() {
         }),
       });
 
-      const responseText = await response.text();
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (jsonError) {
-        console.error("❌ Failed to parse JSON response for order placement:", responseText);
-        throw jsonError;
-      }
+      const data = await response.json();
       if (data.success) {
         setInputError("");
         setShowPopup(true);

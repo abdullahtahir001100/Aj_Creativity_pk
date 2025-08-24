@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto Hacker Console</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+body {
+  margin:0;
+  background:black;
+  color:#0f0;
+  font-family:'Share Tech Mono', monospace;
+  
+}
+/* Hide scrollbar but allow scrolling */
+.element {
+  overflow: auto;          /* or scroll */
+  scrollbar-width: none;   /* Firefox */
+}
+
+.element::-webkit-scrollbar {
+  display: none;           /* Chrome, Safari, Edge */
+}
+#terminal {
+  height: 150px;
+  overflow-y: auto;           /* allow scrolling */
+  scrollbar-width: none;      /* Firefox */
+}
+#terminal::-webkit-scrollbar {
+  display: none;              /* Chrome, Safari, Edge */
+}
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Scrollbar handle */
+::-webkit-scrollbar-thumb {
+  background: #000205;
+  border-radius: 8px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #0f0;
+}
+
+/* Scrollbar track */
+::-webkit-scrollbar-track {
+  background: #000000;
+  border-radius: 8px;
+}
+/* thumb color | track color */
+* {
+  scrollbar-color: green transparent;
+  scrollbar-width: thin;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* Code stream */
+#codeStream { position:absolute; width:100%; height:100%; overflow:hidden; z-index:1; }
+.line { position:absolute; white-space:nowrap; animation:move 6s linear infinite; font-size:14px; }
+@keyframes move { 0%{top:-20px; opacity:0;} 10%{opacity:1;} 100%{top:100%; opacity:0;} }
+
+/* UI container */
+#dashboard { position:relative; z-index:2; padding:20px; }
+
+/* Panels */
+.panel { background:rgba(0,255,0,0.05); border:1px solid #0f0; border-radius:8px;
+  padding:15px; margin:10px 0; animation:glow 2s ease-in-out infinite alternate; }
+@keyframes glow { 0%{box-shadow:0 0 5px #0f0;} 100%{box-shadow:0 0 20px #0f0;} }
+
+/* Charts */
+canvas { display:block; margin:0 auto; }
+
+/* Floating hacker letters */
+.floating { position:absolute; color:#0f0; font-size:12px; animation:floatAnim 10s linear infinite; user-select:none; }
+@keyframes floatAnim { 0%{transform:translateY(100vh) rotate(0deg); opacity:0;} 20%{opacity:1;} 100%{transform:translateY(-50vh) rotate(360deg); opacity:0;} }
+
+/* Chips */
+.chip { display:inline-block; padding:5px 10px; margin:5px; border:1px solid #0f0; border-radius:16px;
+animation:chipGlow 1.5s ease-in-out infinite alternate; }
+@keyframes chipGlow { 0%{box-shadow:0 0 5px #0f0;} 100%{box-shadow:0 0 15px #0f0;} }
+
+/* Terminal */
+#terminal {
+  background:transparent; /* Removed solid background */
+  border:1px solid #0f0;
+  padding:10px;
+  margin-top:20px;
+  border-radius:8px;
+  height:150px;
+  overflow-y:auto;
+  white-space:pre-wrap;
+  scrollbar-width: none; /* Firefox */
+}
+#terminal::-webkit-scrollbar { display: none; } /* Chrome, Safari */
+#userInput {
+  width:100%;
+  background:transparent; /* Removed solid background */
+  border:none;
+  color:#0f0;
+  font-family:'Share Tech Mono', monospace;
+  font-size:14px;
+  outline:none;
+}
+</style>
+</head>
+<body>
+
+<div id="codeStream"></div>
+
+<div id="dashboard">
+<div class="panel">
+<h2>System Stats</h2>
+<div class="chip">CPU: 45%</div>
+<div class="chip">RAM: 68%</div>
+<div class="chip">Disk: 72%</div>
+</div>
+
+<div class="panel">
+<h2>Network Activity</h2>
+<canvas id="networkChart" width="400" height="200"></canvas>
+</div>
+
+<div class="panel">
+<h2>Process Activity</h2>
+<canvas id="processChart" width="400" height="200"></canvas>
+</div>
+
+<div class="panel">
+<h2>Auto Hacker Terminal</h2>
+<div id="terminal"></div>
+<input type="text" id="userInput" placeholder="Press enter to trigger scripts...">
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Hacker-style auto code stream
+const codeStream = document.getElementById('codeStream');
+const hackerScripts = [
+  'sudo apt-get install hacking-tools',
+  'nmap -sS 192.168.0.1',
+  'echo "Access Granted"',
+  'cd /var/log',
+  'cat secret.log',
+  'rm -rf /tmp/*',
+  'ssh root@192.168.0.100',
+  'ping 8.8.8.8',
+  'top',
+  'systemctl restart firewall',
+  'echo "Decrypting database..."',
+  'curl -X POST http://malicious.site',
+  'git clone https://github.com/evil/repo'
+];
+function generateLine() {
+  const line = document.createElement('div');
+  line.className='line';
+  line.style.left=Math.random()*100+'vw';
+  line.style.top='-20px';
+  line.textContent=hackerScripts[Math.floor(Math.random()*hackerScripts.length)];
+  codeStream.appendChild(line);
+  setTimeout(()=>{ codeStream.removeChild(line); },6000);
+}
+setInterval(generateLine,150);
+
+// Floating letters
+function createFloating(){
+  const letter=document.createElement('div');
+  letter.className='floating';
+  letter.textContent=String.fromCharCode(33+Math.floor(Math.random()*94));
+  letter.style.left=Math.random()*window.innerWidth+'px';
+  letter.style.fontSize=10+Math.random()*20+'px';
+  document.body.appendChild(letter);
+  setTimeout(()=>{ document.body.removeChild(letter); },10000);
+}
+setInterval(createFloating,80);
+
+// Charts
+const ctxNetwork = document.getElementById('networkChart').getContext('2d');
+const networkChart = new Chart(ctxNetwork,{ type:'line', data:{ labels:Array.from({length:20},(_,i)=>i),
+datasets:[{label:'Packets/s', data:Array.from({length:20},()=>Math.floor(Math.random()*100)),
+borderColor:'#0f0', backgroundColor:'rgba(0,255,0,0.1)', tension:0.3 }] }, options:{ responsive:true,
+plugins:{ legend:{ labels:{ color:'#0f0' } } }, scales:{ x:{ ticks:{ color:'#0f0' }, grid:{ color:'#0f033' } },
+y:{ ticks:{ color:'#0f0' }, grid:{ color:'#0f033' } } } } });
+
+const ctxProcess = document.getElementById('processChart').getContext('2d');
+const processChart = new Chart(ctxProcess,{ type:'bar', data:{ labels:['Proc1','Proc2','Proc3','Proc4','Proc5'],
+datasets:[{label:'CPU Usage %', data:Array.from({length:5},()=>Math.floor(Math.random()*100)),
+backgroundColor:'rgba(0,255,0,0.3)', borderColor:'#0f0', borderWidth:1 }] },
+options:{ responsive:true, plugins:{ legend:{ labels:{ color:'#0f0' } } }, scales:{ x:{ ticks:{ color:'#0f0' }, grid:{ color:'#0f033' } },
+y:{ ticks:{ color:'#0f0' }, grid:{ color:'#0f033' } } } } });
+
+setInterval(()=>{
+  networkChart.data.datasets[0].data.shift();
+  networkChart.data.datasets[0].data.push(Math.floor(Math.random()*100));
+  networkChart.update();
+
+  processChart.data.datasets[0].data=Array.from({length:5},()=>Math.floor(Math.random()*100));
+  processChart.update();
+},2000);
+
+// Terminal auto-run scripts
+const terminal = document.getElementById('terminal');
+const userInput = document.getElementById('userInput');
+
+function typeScript(text){
+  let i=0;
+  const line=document.createElement('div');
+  terminal.appendChild(line);
+  function type(){
+    if(i<text.length){
+      line.textContent+=text[i];
+      i++;
+      setTimeout(type,30);
+      terminal.scrollTop = terminal.scrollHeight; // ensures scrolling
+    }
+  }
+  type();
+}
+
+// Auto-run multiple scripts continuously
+function autoRunScripts(){
+  const randomScript = hackerScripts[Math.floor(Math.random()*hackerScripts.length)];
+  typeScript(randomScript);
+  setTimeout(autoRunScripts,1000 + Math.random()*2000);
+}
+
+// User input triggers the auto-run
+userInput.addEventListener('keydown',(e)=>{
+  if(e.key==='Enter'){
+    autoRunScripts(); // starts auto-run on first enter
+    userInput.value='';
+  }
+});
+</script>
+</body>
+</html>

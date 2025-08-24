@@ -1,4 +1,6 @@
 // server.js
+console.log("MONGODB_URI:", process.env.MONGODB_URI);
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";

@@ -68,7 +68,7 @@ export default function Dashboard() {
 
   const handleComplete = async (id) => {
     try {
-      const res = await fetch(`https://aj-creativitypk.vercel.app/orders/${id}/status`, {
+      const res = await fetch(`https://aj-creativitypk.vercel.app/api/orders/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "completed" }),

@@ -16,8 +16,8 @@ const Home = () => {
   const featuredProducts = [
     {
       img: '/imgs/p55.jpg',
-      name: 'Royal Radiance',
-      price: '1,550 Rs',
+      name: 'Bangles and Earings',
+      price: '1,650 Rs',
       id: 'index-1',
       category: 'bangle',
     },
@@ -33,12 +33,12 @@ const Home = () => {
       name: 'Heritage Grace',
       price: '590 Rs',
       id: 'index-3',
-      category: 'earring',
+      category: 'bangle',
     },
     {
       img: '/imgs/p10.jpg',
-      name: 'Charm Allure',
-      price: '1,200 Rs',
+      name: 'Colorful Dreams',
+      price: '1,500 Rs',
       id: 'index-4',
       category: 'bangle',
     },
@@ -47,15 +47,15 @@ const Home = () => {
   const latestProducts = [
     {
       img: '/imgs/p4.jpg',
-      name: 'Floral Dream',
-      price: '1,800 Rs',
+      name: 'Bangles with Earings',
+      price: '1,200 Rs',
       id: 'index-5',
       category: 'bangle',
     },
     {
       img: '/imgs/p5.jpg',
-      name: 'Artisan Touch',
-      price: '1,350 Rs',
+      name: 'Bangles with Earings',
+      price: '1,150 Rs',
       id: 'index-6',
       category: 'bangle',
     },
@@ -68,7 +68,7 @@ const Home = () => {
     },
     {
       img: '/imgs/p99.jpg',
-      name: 'Textured Shine',
+      name: 'Textured Shine(pair)',
       price: '1,990 Rs',
       id: 'index-8',
       category: 'bangle',

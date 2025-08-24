@@ -91,7 +91,14 @@ export default function PaymentPage() {
         const response = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`
         );
-        const data = await response.json();
+        const responseText = await response.text();
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (jsonError) {
+        console.error("❌ Failed to parse JSON response:", responseText);
+        throw jsonError;
+      }
         if (data.length > 0) {
           const lat = parseFloat(data[0].lat);
           const lon = parseFloat(data[0].lon);
@@ -158,7 +165,14 @@ export default function PaymentPage() {
         }),
       });
 
-      const data = await response.json();
+      const responseText = await response.text();
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (jsonError) {
+        console.error("❌ Failed to parse JSON response for order placement:", responseText);
+        throw jsonError;
+      }
       if (data.success) {
         setInputError("");
         setShowPopup(true);

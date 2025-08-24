@@ -30,7 +30,15 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetch("/api/orders")
-      .then((res) => res.json())
+      .then(async (res) => {
+        const text = await res.text();
+        try {
+          return JSON.parse(text);
+        } catch (error) {
+          console.error("❌ Failed to parse JSON:", text);
+          throw error;
+        }
+      })
       .then((data) => {
         if (data.success && Array.isArray(data.orders)) {
           setOrders(data.orders);

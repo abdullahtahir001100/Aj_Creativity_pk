@@ -5,6 +5,8 @@ export default defineConfig({
   plugins: [react()],
   base: '/', // required for deployment subpath
   build: {
+    outDir: 'dist',
+    emptyOutDir: true,
     rollupOptions: {
       // no need to externalize react-leaflet
       external: []

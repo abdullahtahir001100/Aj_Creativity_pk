@@ -1,0 +1,28 @@
+{
+  "functions": {
+    "api/server.js": {
+      "runtime": "node@18.x"
+    }
+  },
+  "builds": [
+    {
+      "src": "clint/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "clint/dist" }
+    },
+    {
+      "src": "server/server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}

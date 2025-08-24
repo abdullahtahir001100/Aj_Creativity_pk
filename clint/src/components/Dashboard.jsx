@@ -29,7 +29,7 @@ export default function Dashboard() {
   const [orderSubTab, setOrderSubTab] = useState("pending");
 
   useEffect(() => {
-    fetch("https://aj-creativity-pk.vercel.app/api/orders")
+    fetch("https://aj-creativitypk.vercel.app/api/orders")
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.orders)) {
@@ -51,7 +51,7 @@ export default function Dashboard() {
   const handleRemove = async (id) => {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
     try {
-      const res = await fetch(`https://aj-creativity-pk.vercel.app/api/orders/${id}`, {
+      const res = await fetch(`https://aj-creativitypk.vercel.app/api/orders/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -68,7 +68,7 @@ export default function Dashboard() {
 
   const handleComplete = async (id) => {
     try {
-      const res = await fetch(`https://aj-creativity-pk.vercel.app/orders/${id}/status`, {
+      const res = await fetch(`https://aj-creativitypk.vercel.app/orders/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "completed" }),

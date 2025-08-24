@@ -1,9 +1,5 @@
 {
-  "functions": {
-    "api/server.js": {
-      "runtime": "node@18.x"
-    }
-  },
+
   "builds": [
     {
       "src": "clint/package.json",

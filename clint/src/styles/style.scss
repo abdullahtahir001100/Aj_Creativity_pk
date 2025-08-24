@@ -107,14 +107,14 @@ header {
 
         .button {
           padding: 10px 15px;
-          background-color: #2534ca;
+          background-color: #1da6ea;
           border-radius: 8px;
           color: #fff;
           transition: 0.5s;
 
           &:hover {
             color: #fff !important;
-            box-shadow: 0px 0px 10px #2534ca !important;
+            box-shadow: 0px 0px 10px #1da6ea !important;
             transform: translateY(-2px) scale(1.03) !important;
           }
         }
@@ -236,13 +236,13 @@ header {
     width: fit-content;
     margin: 0 auto;
     border-radius: 8px !important;
-    background-color: #2534ca !important;
+    background-color: #1da6ea !important;
     color: #fff;
     transition: 0.5s;
 
     &:hover {
       color: #fff !important;
-      box-shadow: 0px 0px 10px #2534ca !important;
+      box-shadow: 0px 0px 10px #1da6ea !important;
       transform: translateY(-2px) scale(1.03) !important;
     }
   }

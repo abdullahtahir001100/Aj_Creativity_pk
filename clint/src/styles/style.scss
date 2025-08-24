@@ -86,7 +86,7 @@ header {
   nav {
     position: relative;
     z-index: 1000;
-    background: radial-gradient($color-primary 110%, rgba(133, 49, 49, 0.05) 154%);
+  
     padding: 46px 27px 45px 90px;
     border-radius: 1px 0px 0 128px;
 
@@ -214,7 +214,7 @@ header {
 }
 
 .banner {
-  background-image: url('/imgs/banner.jpg');
+  background-image: url('/q12.jpg');
   text-align: center;
   font-family: $font-regular;
   padding-top: 10rem;

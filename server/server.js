@@ -1,10 +1,7 @@
 // server.js
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import cors from "cors";
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,12 +12,20 @@ app.use(cors());
 // ======================
 // MongoDB Connection
 // ======================
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("✅ MongoDB connected successfully"))
-.catch(err => console.error("❌ MongoDB connection error:", err));
+const connectDB = async () => {
+  if (mongoose.connections[0].readyState) return; // Already connected
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 30000, // 30s timeout
+    });
+    console.log("✅ MongoDB connected");
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err);
+    throw err;
+  }
+};
 
 // ======================
 // Order Schema & Model
@@ -36,13 +41,12 @@ const orderSchema = new mongoose.Schema({
   totalPrice: { type: Number, required: true },
   status: { type: String, enum: ["pending", "completed"], default: "pending" },
   createdAt: { type: Date, default: Date.now },
-
   products: [
     {
       name: { type: String, required: true },
       size: { type: String },
-      color: { type: String },      // Added for frontend
-      category: { type: String },   // Added for frontend
+      color: { type: String },
+      category: { type: String },
       quantity: { type: Number, required: true },
       image: { type: String },
       price: { type: Number, required: true },
@@ -56,28 +60,18 @@ const Order = mongoose.model("Order", orderSchema);
 // Routes
 // ======================
 
-// 📌 Create New Order
+// Create New Order
 app.post("/api/orders", async (req, res) => {
   try {
+    await connectDB();
+
     const { userName, email, primaryNumber, altNumber, address, location, products, totalPrice, paymentMethod } = req.body;
 
     if (!userName || !primaryNumber || !address || !location || !products || !totalPrice || !paymentMethod) {
       return res.status(400).json({ success: false, message: "⚠️ Please provide all required fields." });
     }
 
-    const newOrder = new Order({
-      userName,
-      email,
-      primaryNumber,
-      altNumber,
-      address,
-      location,
-      products,
-      totalPrice,
-      paymentMethod,
-      status: "pending",
-    });
-
+    const newOrder = new Order({ userName, email, primaryNumber, altNumber, address, location, products, totalPrice, paymentMethod, status: "pending" });
     await newOrder.save();
 
     res.status(201).json({ success: true, message: "✅ Order saved successfully", orderId: newOrder._id });
@@ -87,9 +81,10 @@ app.post("/api/orders", async (req, res) => {
   }
 });
 
-// 📌 Get All Orders
+// Get All Orders
 app.get("/api/orders", async (req, res) => {
   try {
+    await connectDB();
     const orders = await Order.find().sort({ createdAt: -1 });
     res.json({ success: true, orders });
   } catch (error) {
@@ -97,21 +92,17 @@ app.get("/api/orders", async (req, res) => {
   }
 });
 
-// 📌 Update Order Status
+// Update Order Status
 app.put("/api/orders/:id/status", async (req, res) => {
   try {
-    const { status } = req.body;
+    await connectDB();
 
+    const { status } = req.body;
     if (!["pending", "completed"].includes(status)) {
       return res.status(400).json({ success: false, message: "⚠️ Invalid status value." });
     }
 
-    const updatedOrder = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    );
-
+    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
     if (!updatedOrder) {
       return res.status(404).json({ success: false, message: "⚠️ Order not found." });
     }
@@ -122,11 +113,12 @@ app.put("/api/orders/:id/status", async (req, res) => {
   }
 });
 
-// 📌 Delete Order
+// Delete Order
 app.delete("/api/orders/:id", async (req, res) => {
   try {
-    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+    await connectDB();
 
+    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
     if (!deletedOrder) {
       return res.status(404).json({ success: false, message: "⚠️ Order not found." });
     }
@@ -139,6 +131,6 @@ app.delete("/api/orders/:id", async (req, res) => {
 });
 
 // ======================
-// Server Start
+// Start Server
 // ======================
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

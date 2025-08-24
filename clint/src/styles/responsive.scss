@@ -82,7 +82,8 @@
 }
 
 @media (max-width: 450px) {
-header{
+
+  header{
   nav{
     padding: 16px 11px 19px 49px;
   }
@@ -259,6 +260,9 @@ header{
     aside{
       padding-bottom: 15px !important;
     }
+  }
+  .features{
+    padding-top: 20px !important;
   }
 }
  @media (max-width: 768px) {

@@ -1,0 +1,285 @@
+// =========================
+// FONT-FACE DECLARATIONS
+// =========================
+@font-face {
+    font-family: "QLight";
+    src: url("../fonts/Montserrat-Light.ttf");
+}
+@font-face {
+    font-family: "QRegular";
+    src: url("../fonts/Montserrat-Regular.ttf");
+}
+@font-face {
+    font-family: "QMedium";
+    src: url("../fonts/Montserrat-Medium.ttf");
+}
+@font-face {
+    font-family: "QSemiBold";
+    src: url("../fonts/Montserrat-ExtraBold.ttf");
+}
+@font-face {
+    font-family: "QBold";
+    src: url("../fonts/Montserrat-Bold.ttf");
+}
+@font-face {
+    font-family: "Light";
+    src: url("../fonts/LeagueSpartan-Light.ttf");
+}
+@font-face {
+    font-family: "Regular";
+    src: url("../fonts/LeagueSpartan-Regular.ttf");
+}
+@font-face {
+    font-family: "Medium";
+    src: url("../fonts/LeagueSpartan-Medium.ttf");
+}
+@font-face {
+    font-family: "SemiBold";
+    src: url("../fonts/LeagueSpartan-SemiBold.ttf");
+}
+@font-face {
+    font-family: "Bold";
+    src: url("../fonts/LeagueSpartan-Bold.ttf");
+}
+@font-face {
+    font-family: "QLightAlt";
+    src: url("../fonts/LeagueSpartan-Thin.ttf");
+}
+@font-face {
+    font-family: "QRegularAlt";
+    src: url("../fonts/Quicksand-Regular.ttf");
+}
+@font-face {
+    font-family: "QMediumAlt";
+    src: url("../fonts/Quicksand-Medium.ttf");
+}
+@font-face {
+    font-family: "QSemiBoldAlt";
+    src: url("../fonts/Quicksand-SemiBold.ttf");
+}
+@font-face {
+    font-family: "QBoldAlt";
+    src: url("../fonts/Quicksand-Bold.ttf");
+}
+@font-face {
+  font-family: 'Light';
+  src: url('../fonts/Poppins-Light.ttf');
+}
+@font-face {
+  font-family: 'Regular';
+  src: url('../fonts/Poppins-Regular.ttf');
+}
+@font-face {
+  font-family: 'Medium';
+  src: url('../fonts/Poppins-Medium.ttf');
+}
+@font-face {
+  font-family: 'SemiBold';
+  src: url('../fonts/Poppins-SemiBold.ttf');
+}
+@font-face {
+  font-family: 'Bold';
+  src: url('../fonts/Poppins-Bold.ttf');
+}
+// =========================
+// GLOBAL RESET
+// =========================
+img {
+    cursor: pointer;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-regular;
+}
+.cointain{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+h1, h2, h3, h4, h5, h6 {
+  // font-family: $font-bold;
+  line-height: 1.4;
+  margin: 0 0 10px;
+  color: $color-black;
+  text-transform: capitalize;
+}
+
+.swiper-container {
+  overflow: hidden;
+}
+
+p {
+  margin: 0 0 15px;
+  text-transform: capitalize;
+}
+
+h1 { font-size: 40px; }
+h2 { font-size: 32px; }
+h3 { font-size: 24px; }
+h4 { font-size: 20px; }
+h5 { font-size: 16px; }
+h6 { font-size: 14px; }
+
+section {
+  position: relative;
+
+}
+.shop-grid {
+  display: flex;
+ flex-wrap: wrap;
+ align-items: center;
+ justify-content: center;
+  gap: 28px 20px;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+.flex, .flexbox {
+  display: flex;
+  flex-wrap: wrap;
+}
+.flexbox {
+  align-items: center;
+  justify-content: space-between;
+}
+section{
+  position:  relative !important;
+
+}
+.cart-container .cart-order-summary .cart-checkout-btn,.order-confirm-home-btn,button{
+  border-radius: 8px !important;
+  background-color: #2534ca !important;
+  color: #fff;
+  &:hover{
+    color: #fff !important;
+    box-shadow: 0px 0px 10px #2534ca !important;
+    transform: translateY(-2px) scale(1.03) !important;
+  }
+  &:focus{
+    color: #fff !important;
+    transform: translateY(-2px) scale(1.03) !important;
+    box-shadow: 0px 0px 10px #2534ca !important;
+  }
+  &:active{
+    color: #fff !important;
+    box-shadow: 0px 0px 10px #2534ca !important;
+    transform: translateY(-2px) scale(1.03) !important;
+  }
+  &:focus-visible{
+    color: #fff !important;
+    box-shadow: 0px 0px 10px #2534ca !important;
+
+  }
+
+}
+.quantity{
+
+button{
+  color: #000 !important;
+  outline: none !important;
+  &:hover{
+    color: #000 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transform: none !important;
+
+  }
+  &:focus{
+    color: #000 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transform: none !important;
+  }
+   &:active{
+    color: #000 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    outline: none !important;
+  }
+  
+
+}
+}
+.flexitem .add-to-cart{
+background: none !important;
+border: none !important;
+&:hover{
+  background: none !important;
+  box-shadow: none !important;
+  transform: none;
+
+  border: none !important;
+}
+&:focus{
+  background: none !important;
+  box-shadow: none !important;
+  transform: none;
+
+  border: none !important;
+}
+&:active{
+  background: none !important;
+  box-shadow: none !important;
+  transform: none;
+
+  border: none !important;
+}
+&:focus-visible{
+  background: none !important;
+  box-shadow: none !important;
+  transform: none;
+
+  border: none !important;
+}
+
+
+img{
+  width: 40px !important;
+}
+}
+.slider-btn ,.prev-btn,.next-btn{
+ display: none;
+}
+::selection {
+  background: #4a90e2;
+  color: #fff;      
+}
+::-moz-selection{
+  background: #4a90e2;
+  color: #fff;      
+}
+/* Scrollbar track (background) */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Scrollbar handle */
+::-webkit-scrollbar-thumb {
+  background: #000205;
+  border-radius: 8px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #357abd;
+}
+
+/* Scrollbar track */
+::-webkit-scrollbar-track {
+  background: #000000;
+  border-radius: 8px;
+}
+/* thumb color | track color */
+* {
+  scrollbar-color: #4a90e2 transparent;
+  scrollbar-width: thin;
+}
+html {
+  scroll-behavior: smooth;
+}

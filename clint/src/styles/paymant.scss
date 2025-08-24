@@ -1,0 +1,221 @@
+.payment-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .checkout-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    .left-col,
+    .right-col {
+      flex: 1;
+      min-width: 320px;
+    }
+
+    section {
+      margin-bottom: 30px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgb(0 0 0 / 59%);
+      border-radius: 8px;
+
+      h2 {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 8px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 12px;
+        transition: 0.5s;
+        -webkit-transition: 0.5s;
+        -moz-transition: 0.5s;
+        -ms-transition: 0.5s;
+        -o-transition: 0.5s;
+        font-family: light;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        &:focus{
+            border: 1px solid #007bff;
+            outline: none;
+        }
+         &:hover{
+            border: 1px solid #007bff;
+            outline: none;
+        }
+      }
+
+      textarea {
+        resize: vertical;
+      }
+    }
+
+    .product-card {
+      .product-info {
+        display: flex;
+        gap: 20px;
+        justify-content: space-around;
+        align-items: center;
+
+        img {
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+          border-radius: 8px;
+          border: 1px solid #ddd;
+        }
+      }
+    }
+
+    .pay-btn {
+      display: block;
+      width: 100%;
+      background: #bbc7d0;
+      color: white;
+      padding: 12px 0;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition:  0.5s;
+      -webkit-transition:  0.5s;
+      -moz-transition:  0.5s;
+      -ms-transition:  0.5s;
+      -o-transition:  0.5s;
+      &:hover{
+        background: #fff;
+        color: #000;
+            transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 4px 12px rgb(0 0 0 / 59%);
+
+      }
+    }
+  }
+}
+.product-card{
+    p{
+        font-family: light;
+        
+    }
+}
+/* Overlay */
+.order-confirm-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Popup content */
+.order-confirm-popup-content {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: scaleIn 0.3s ease;
+}
+.order-confirm-checkmark{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Checkmark animation */
+.order-confirm-checkmark svg {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+.order-confirm-checkmark-circle {
+  stroke: #007bff;
+  stroke-width: 2;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-linecap: round;
+  animation: drawCircle 0.6s forwards;
+}
+
+.order-confirm-checkmark-check {
+  stroke: #007bff;
+  stroke-width: 2;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke-linecap: round;
+  animation: drawCheck 0.3s 0.6s forwards;
+}
+
+/* Text styles */
+.order-confirm-popup-content h2 {
+  margin: 10px 0;
+  color: #333;
+}
+
+.order-confirm-popup-content p {
+  margin: 10px 0;
+  color: #555;
+}
+
+.order-confirm-popup-content a {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.order-confirm-popup-content a:hover {
+  background: #0062cb;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes scaleIn {
+  from {transform: scale(0.8);}
+  to {transform: scale(1);}
+}
+
+@keyframes drawCircle {
+  to {stroke-dashoffset: 0;}
+}
+
+@keyframes drawCheck {
+  to {stroke-dashoffset: 0;}
+}

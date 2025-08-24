@@ -1,0 +1,91 @@
+.footer {
+  background: #111;
+  color: #ddd;
+  padding: 3rem 1.5rem 1rem;
+  font-family: 'Poppins', sans-serif;
+
+  .footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  .footer-logo {
+    max-width: 120px;
+    
+  }
+
+  .footer-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #aaa;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+   margin: 2rem 0;
+    color: #fff;
+    position: relative;
+
+    &::after {
+      // content: "";
+      position: absolute;
+      left: 120px;
+      bottom: -5px;
+      width: 40px;
+      height: 2px;
+      background: gold;
+    }
+  }
+
+  .footer-links ul {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin-bottom: 0.5rem;
+
+      a {
+        text-decoration: none;
+        color: #aaa;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: rgb(0, 34, 255);
+        }
+      }
+    }
+  }
+
+  .footer-contact p {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    color: #aaa;
+  }
+
+  .footer-social {
+    .social-icons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+
+      a {
+        color: #aaa;
+        width: 38px;
+        padding-top: 30px;
+      }
+    }
+  }
+
+  .footer-bottom {
+    text-align: center;
+    border-top: 1px solid #222;
+    padding-top: 1rem;
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: #777;
+  }
+}

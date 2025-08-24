@@ -1,0 +1,127 @@
+/* --- Theme --- */
+$bg: #ffffff;
+$text: #1f1f1f;
+$muted: #bcd0ca; // soft sage for bars
+$headline: #ffffff;
+$shadow: 0 10px 30px rgba(0,0,0,0.08);
+
+.hero5 {
+  --gap: clamp(16px, 3vw, 36px);
+  --side: clamp(24px, 5vw, 72px);
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  align-items: center;
+  background: $bg;
+  padding: clamp(20px, 4vw, 48px) var(--side);
+  color: $text;
+
+  @media (max-width: 940px) {
+    grid-template-columns: 1fr;
+  }
+
+  &__media {
+    position: relative;
+    aspect-ratio: 3 / 3;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: $shadow;
+
+    @media (max-width: 940px) {
+      order: 1;
+      aspect-ratio: auto;
+    }
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__content {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: clamp(14px, 2.2vw, 24px);
+    padding-top: clamp(8px, 1vw, 12px);
+  }
+
+  /* Headline made of stacked “pills” */
+  &__headline {
+    display: grid;
+    gap: clamp(8px, 1vw, 12px);
+    max-width: 48ch;
+    position: relative;
+    left: -85px;
+
+    span {
+      display: inline-block;
+      width: fit-content;
+      background: $muted;
+      color: $headline;
+      font-family: bold;
+      font-weight: 700;
+      letter-spacing: 1px;
+      line-height: 1.15;
+    padding: 3px 10px;
+      font-size: 30px;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.438);
+    }
+  }
+
+  &__copy {
+    max-width: 56ch;
+    font-size: clamp(14px, 1.4vw, 18px);
+    line-height: 1.55;
+
+    .hero5__kicker {
+      font-weight: 600;
+      margin: 0 0 6px 0;
+    }
+
+    strong {
+      font-weight: 700;
+    }
+
+    em {
+      font-style: italic;
+      font-weight: 600;
+    }
+  }
+
+  &__cta {
+    color: #fff; // warm blush like the sample
+    font-style: italic;
+    font-weight: 600;
+    background-color: #2534ca;
+    width: fit-content;
+    padding: 10px 15px;
+    border-radius: 8px;
+
+    transition: 0.5s;
+    margin-top: clamp(6px, 1vw, 10px);
+    &:hover{
+        transform: scale(1.1);
+    }
+
+ 
+  }
+}
+
+/* Optional: container helper if your page is full-width */
+.hero5__copy p:first-child{
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+.hero5__copy p:last-child{
+        font-size: 15px;
+    width: 80%;
+}
+strong{
+    font-family: "bold";
+    font-size: 15.5px;
+    font-weight: bold;
+}

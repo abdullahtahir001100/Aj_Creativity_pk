@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dashboard Demo (No libs)</title>
+<style>
+  :root{
+    --bg:#0d1117; --card:#161b22; --muted:#8b949e; --primary:#58a6ff; --accent:#2ea043;
+    --chip:#22272e; --shadow:0 12px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:#d0d7de;font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  .wrap{padding:24px;max-width:1100px;margin:auto}
+  .navbar{
+    display:flex;gap:12px;align-items:center;background:var(--card);
+    padding:12px;border-radius:14px;box-shadow:var(--shadow);position:sticky;top:12px
+  }
+  .navbtn{
+    border:none;outline:none;padding:10px 16px;border-radius:12px;cursor:pointer;
+    background:var(--chip);color:#fff;font-weight:600;transition:transform .15s ease, background .2s
+  }
+  .navbtn:hover{transform:translateY(-1px)}
+  .navbtn.active{background:var(--primary)}
+  h1{margin:22px 0 14px;font-size:28px;color:var(--primary);text-align:center}
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:10px
+  }
+  .card{
+    background:linear-gradient(180deg, #171b23 0%, #131820 100%);
+    border:1px solid rgba(88,166,255,.15);
+    border-radius:18px;padding:18px;box-shadow:var(--shadow)
+  }
+  .kpi{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--chip);border-radius:16px;padding:16px;border:1px solid rgba(255,255,255,.06)
+  }
+  .kpi h3{margin:0;font-size:14px;color:var(--muted);font-weight:600}
+  .kpi .num{font-size:28px;font-weight:800;color:#fff}
+  .kpi .badge{
+    font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(46,160,67,.18);color:#7ee787;
+    border:1px solid rgba(46,160,67,.35)
+  }
+  /* Chart shell */
+  .chartCard{padding:18px;border-radius:18px;background:var(--card);border:1px solid rgba(88,166,255,.12)}
+  .chartHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .chartHeader .title{font-weight:700;color:#fff}
+  .legend{display:flex;gap:8px;align-items:center}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--primary);opacity:.9}
+  .tooltip{
+    position:absolute;pointer-events:none;transform:translate(-50%,-120%);
+    background:#0b1220;color:#fff;border:1px solid rgba(88,166,255,.25);
+    padding:8px 10px;border-radius:10px;font-size:12px;white-space:nowrap;opacity:0;transition:opacity .12s ease
+  }
+  .hidden{display:none}
+  /* nice entrance */
+  .fadeUp{opacity:0;transform:translateY(14px);animation:fadeUp .5s ease forwards}
+  @keyframes fadeUp{to{opacity:1;transform:none}}
+  .pulse{animation:pulse 1.3s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Menu -->
+    <div class="navbar">
+      <button class="navbtn active" id="btnOrders">📦 Orders</button>
+      <button class="navbtn" id="btnStats">📊 Stats</button>
+    </div>
+
+    <!-- Orders (placeholder for demo) -->
+    <section id="sectionOrders" class="fadeUp">
+      <h1>📦 Orders</h1>
+      <div class="card" style="text-align:center;padding:40px">
+        <div class="pulse" style="font-size:16px;color:#9aa4af">Your orders list renders here…</div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section id="sectionStats" class="hidden fadeUp">
+      <h1>📊 Summary</h1>
+
+      <!-- KPIs -->
+      <div class="grid">
+        <div class="kpi card">
+          <div>
+            <h3>Total Orders</h3>
+            <div class="num" id="kpiOrders">0</div>
+          </div>
+          <span class="badge" id="kpiOrdersDelta">+0 today</span>
+        </div>
+
+        <div class="kpi card">
+          <div>
+            <h3>Total Revenue</h3>
+            <div class="num" id="kpiRevenue">Rs 0</div>
+          </div>
+          <span class="badge" id="kpiRevenueDelta">+Rs 0 this week</span>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="chartCard card" style="margin-top:16px; position:relative;">
+        <div class="chartHeader">
+          <div class="title">Revenue (Last 6 Months)</div>
+          <div class="legend"><span class="dot"></span><span style="color:#c6d0dc;font-size:13px">Revenue</span></div>
+        </div>
+
+        <!-- responsive SVG -->
+        <div id="chartWrap" style="width:100%;height:320px;position:relative">
+          <svg id="chart" viewBox="0 0 800 320" preserveAspectRatio="none" style="width:100%;height:100%;display:block;border-radius:14px;overflow:hidden">
+            <!-- grid -->
+            <g id="grid" stroke="rgba(255,255,255,0.08)" stroke-width="1"></g>
+            <!-- gradient fill -->
+            <defs>
+              <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(88,166,255,0.55)"/>
+                <stop offset="100%" stop-color="rgba(88,166,255,0.02)"/>
+              </linearGradient>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- area & line -->
+            <path id="area" fill="url(#grad)" opacity=".9"></path>
+            <path id="line" fill="none" stroke="url(#grad)" stroke-width="3.2" filter="url(#glow)"></path>
+            <!-- points -->
+            <g id="points"></g>
+            <!-- axes labels -->
+            <g id="xlabels" fill="#9fb1c1" font-size="12"></g>
+            <g id="ylabels" fill="#788899" font-size="11"></g>
+          </svg>
+
+          <!-- tooltip -->
+          <div id="tip" class="tooltip"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+/** ---------- Demo Data (replace from API) ---------- **/
+const months = ["Mar","Apr","May","Jun","Jul","Aug"];
+const data = [32000, 45000, 21000, 58000, 49000, 76500]; // Rs
+const totalOrders = 184;
+const totalRevenue = data.reduce((a,b)=>a+b,0);
+
+/** ---------- Menu Toggle ---------- **/
+const btnOrders = document.getElementById('btnOrders');
+const btnStats  = document.getElementById('btnStats');
+const secOrders = document.getElementById('sectionOrders');
+const secStats  = document.getElementById('sectionStats');
+
+btnOrders.onclick = () => {
+  btnOrders.classList.add('active'); btnStats.classList.remove('active');
+  secOrders.classList.remove('hidden'); secStats.classList.add('hidden');
+};
+btnStats.onclick = () => {
+  btnStats.classList.add('active'); btnOrders.classList.remove('active');
+  secStats.classList.remove('hidden'); secOrders.classList.add('hidden');
+};
+
+/** ---------- KPIs Fill ---------- **/
+document.getElementById('kpiOrders').textContent = totalOrders.toLocaleString();
+document.getElementById('kpiRevenue').textContent = "Rs " + totalRevenue.toLocaleString();
+document.getElementById('kpiOrdersDelta').textContent = "+4 today";
+document.getElementById('kpiRevenueDelta').textContent = "+Rs 18,500 this week";
+
+/** ---------- Pretty SVG Chart (no libs) ---------- **/
+const svg      = document.getElementById('chart');
+const gridG    = document.getElementById('grid');
+const xlabG    = document.getElementById('xlabels');
+const ylabG    = document.getElementById('ylabels');
+const linePath = document.getElementById('line');
+const areaPath = document.getElementById('area');
+const ptsG     = document.getElementById('points');
+const tip      = document.getElementById('tip');
+
+const W = 800, H = 320, P = {l:48,r:12,t:10,b:28};
+const cw = W - P.l - P.r, ch = H - P.t - P.b;
+
+const maxV = Math.max(...data) * 1.1;
+const minV = 0;
+const y = v => H - P.b - ( (v - minV) / (maxV - minV) ) * ch;
+const x = i => P.l + (i/(data.length-1))*cw;
+
+// grid lines + y labels
+const rows = 5;
+for(let r=0;r<=rows;r++){
+  const yy = P.t + (r/rows)*ch;
+  const val = Math.round((maxV - (r/rows)*(maxV-minV))/1000)*1000;
+  const gl = document.createElementNS("http://www.w3.org/2000/svg","line");
+  gl.setAttribute("x1", P.l); gl.setAttribute("x2", W-P.r);
+  gl.setAttribute("y1", yy);  gl.setAttribute("y2", yy);
+  gridG.appendChild(gl);
+  const lbl = document.createElementNS("http://www.w3.org/2000/svg","text");
+  lbl.setAttribute("x", P.l - 10); lbl.setAttribute("y", yy+4);
+  lbl.setAttribute("text-anchor","end");
+  lbl.textContent = "Rs " + val.toLocaleString();
+  ylabG.appendChild(lbl);
+}
+// x labels
+months.forEach((m,i)=>{
+  const t = document.createElementNS("http://www.w3.org/2000/svg","text");
+  t.setAttribute("x", x(i));
+  t.setAttribute("y", H-6);
+  t.setAttribute("text-anchor","middle");
+  t.textContent = m;
+  xlabG.appendChild(t);
+});
+
+// path (smooth with cubic bezier)
+function pathD(vals){
+  const pts = vals.map((v,i)=>[x(i), y(v)]);
+  let d = `M ${pts[0][0]} ${pts[0][1]}`;
+  for(let i=1;i<pts.length;i++){
+    const [x0,y0] = pts[i-1], [x1,y1] = pts[i];
+    const cx = (x0+x1)/2;
+    d += ` C ${cx} ${y0}, ${cx} ${y1}, ${x1} ${y1}`;
+  }
+  return d;
+}
+// area path for gradient fill
+function areaD(vals){
+  return pathD(vals) + ` L ${x(vals.length-1)} ${H-P.b} L ${x(0)} ${H-P.b} Z`;
+}
+
+// animate stroke draw
+function animateStroke(el, d){
+  el.setAttribute('d', d);
+  const len = el.getTotalLength();
+  el.style.strokeDasharray = len;
+  el.style.strokeDashoffset = len;
+  el.getBoundingClientRect(); // reflow
+  el.style.transition = 'stroke-dashoffset .9s ease';
+  requestAnimationFrame(()=>{ el.style.strokeDashoffset = '0'; });
+}
+
+// render chart
+const dLine = pathD(data);
+const dArea = areaD(data);
+areaPath.setAttribute('d', dArea);
+animateStroke(linePath, dLine);
+
+// points + tooltip
+data.forEach((v,i)=>{
+  const cx = x(i), cy = y(v);
+  const g = document.createElementNS("http://www.w3.org/2000/svg","g");
+  const hit = document.createElementNS("http://www.w3.org/2000/svg","circle");
+  hit.setAttribute('cx', cx); hit.setAttribute('cy', cy);
+  hit.setAttribute('r', 16); hit.setAttribute('fill','transparent');
+  const dot = document.createElementNS("http://www.w3.org/2000/svg","circle");
+  dot.setAttribute('cx', cx); dot.setAttribute('cy', cy);
+  dot.setAttribute('r', 4.5); dot.setAttribute('fill','#58a6ff');
+  dot.style.filter = 'url(#glow)';
+  g.appendChild(dot); g.appendChild(hit);
+  ptsG.appendChild(g);
+
+  hit.addEventListener('mouseenter', ()=>{
+    tip.style.opacity = 1;
+    tip.textContent = `${months[i]} • Rs ${v.toLocaleString()}`;
+    tip.style.left = ( (cx/W)*100 ) + '%';
+    tip.style.top  = ( (cy/H)*100 ) + '%';
+  });
+  hit.addEventListener('mouseleave', ()=> tip.style.opacity = 0);
+});
+</script>
+</body>
+</html>

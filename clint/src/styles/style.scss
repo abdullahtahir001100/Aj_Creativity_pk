@@ -1,0 +1,361 @@
+// Variables
+$font-regular: 'Regular';
+$font-bold: 'Bold';
+$font-medium: 'Medium';
+$font-semiBold: 'SemiBold';
+$font-light: 'Light';
+$color-primary: #b14343;
+$color-secondary: #14011fa6;
+$color-footer: #bab4b2;
+$color-banner: #fff;
+$color-banner-bg: #eee9e9;
+$color-banner-accent: #b14343;
+$color-banner-accent2: #89353500;
+$color-gold: goldenrod;
+$color-black: #000;
+$color-white: #fff;
+$color-grey: #555;
+$color-grey-light: #777;
+$color-btn: #f72003;
+$color-btn-hover: #563434;
+$color-watch-bg: #ffd6d6;
+
+li {
+  list-style: none !important;
+}
+
+.product .sec-1 {
+  padding: 0 !important;
+}
+
+.watch{
+  margin-bottom: 10px !important;
+}
+.product{
+  padding: 0 !important;
+}
+@mixin full-overlay {
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+header {
+  @include full-overlay;
+  height: 8rem;
+
+  .flexbox {
+    display: flex;
+    justify-content: space-between;
+    align-items: normal;
+  }
+
+  .cart {
+    img {
+      width: 30px;
+      position: relative;
+      top: 5px;
+    }
+
+    strong {
+      color: #fff;
+      background-color: red;
+      width: 1px;
+      padding: 0px 4px;
+      font-family: light;
+      font-size: 8px;
+      border-radius: 50px;
+      position: relative;
+      top: -14px;
+      left: -6px;
+    }
+  }
+
+  .image {
+    width: 70%;
+
+    img {
+      cursor: pointer;
+      width: 100%;
+    }
+  }
+
+  nav {
+    position: relative;
+    z-index: 1000;
+    background: radial-gradient($color-primary 110%, rgba(133, 49, 49, 0.05) 154%);
+    padding: 46px 27px 45px 90px;
+    border-radius: 1px 0px 0 128px;
+
+    ul {
+      display: flex;
+      align-items: center;
+
+      li {
+        list-style: none;
+        margin: 0 30px;
+
+        a {
+          text-decoration: none;
+          color: $color-white;
+          font-family: $font-regular;
+          font-size: 12px;
+        }
+
+        .button {
+          padding: 10px 15px;
+          background-color: #2534ca;
+          border-radius: 8px;
+          color: #fff;
+          transition: 0.5s;
+
+          &:hover {
+            color: #fff !important;
+            box-shadow: 0px 0px 10px #2534ca !important;
+            transform: translateY(-2px) scale(1.03) !important;
+          }
+        }
+      }
+    }
+  }
+
+  .links {
+    background-color: $color-primary;
+    text-align: center;
+    // display: none;
+    position: relative;
+    top: -40px;
+    width: 100%;
+
+    li {
+      line-height: 50px;
+
+      a {
+        color: $color-white;
+        font-family: $font-regular;
+        font-size: 10px;
+
+        &:hover {
+          color: blue;
+          transition: 0.5s;
+        }
+      }
+    }
+  }
+}
+
+.cointain {
+  padding: 15px;
+  margin: 0 auto;
+  position: relative;
+  max-width: 1200px;
+}
+.price {
+  h6{
+    font-family: $font-bold;
+  }
+}
+.product {
+  .col-1 {
+    margin: 13px 0 0 51px;
+  }
+
+  .sec-1 {
+    padding-top: 5rem;
+    width: calc(100%/4.5);
+
+    .image img {
+      cursor: pointer;
+    }
+  }
+
+  .flexbox {
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .text {
+    text-transform: capitalize;
+    padding-top: 10px;
+
+    h4 {
+      font-size: 15px;
+      margin: 0;
+      font-family: $font-regular;
+    }
+  }
+
+  i {
+    color: $color-gold;
+    font-size: 12px;
+    padding: 0 20px 0 0;
+  }
+
+  .image:hover {
+    transform: translateY(-5px);
+    transition: 0.5s;
+  }
+
+  .flex1 {
+    flex-wrap: wrap;
+  }
+
+  .h1 {
+    text-align: center;
+  }
+}
+
+.line {
+  padding: 20px;
+}
+
+.banner {
+  background-image: url('/imgs/banner.jpg');
+  text-align: center;
+  font-family: $font-regular;
+  padding-top: 10rem;
+  padding-bottom: 5rem;
+  position: relative;
+
+  .flexbox {
+    display: block;
+    color: #292929cf;
+  }
+
+  h1 {
+    line-height: 110px;
+    color: #292929cf;
+  }
+
+  .button {
+    padding: 10px 30px;
+    width: fit-content;
+    margin: 0 auto;
+    border-radius: 8px !important;
+    background-color: #2534ca !important;
+    color: #fff;
+    transition: 0.5s;
+
+    &:hover {
+      color: #fff !important;
+      box-shadow: 0px 0px 10px #2534ca !important;
+      transform: translateY(-2px) scale(1.03) !important;
+    }
+  }
+
+  p {
+    margin-bottom: 50px;
+  }
+
+  a {
+    color: $color-white;
+    text-decoration: none;
+    padding: 10px;
+    position: relative;
+  }
+}
+
+.features {
+  .image {
+    width: 25%;
+   
+    padding: 0 15px;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.6) !important;
+    border-radius: 10px;
+    transition: transform 0.3s;
+  }
+
+  .flex {
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.footer {
+  background-color: $color-footer;
+  text-align: center;
+
+  nav ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    li {
+      list-style: none;
+
+      a {
+        text-decoration: none;
+        color: $color-black;
+        font-family: $font-regular;
+        font-size: 12px;
+        margin: 0 20px;
+      }
+    }
+  }
+
+  h1 {
+    font-family: $font-regular;
+    font-weight: 100;
+    line-height: 85px;
+  }
+
+  .flexbox {
+    justify-content: center;
+  }
+
+  .icons {
+    margin: 20px 10px;
+  }
+}
+
+.burger {
+  display: none;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+
+.flexbox1 {
+  button {
+    &:hover {
+
+      border: none !important;
+      transform: translateY(-5px) scale(1.13);
+      transition: 0.5s;
+      -webkit-transition: 0.5s;
+      -moz-transition: 0.5s;
+      -ms-transition: 0.5s;
+      -o-transition: 0.5s;
+      -webkit-transform: translateY(-5px) scale(1.13);
+      -moz-transform: translateY(-5px) scale(1.13);
+      -ms-transform: translateY(-5px) scale(1.13);
+      -o-transform: translateY(-5px) scale(1.13);
+    }
+  }
+}
+
+.ban {
+  padding: 0 !important;
+}
+
+.flexbox1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

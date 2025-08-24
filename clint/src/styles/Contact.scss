@@ -1,0 +1,139 @@
+// =========================
+// VARIABLES
+// =========================
+$primary-color: #bbc7d0;
+$secondary-color: #606365;
+$text-light: #9c9fa1;
+$text-gray: #76797c;
+$text-muted: #787a7c;
+$heading-color: #222;
+$border-color: rgba(132, 129, 129, 0.518);
+$box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+
+// =========================
+// COMPONENTS & NESTING
+// =========================
+.ali .form {
+    width: 100% !important;
+}
+.ali {
+    .jeadingss {
+        h6 {
+            color: $text-gray;
+            font-family: "QRegular";
+        }
+        h3 {
+            text-transform: uppercase;
+            font-family: "Light";
+            font-weight: bolder;
+        }
+    }
+
+    li {
+        list-style: none;
+        line-height: 40px;
+    }
+
+    samp {
+         text-transform: capitalize;
+    font-size: 19px;
+    }
+
+    .maps {
+        .flexbox {
+            margin-bottom: 30px;
+        }
+    }
+
+    .persons {
+        position: relative;
+        top: 12px;
+
+        .image {
+            width: 54px;
+            height: 61px;
+            position: relative;
+            top: 19px;
+            left: -9px;
+        }
+    }
+
+    .form {
+        
+
+        .head {
+            text-align: justify;
+
+            p {
+                color: $text-light;
+            }
+
+            h1 {
+                font-size: 35px;
+                font-family: "QRegular";
+                
+            }
+        }
+
+        form {
+            
+
+            input,
+            textarea {
+                width: 100%;
+                padding: 10px 20px;
+                border-radius: 5px;
+                border: 1px solid $border-color;
+                margin-bottom: 10px;
+
+                &:focus {
+                    outline: 1px solid $secondary-color;
+                }
+            }
+
+            textarea {
+                resize: vertical;
+                height: 150px;
+            }
+
+            button {
+                width: fit-content;
+                padding: 10px 25px;
+                margin-top: 30px;
+                border: none;
+                background-color: $primary-color;
+                border-radius: 5px;
+                color: #fff;
+                font-family: "QRegular";
+                transition: 0.5s;
+                cursor: pointer;
+                -webkit-transition: 0.5s;
+                -moz-transition: 0.5s;
+                -ms-transition: 0.5s;
+                -o-transition: 0.5s;
+                &:hover {
+                    box-shadow: $box-shadow;
+                        transform: translateY(-2px) scale(1.03);
+                    background: none;
+                    color: black;
+                }
+            }
+        }
+    }
+    .footer-botom{
+        padding-bottom: 2rem;
+        .flexbox{
+            justify-content: space-around;
+        }
+    }
+    .persons{
+        background-color: #fff;
+        box-shadow: $box-shadow;
+        padding: 2rem;
+        border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        -ms-border-radius: 10px;
+        -o-border-radius: 10px;
+}
+}

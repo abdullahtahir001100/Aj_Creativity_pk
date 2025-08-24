@@ -1,0 +1,79 @@
+/* Blog expand/collapse animation */
+.extra-content {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(.68,-0.55,.27,1.55), opacity 0.5s;
+.extra-content.expanded {
+  opacity: 1;
+  max-height: 200px;
+}
+
+/* Popup fade/scale animation */
+@keyframes popupFadeIn {
+  0% { opacity: 0; transform: scale(0.7) translateY(40px); }
+  60% { opacity: 1; transform: scale(1.08) translateY(-8px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.order-confirm-popup {
+  animation: popupFadeIn 0.45s cubic-bezier(.68,-0.55,.27,1.55);
+}
+.order-confirm-popup-content.animated,
+.order-confirm-popup-content.enhanced.animated,
+.order-confirm-popup-content.animated.enhanced {
+  animation: popupFadeIn 0.75s cubic-bezier(.68,-0.55,.27,1.55);
+}
+}
+@keyframes fadeInPage {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-page {
+  animation: fadeInPage 1.2s cubic-bezier(.68,-0.55,.27,1.55) both;
+}
+#splash.visible {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.7s;
+}
+
+#splash.hidden {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s;
+}
+@keyframes splashLogo {
+  0% { transform: scale(0.7) rotate(-10deg); opacity: 0; }
+  60% { transform: scale(1.1) rotate(8deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+#splash {
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.7s;
+}
+
+#splash img {
+  width: 180px;
+  animation: splashLogo 1s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+  transition: filter 0.7s;
+  -webkit-animation: splashLogo 1s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+  -webkit-transition: filter 0.7s;
+  -moz-transition: filter 0.7s;
+  -ms-transition: filter 0.7s;
+  -o-transition: filter 0.7s;
+}

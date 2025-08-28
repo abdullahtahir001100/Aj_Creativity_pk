@@ -21,7 +21,18 @@ const dashboardStyles = `
     --radius-card: 1.5rem;
     --radius-full: 9999px;
   }
-
+    .recharts-trapezoid{
+    fill: var(--primary-color);
+    }
+.flk {
+    display: flex
+;
+    justify-content: space-between;
+    align-items: center;
+    }
+    .flk .chart-container{
+    width: 49%;
+    }
   /* Exaggerated Keyframe Animations */
   @keyframes dramaticFadeIn {
     from {
@@ -255,6 +266,12 @@ const dashboardStyles = `
     .card-grid {
       grid-template-columns: repeat(1, 1fr);
     }
+      .kp-grid{
+       grid-template-columns: repeat(4, 1fr);
+       margen-bottom: 2rem;
+               padding: 20px 0;
+
+      }
   }
   
   .order-list-grid {
@@ -314,7 +331,7 @@ const dashboardStyles = `
   
   .product-list {
     max-height: 15rem;
-    overflow-y: auto;
+    overflow-x: hidden;
     padding-right: 0.5rem;
     display: flex;
     flex-direction: column;
@@ -341,7 +358,7 @@ const dashboardStyles = `
   .product-image-container {
       flex-shrink: 0;
       width: 27rem;
-      height: 17rem;
+      height: 11rem;
       border-radius: 0.5rem;
       background-color: #e5e7eb;
       overflow: hidden;
@@ -776,7 +793,7 @@ const OrderCard = ({ order, handleRemove, handleComplete, index }) => {
           <h2 className="card-section-title">🛍️ Products</h2>
           <div className="product-list">
             {order.products?.map((p, productIndex) => (
-              <div key={productIndex} className="product-item" style={{animationDelay: `${index * 0.1 + productIndex * 0.05}s`}}>
+              <div key={productIndex} className="product-item">
                 <div className="product-image-container">
                   {p.image ? (
                     <img src={p.image} alt={p.name} className="product-image" />
@@ -1118,7 +1135,7 @@ export default function App() {
         {activeTab === "analytics" && (
           <div className="space-y-8">
             {/* KPI Cards */}
-            <div className="card-grid">
+            <div className="card-grid kp-grid">
               <div className="card-kpi" style={{display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
                 <div style={{padding: '0.75rem', backgroundColor: '#dbeafe', borderRadius: '0.75rem', color: '#3b82f6'}}>
                   <BoxIcon />
@@ -1193,30 +1210,7 @@ export default function App() {
               </div>
 
               {/* Chart 3: Pie Chart */}
-              <div className="chart-container" style={{backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
-                <h2 style={{fontSize: '1.25rem', fontWeight: '700', color: '#16a34a', marginBottom: '1rem'}}>Order Funnel</h2>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={funnelData}
-                      dataKey="value"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={100}
-                      fill="#3b82f6"
-                      label
-                    >
-                      {funnelData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={stringToColor(entry.name)} />
-                      ))}
-                    </Pie>
-                    <Tooltip contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-
+             
               {/* Chart 4: Area Chart */}
               <div className="chart-container" style={{backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
                 <h2 style={{fontSize: '1.25rem', fontWeight: '700', color: '#7c3aed', marginBottom: '1rem'}}>Cumulative Revenue</h2>
@@ -1249,21 +1243,18 @@ export default function App() {
               </div>
 
               {/* Chart 6: Treemap */}
-              <div className="chart-container" style={{backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
-                <h2 style={{fontSize: '1.25rem', fontWeight: '700', color: '#db2777', marginBottom: '1rem'}}>Revenue by Product</h2>
+               <div className="chart-container" style={{backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
+                <h2 style={{fontSize: '1.25rem', fontWeight: '700', color: '#ef4444', marginBottom: '1rem'}}>Scatter Chart: Revenue vs Orders</h2>
                 <ResponsiveContainer width="100%" height={300}>
-                  <Treemap
-                    data={productDataForCharts}
-                    dataKey="revenue"
-                    aspectRatio={4/3}
-                    stroke="#fff"
-                    fill="#3b82f6"
-                  >
-                    <Tooltip contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-                  </Treemap>
+                  <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                    <CartesianGrid stroke="#e5e7eb" />
+                    <XAxis type="number" dataKey="orders" name="Orders" stroke="#6b7280" />
+                    <YAxis type="number" dataKey="revenue" name="Revenue" stroke="#6b7280" />
+                    <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+                    <Scatter name="A school" data={chartData} fill="#3b82f6" />
+                  </ScatterChart>
                 </ResponsiveContainer>
               </div>
-
               {/* Chart 7: Composed Chart */}
               <div className="chart-container" style={{backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
                 <h2 style={{fontSize: '1.25rem', fontWeight: '700', color: '#4338ca', marginBottom: '1rem'}}>Orders & Revenue Trend</h2>
@@ -1282,7 +1273,8 @@ export default function App() {
               </div>
 
               {/* Chart 8: Radial Bar Chart */}
-              <div className="chart-container" style={{backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
+             <div className="flk">
+               <div className="chart-container" style={{backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
                 <h2 style={{fontSize: '1.25rem', fontWeight: '700', color: '#06b6d4', marginBottom: '1rem'}}>Revenue by Country</h2>
                 <ResponsiveContainer width="100%" height={300}>
                   <RadialBarChart
@@ -1323,20 +1315,59 @@ export default function App() {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
+             </div>
 
               {/* Chart 10: Scatter Chart */}
-              <div className="chart-container" style={{backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
-                <h2 style={{fontSize: '1.25rem', fontWeight: '700', color: '#ef4444', marginBottom: '1rem'}}>Scatter Chart: Revenue vs Orders</h2>
+             <div className="flk">
+               <div className="chart-container" style={{backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
+                <h2 style={{fontSize: '1.25rem', fontWeight: '700', color: '#16a34a', marginBottom: '1rem'}}>Order Funnel</h2>
                 <ResponsiveContainer width="100%" height={300}>
-                  <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                    <CartesianGrid stroke="#e5e7eb" />
-                    <XAxis type="number" dataKey="orders" name="Orders" stroke="#6b7280" />
-                    <YAxis type="number" dataKey="revenue" name="Revenue" stroke="#6b7280" />
-                    <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-                    <Scatter name="A school" data={chartData} fill="#3b82f6" />
-                  </ScatterChart>
+                  <PieChart>
+                    <Pie
+                      data={funnelData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      fill="#3b82f6"
+                      label
+                    >
+                      {funnelData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={stringToColor(entry.name)} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+                    <Legend />
+                  </PieChart>
                 </ResponsiveContainer>
               </div>
+
+ <div className="chart-container" style={{backgroundColor: 'var(--card-bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-light)'}}>
+                <h2 style={{fontSize: '1.25rem', fontWeight: '700', color: '#16a34a', marginBottom: '1rem'}}>Order Funnel</h2>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={funnelData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      fill="#3b82f6"
+                      label
+                    >
+                      {funnelData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={stringToColor(entry.name)} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+             </div>
             </div>
           </div>
         )}

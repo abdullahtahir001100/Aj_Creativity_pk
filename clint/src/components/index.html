@@ -1,274 +1,1038 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Dashboard Demo (No libs)</title>
-<style>
-  :root{
-    --bg:#0d1117; --card:#161b22; --muted:#8b949e; --primary:#58a6ff; --accent:#2ea043;
-    --chip:#22272e; --shadow:0 12px 30px rgba(0,0,0,.35);
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:#d0d7de;font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial}
-  .wrap{padding:24px;max-width:1100px;margin:auto}
-  .navbar{
-    display:flex;gap:12px;align-items:center;background:var(--card);
-    padding:12px;border-radius:14px;box-shadow:var(--shadow);position:sticky;top:12px
-  }
-  .navbtn{
-    border:none;outline:none;padding:10px 16px;border-radius:12px;cursor:pointer;
-    background:var(--chip);color:#fff;font-weight:600;transition:transform .15s ease, background .2s
-  }
-  .navbtn:hover{transform:translateY(-1px)}
-  .navbtn.active{background:var(--primary)}
-  h1{margin:22px 0 14px;font-size:28px;color:var(--primary);text-align:center}
-  .grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:10px
-  }
-  .card{
-    background:linear-gradient(180deg, #171b23 0%, #131820 100%);
-    border:1px solid rgba(88,166,255,.15);
-    border-radius:18px;padding:18px;box-shadow:var(--shadow)
-  }
-  .kpi{
-    display:flex;align-items:center;justify-content:space-between;
-    background:var(--chip);border-radius:16px;padding:16px;border:1px solid rgba(255,255,255,.06)
-  }
-  .kpi h3{margin:0;font-size:14px;color:var(--muted);font-weight:600}
-  .kpi .num{font-size:28px;font-weight:800;color:#fff}
-  .kpi .badge{
-    font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(46,160,67,.18);color:#7ee787;
-    border:1px solid rgba(46,160,67,.35)
-  }
-  /* Chart shell */
-  .chartCard{padding:18px;border-radius:18px;background:var(--card);border:1px solid rgba(88,166,255,.12)}
-  .chartHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-  .chartHeader .title{font-weight:700;color:#fff}
-  .legend{display:flex;gap:8px;align-items:center}
-  .dot{width:10px;height:10px;border-radius:50%;background:var(--primary);opacity:.9}
-  .tooltip{
-    position:absolute;pointer-events:none;transform:translate(-50%,-120%);
-    background:#0b1220;color:#fff;border:1px solid rgba(88,166,255,.25);
-    padding:8px 10px;border-radius:10px;font-size:12px;white-space:nowrap;opacity:0;transition:opacity .12s ease
-  }
-  .hidden{display:none}
-  /* nice entrance */
-  .fadeUp{opacity:0;transform:translateY(14px);animation:fadeUp .5s ease forwards}
-  @keyframes fadeUp{to{opacity:1;transform:none}}
-  .pulse{animation:pulse 1.3s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            font-size: 14px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        /* Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--dark-color);
+            color: white;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            text-align: center;
+            height: var(--header-height);
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .menu-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: white;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            height: var(--header-height);
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            justify-content: space-between;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid #e0e0e0;
+            border-radius: 25px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .notification, .user-profile {
+            position: relative;
+            margin-left: 20px;
+        }
+
+        .notification i, .user-profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .notification i {
+            font-size: 18px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background-color: var(--danger-color);
+            border-radius: 50%;
+        }
+
+        .user-profile img {
+            object-fit: cover;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .page-title {
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb i {
+            margin: 0 10px;
+            font-size: 12px;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .stat-card.primary::before {
+            background-color: var(--primary-color);
+        }
+
+        .stat-card.success::before {
+            background-color: var(--success-color);
+        }
+
+        .stat-card.warning::before {
+            background-color: var(--warning-color);
+        }
+
+        .stat-card.danger::before {
+            background-color: var(--danger-color);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .stat-card-title {
+            color: #777;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-icon.primary {
+            background-color: rgba(74, 108, 247, 0.1);
+            color: var(--primary-color);
+        }
+
+        .stat-icon.success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .stat-icon.warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+
+        .stat-icon.danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .stat-change {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            color: var(--danger-color);
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .chart-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chart-option {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: #f0f0f0;
+            color: #555;
+            border: none;
+        }
+
+        .chart-option:hover {
+            background-color: #e0e0e0;
+        }
+
+        .chart-option.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Data Tables */
+        .table-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a5bd9;
+        }
+
+        .btn-outline {
+            border: 1px solid #e0e0e0;
+            background-color: white;
+            color: #555;
+        }
+
+        .btn-outline:hover {
+            background-color: #f8f9fa;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px 15px;
+            font-weight: 500;
+            color: #555;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.completed {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-badge.pending {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-badge.cancelled {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Activity Log */
+        .activity-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .activity-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .activity-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.user {
+            background-color: rgba(74, 108, 247, 0.1);
+            color: var(--primary-color);
+        }
+
+        .activity-icon.success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .activity-icon.warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .activity-description {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .search-bar {
+                display: none;
+            }
+
+            .dashboard-content {
+                padding: 20px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .data-table {
+                font-size: 12px;
+            }
+
+            .data-table th, .data-table td {
+                padding: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="wrap">
-    <!-- Menu -->
-    <div class="navbar">
-      <button class="navbtn active" id="btnOrders">📦 Orders</button>
-      <button class="navbtn" id="btnStats">📊 Stats</button>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Dashboard</h2>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="#" class="menu-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Overview
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-chart-bar"></i>
+                    Analytics
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    Sales
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    Customers
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-box"></i>
+                    Products
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-file-alt"></i>
+                    Orders
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    Calendar
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="header-actions">
+                    <div class="notification">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge"></span>
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://picsum.photos/seed/user/35/35.jpg" alt="User Profile">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Page Title -->
+                <div class="page-title">
+                    <h1>Dashboard Overview</h1>
+                    <div class="breadcrumb">
+                        <a href="#">Home</a>
+                        <i class="fas fa-angle-right"></i>
+                        <a href="#">Dashboard</a>
+                        <i class="fas fa-angle-right"></i>
+                        <span>Overview</span>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="cards-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Total Revenue</div>
+                                <div class="stat-value">$42,567</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i> 12.5%
+                                </div>
+                            </div>
+                            <div class="stat-icon primary">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card success">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">New Customers</div>
+                                <div class="stat-value">1,246</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i> 8.2%
+                                </div>
+                            </div>
+                            <div class="stat-icon success">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card warning">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Active Orders</div>
+                                <div class="stat-value">568</div>
+                                <div class="stat-change negative">
+                                    <i class="fas fa-arrow-down"></i> 3.4%
+                                </div>
+                            </div>
+                            <div class="stat-icon warning">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card danger">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Total Products</div>
+                                <div class="stat-value">8,429</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i> 5.7%
+                                </div>
+                            </div>
+                            <div class="stat-icon danger">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Revenue Overview</h3>
+                            <div class="chart-options">
+                                <button class="chart-option active">Week</button>
+                                <button class="chart-option">Month</button>
+                                <button class="chart-option">Year</button>
+                            </div>
+                        </div>
+                        <canvas id="revenueChart" height="300"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Sales Distribution</h3>
+                            <div class="chart-options">
+                                <button class="chart-option active">Category</button>
+                                <button class="chart-option">Product</button>
+                            </div>
+                        </div>
+                        <canvas id="salesChart" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 class="table-title">Recent Orders</h3>
+                        <div class="action-buttons">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i> New Order
+                            </button>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Products</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#ORD-45678</td>
+                                <td>John Smith</td>
+                                <td>3 Items</td>
+                                <td>May 12, 2023</td>
+                                <td>$245.00</td>
+                                <td><span class="status-badge completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-45677</td>
+                                <td>Jane Doe</td>
+                                <td>1 Item</td>
+                                <td>May 12, 2023</td>
+                                <td>$89.99</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-45676</td>
+                                <td>Robert Johnson</td>
+                                <td>5 Items</td>
+                                <td>May 11, 2023</td>
+                                <td>$342.50</td>
+                                <td><span class="status-badge completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-45675</td>
+                                <td>Emily Davis</td>
+                                <td>2 Items</td>
+                                <td>May 11, 2023</td>
+                                <td>$156.75</td>
+                                <td><span class="status-badge cancelled">Cancelled</span></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-45674</td>
+                                <td>Michael Wilson</td>
+                                <td>4 Items</td>
+                                <td>May 10, 2023</td>
+                                <td>$298.25</td>
+                                <td><span class="status-badge completed">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Activity Log -->
+                <div class="table-card">
+                    <h3 class="activity-title">Recent Activity</h3>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <div class="activity-icon user">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-info">
+                                    <div class="activity-description">
+                                        <strong>John Smith</strong> placed a new order.
+                                    </div>
+                                    <div class="activity-time">2 hours ago</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-info">
+                                    <div class="activity-description">
+                                        <strong>Order #ORD-45676</strong> has been delivered.
+                                    </div>
+                                    <div class="activity-time">5 hours ago</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon warning">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-info">
+                                    <div class="activity-description">
+                                        <strong>Product inventory</strong> is running low.
+                                    </div>
+                                    <div class="activity-time">1 day ago</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon user">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-info">
+                                    <div class="activity-description">
+                                        <strong>15 new customers</strong> joined today.
+                                    </div>
+                                    <div class="activity-time">1 day ago</div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Orders (placeholder for demo) -->
-    <section id="sectionOrders" class="fadeUp">
-      <h1>📦 Orders</h1>
-      <div class="card" style="text-align:center;padding:40px">
-        <div class="pulse" style="font-size:16px;color:#9aa4af">Your orders list renders here…</div>
-      </div>
-    </section>
+    <script>
+        // Toggle sidebar on mobile
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
 
-    <!-- Stats -->
-    <section id="sectionStats" class="hidden fadeUp">
-      <h1>📊 Summary</h1>
+        // Chart.js - Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [3200, 4100, 3800, 5200, 4800, 6100, 5800],
+                    borderColor: '#4a6cf7',
+                    backgroundColor: 'rgba(74, 108, 247, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
 
-      <!-- KPIs -->
-      <div class="grid">
-        <div class="kpi card">
-          <div>
-            <h3>Total Orders</h3>
-            <div class="num" id="kpiOrders">0</div>
-          </div>
-          <span class="badge" id="kpiOrdersDelta">+0 today</span>
-        </div>
+        // Chart.js - Sales Distribution
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Electronics', 'Clothing', 'Home & Garden', 'Sports', 'Books'],
+                datasets: [{
+                    data: [35, 25, 20, 12, 8],
+                    backgroundColor: [
+                        '#4a6cf7',
+                        '#28a745',
+                        '#ffc107',
+                        '#dc3545',
+                        '#17a2b8'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 15,
+                            padding: 20
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
 
-        <div class="kpi card">
-          <div>
-            <h3>Total Revenue</h3>
-            <div class="num" id="kpiRevenue">Rs 0</div>
-          </div>
-          <span class="badge" id="kpiRevenueDelta">+Rs 0 this week</span>
-        </div>
-      </div>
+        // Chart option switching
+        document.querySelectorAll('.chart-option').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from siblings
+                this.parentElement.querySelectorAll('.chart-option').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // In a real app, this would trigger an API call or data refresh
+                console.log(`Selected: ${this.textContent} view`);
+            });
+        });
 
-      <!-- Chart -->
-      <div class="chartCard card" style="margin-top:16px; position:relative;">
-        <div class="chartHeader">
-          <div class="title">Revenue (Last 6 Months)</div>
-          <div class="legend"><span class="dot"></span><span style="color:#c6d0dc;font-size:13px">Revenue</span></div>
-        </div>
-
-        <!-- responsive SVG -->
-        <div id="chartWrap" style="width:100%;height:320px;position:relative">
-          <svg id="chart" viewBox="0 0 800 320" preserveAspectRatio="none" style="width:100%;height:100%;display:block;border-radius:14px;overflow:hidden">
-            <!-- grid -->
-            <g id="grid" stroke="rgba(255,255,255,0.08)" stroke-width="1"></g>
-            <!-- gradient fill -->
-            <defs>
-              <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="rgba(88,166,255,0.55)"/>
-                <stop offset="100%" stop-color="rgba(88,166,255,0.02)"/>
-              </linearGradient>
-              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3.5" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
-
-            <!-- area & line -->
-            <path id="area" fill="url(#grad)" opacity=".9"></path>
-            <path id="line" fill="none" stroke="url(#grad)" stroke-width="3.2" filter="url(#glow)"></path>
-            <!-- points -->
-            <g id="points"></g>
-            <!-- axes labels -->
-            <g id="xlabels" fill="#9fb1c1" font-size="12"></g>
-            <g id="ylabels" fill="#788899" font-size="11"></g>
-          </svg>
-
-          <!-- tooltip -->
-          <div id="tip" class="tooltip"></div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-<script>
-/** ---------- Demo Data (replace from API) ---------- **/
-const months = ["Mar","Apr","May","Jun","Jul","Aug"];
-const data = [32000, 45000, 21000, 58000, 49000, 76500]; // Rs
-const totalOrders = 184;
-const totalRevenue = data.reduce((a,b)=>a+b,0);
-
-/** ---------- Menu Toggle ---------- **/
-const btnOrders = document.getElementById('btnOrders');
-const btnStats  = document.getElementById('btnStats');
-const secOrders = document.getElementById('sectionOrders');
-const secStats  = document.getElementById('sectionStats');
-
-btnOrders.onclick = () => {
-  btnOrders.classList.add('active'); btnStats.classList.remove('active');
-  secOrders.classList.remove('hidden'); secStats.classList.add('hidden');
-};
-btnStats.onclick = () => {
-  btnStats.classList.add('active'); btnOrders.classList.remove('active');
-  secStats.classList.remove('hidden'); secOrders.classList.add('hidden');
-};
-
-/** ---------- KPIs Fill ---------- **/
-document.getElementById('kpiOrders').textContent = totalOrders.toLocaleString();
-document.getElementById('kpiRevenue').textContent = "Rs " + totalRevenue.toLocaleString();
-document.getElementById('kpiOrdersDelta').textContent = "+4 today";
-document.getElementById('kpiRevenueDelta').textContent = "+Rs 18,500 this week";
-
-/** ---------- Pretty SVG Chart (no libs) ---------- **/
-const svg      = document.getElementById('chart');
-const gridG    = document.getElementById('grid');
-const xlabG    = document.getElementById('xlabels');
-const ylabG    = document.getElementById('ylabels');
-const linePath = document.getElementById('line');
-const areaPath = document.getElementById('area');
-const ptsG     = document.getElementById('points');
-const tip      = document.getElementById('tip');
-
-const W = 800, H = 320, P = {l:48,r:12,t:10,b:28};
-const cw = W - P.l - P.r, ch = H - P.t - P.b;
-
-const maxV = Math.max(...data) * 1.1;
-const minV = 0;
-const y = v => H - P.b - ( (v - minV) / (maxV - minV) ) * ch;
-const x = i => P.l + (i/(data.length-1))*cw;
-
-// grid lines + y labels
-const rows = 5;
-for(let r=0;r<=rows;r++){
-  const yy = P.t + (r/rows)*ch;
-  const val = Math.round((maxV - (r/rows)*(maxV-minV))/1000)*1000;
-  const gl = document.createElementNS("http://www.w3.org/2000/svg","line");
-  gl.setAttribute("x1", P.l); gl.setAttribute("x2", W-P.r);
-  gl.setAttribute("y1", yy);  gl.setAttribute("y2", yy);
-  gridG.appendChild(gl);
-  const lbl = document.createElementNS("http://www.w3.org/2000/svg","text");
-  lbl.setAttribute("x", P.l - 10); lbl.setAttribute("y", yy+4);
-  lbl.setAttribute("text-anchor","end");
-  lbl.textContent = "Rs " + val.toLocaleString();
-  ylabG.appendChild(lbl);
-}
-// x labels
-months.forEach((m,i)=>{
-  const t = document.createElementNS("http://www.w3.org/2000/svg","text");
-  t.setAttribute("x", x(i));
-  t.setAttribute("y", H-6);
-  t.setAttribute("text-anchor","middle");
-  t.textContent = m;
-  xlabG.appendChild(t);
-});
-
-// path (smooth with cubic bezier)
-function pathD(vals){
-  const pts = vals.map((v,i)=>[x(i), y(v)]);
-  let d = `M ${pts[0][0]} ${pts[0][1]}`;
-  for(let i=1;i<pts.length;i++){
-    const [x0,y0] = pts[i-1], [x1,y1] = pts[i];
-    const cx = (x0+x1)/2;
-    d += ` C ${cx} ${y0}, ${cx} ${y1}, ${x1} ${y1}`;
-  }
-  return d;
-}
-// area path for gradient fill
-function areaD(vals){
-  return pathD(vals) + ` L ${x(vals.length-1)} ${H-P.b} L ${x(0)} ${H-P.b} Z`;
-}
-
-// animate stroke draw
-function animateStroke(el, d){
-  el.setAttribute('d', d);
-  const len = el.getTotalLength();
-  el.style.strokeDasharray = len;
-  el.style.strokeDashoffset = len;
-  el.getBoundingClientRect(); // reflow
-  el.style.transition = 'stroke-dashoffset .9s ease';
-  requestAnimationFrame(()=>{ el.style.strokeDashoffset = '0'; });
-}
-
-// render chart
-const dLine = pathD(data);
-const dArea = areaD(data);
-areaPath.setAttribute('d', dArea);
-animateStroke(linePath, dLine);
-
-// points + tooltip
-data.forEach((v,i)=>{
-  const cx = x(i), cy = y(v);
-  const g = document.createElementNS("http://www.w3.org/2000/svg","g");
-  const hit = document.createElementNS("http://www.w3.org/2000/svg","circle");
-  hit.setAttribute('cx', cx); hit.setAttribute('cy', cy);
-  hit.setAttribute('r', 16); hit.setAttribute('fill','transparent');
-  const dot = document.createElementNS("http://www.w3.org/2000/svg","circle");
-  dot.setAttribute('cx', cx); dot.setAttribute('cy', cy);
-  dot.setAttribute('r', 4.5); dot.setAttribute('fill','#58a6ff');
-  dot.style.filter = 'url(#glow)';
-  g.appendChild(dot); g.appendChild(hit);
-  ptsG.appendChild(g);
-
-  hit.addEventListener('mouseenter', ()=>{
-    tip.style.opacity = 1;
-    tip.textContent = `${months[i]} • Rs ${v.toLocaleString()}`;
-    tip.style.left = ( (cx/W)*100 ) + '%';
-    tip.style.top  = ( (cy/H)*100 ) + '%';
-  });
-  hit.addEventListener('mouseleave', ()=> tip.style.opacity = 0);
-});
-</script>
+        // Menu item navigation
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Remove active class from siblings
+                this.parentElement.querySelectorAll('.menu-item').forEach(sibling => {
+                    sibling.classList.remove('active');
+                });
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // In a real app, this would navigate to the selected page
+                e.preventDefault();
+                console.log(`Navigation to: ${this.textContent.trim()}`);
+            });
+        });
+    </script>
 </body>
 </html>

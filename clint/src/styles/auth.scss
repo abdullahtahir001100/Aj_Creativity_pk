@@ -14,7 +14,6 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: var(--bg-color);
 }
 
 .auth-container {
@@ -25,7 +24,7 @@ body {
   padding: 1.5rem;
   background-color: var(--bg-color);
   animation: fadeIn 1s ease-out;
-}
+
 
 .auth-card {
   background-color: var(--card-bg-color);
@@ -138,4 +137,5 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
 }

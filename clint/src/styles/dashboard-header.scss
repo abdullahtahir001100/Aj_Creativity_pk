@@ -49,3 +49,17 @@
     color: white;
   }
 }
+.dashboard-header{
+  position: relative !important;
+  button{
+    background-color: #0d9488 !important;
+    &:hover{
+      background-color: #0f766e !important;
+      box-shadow: none !important;
+    }
+    &.active{
+      background-color: #0f766e !important;
+      box-shadow: none !important;
+    }
+  }
+}

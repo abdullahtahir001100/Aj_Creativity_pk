@@ -107,17 +107,17 @@ const DashboardOverview = () => {
                 <div className="kpi-grid">
                     <div className="card-kpi">
                         <h3 className="kpi-title">Total Orders</h3>
-                        <p className="kpi-value">{kpiData.totalOrders.toLocaleString()}</p>
+                        <p className="kpi-value">0{kpiData.totalOrders.toLocaleString()}</p>
                         {formatTrend(kpiData.orderTrend)}
                     </div>
                     <div className="card-kpi">
                         <h3 className="kpi-title">Total Revenue</h3>
-                        <p className="kpi-value">${kpiData.revenue.toLocaleString()}</p>
+                        <p className="kpi-value">Rs {kpiData.revenue.toLocaleString()}</p>
                         {formatTrend(kpiData.revenueTrend)}
                     </div>
                     <div className="card-kpi">
                         <h3 className="kpi-title">New Customers</h3>
-                        <p className="kpi-value">{kpiData.newCustomers}</p>
+                        <p className="kpi-value">0{kpiData.newCustomers}</p>
                         {formatTrend(kpiData.newCustomersTrend)}
                     </div>
                 </div>

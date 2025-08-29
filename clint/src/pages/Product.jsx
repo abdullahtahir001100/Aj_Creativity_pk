@@ -4,7 +4,7 @@ import Header from "../components/header1";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import Footer from "../components/Footer";
-import "../styles/main.scss"; // SCSS import
+import "../styles/Product.scss"; // SCSS import
 
 const priceRanges = [
     { label: "0 - 500", min: 0, max: 500 },
@@ -24,7 +24,7 @@ const Product = () => {
     const [cartMessage, setCartMessage] = useState("");
     const footerRef = useRef(null);
 
-    const API_URL = "https://aj-creativitypk.vercel.app/api/dashboard-products";
+    const API_URL = "https://aj-creativitypk.vercel.app/api/products";
 
     const fetchProducts = async () => {
         setLoading(true);

@@ -30,6 +30,8 @@ const dashboardStyles = `
     justify-content: space-between;
     align-items: center;
     }
+    .recharts-legend-item-text{
+    font-size: 7px;
     .flk .chart-container{
     width: 49%;
     }

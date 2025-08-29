@@ -227,13 +227,13 @@ export default function PaymentPage() {
                         {item.category && <p><strong>Category:</strong> {item.category}</p>}
                         <p><strong>Size:</strong> {item.size}</p>
                         <p><strong>Quantity:</strong> {item.quantity}</p>
-                        <p><strong>Price:</strong> Rs {item.price * item.quantity}</p>
+                        <p><strong>Price:</strong> Rs {(item.price + 100) * item.quantity}</p>
                       </div>
                     </div>
                   ))
                 )}
               </div>
-              {checkoutCart.length > 0 && <p style={{ marginTop: 10, fontWeight: "bold" }}>Total: Rs {totalPrice}</p>}
+              {checkoutCart.length > 0 && <p style={{ marginTop: 10, fontWeight: "bold" }}>Total: Rs {totalPrice + 100}</p>}
             </section>
 
             <div style={{ margin: "16px 0 8px 0" }}>

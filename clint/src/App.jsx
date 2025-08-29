@@ -9,11 +9,11 @@ import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import Details from "./pages/Details";
 import Paymants from "./pages/Paymants";
-import Dashboard from "./components/DashboardOverview";
+import DashboardProtectedWrapper from "./components/DashboardOverview";
 import NotFound from "./components/NotFound";
 import RightClickBlocker from "./components/RightClickBlocker";
 import Loader from "./components/loader";
-import DashboardProtectedWrapper from "./components/DashboardProtectedWrapper";
+import Dashboard from "./components/DashboardProtectedWrapper";
 import BackToTopButton from "./components/BackToTopButton";
 import OrderManagement from "./components/OrderManagement";
 

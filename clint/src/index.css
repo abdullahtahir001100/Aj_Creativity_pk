@@ -1,8 +1,4 @@
 
-@import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 a {
   font-weight: 500;
@@ -58,7 +54,13 @@ button:focus-visible {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+body{
+    background-color: #242424 !important;
+}
 .baner h1{
+  color: #fff !important;
+}
+.user-name{
   color: #fff !important;
 }
 .cart-container .cart-order-summary .cart-checkout-btn:hover, .order-confirm-home-btn:hover, button:hover {

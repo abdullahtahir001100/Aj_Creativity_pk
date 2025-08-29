@@ -1,108 +1,69 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import Header from "../components/header1";
 import Footer from "../components/Footer";
 
 export default function ProductDetail() {
   const location = useLocation();
 
-  // ReviewsSlider component
- const ReviewsSlider = () => {
-  const reviewsContainerRef = React.useRef(null);
-  const animationRef = React.useRef(null);
+  // ReviewsSlider component - No animations
+  const ReviewsSlider = () => {
+    const reviewsContainerRef = React.useRef(null);
 
-  const firstNames = ["Eman","Hamna","Ayesha","Subhan","Aliya","Zain","Sana","Bilal","Hira","Osman","Mahnoor","Hamza","Sarah","Adil","Faiza","Shahbaz","Iqra","Rizwan","Maria","Tariq","Noor","Saim","Hafsa","Arsalan","Zoya"];
-  const lastNames = ["Khan","Ali","Subhan","Raza","Mir","Malik","Shah","Ahmed","Qureshi","Farooq","Iqbal","Tariq","Javed","Riaz","Saleem","Hussain","Sheikh","Zafar","Aslam","Saeed","Nawaz","Hashmi","Aziz","Anwar","Sattar"];
-  const reviewTexts = [
-    "Absolutely love the craftsmanship! Each piece is unique and beautifully made. The attention to detail is outstanding and I receive compliments every time I wear it.",
-    "The handmade jewelry is gorgeous. The quality is top-notch and the designs are elegant. Fast delivery and very friendly service.",
-    "I ordered a customized necklace and it came exactly as I imagined. The finishing is perfect and it feels so premium. I highly recommend this store to everyone.",
-    "Wonderful shopping experience! The jewelry looks stunning and is comfortable to wear. I appreciate the care put into packaging each item.",
-    "Amazing designs with great quality. Every piece feels personal and unique. I am very happy with my purchase and will order again.",
-    "The earrings I bought are so delicate and beautifully crafted. They are perfect for gifting and I can tell they are made with love and care.",
-    "Exceptional service and excellent jewelry. Every piece tells a story and adds a touch of elegance to my outfits. I get asked about them all the time!",
-    "High-quality handmade jewelry that looks much more expensive than it is. Really happy with my purchase and will definitely buy more.",
-    "The bracelets are beautiful and sturdy. The craftsmanship is amazing and I love that each item is handmade. Excellent customer support too.",
-    "Truly impressed with the attention to detail. The jewelry feels luxurious and unique. I can tell these are made by skilled artisans."
-  ];
+    const firstNames = ["Eman", "Hamna", "Ayesha", "Subhan", "Aliya", "Zain", "Sana", "Bilal", "Hira", "Osman", "Mahnoor", "Hamza", "Sarah", "Adil", "Faiza", "Shahbaz", "Iqra", "Rizwan", "Maria", "Tariq", "Noor", "Saim", "Hafsa", "Arsalan", "Zoya"];
+    const lastNames = ["Khan", "Ali", "Subhan", "Raza", "Mir", "Malik", "Shah", "Ahmed", "Qureshi", "Farooq", "Iqbal", "Tariq", "Javed", "Riaz", "Saleem", "Hussain", "Sheikh", "Zafar", "Aslam", "Saeed", "Nawaz", "Hashmi", "Aziz", "Anwar", "Sattar"];
+    const reviewTexts = [
+      "Absolutely love the craftsmanship! Each piece is unique and beautifully made. The attention to detail is outstanding and I receive compliments every time I wear it.",
+      "The handmade jewelry is gorgeous. The quality is top-notch and the designs are elegant. Fast delivery and very friendly service.",
+      "I ordered a customized necklace and it came exactly as I imagined. The finishing is perfect and it feels so premium. I highly recommend this store to everyone.",
+      "Wonderful shopping experience! The jewelry looks stunning and is comfortable to wear. I appreciate the care put into packaging each item.",
+      "Amazing designs with great quality. Every piece feels personal and unique. I am very happy with my purchase and will order again.",
+      "The earrings I bought are so delicate and beautifully crafted. They are perfect for gifting and I can tell they are made with love and care.",
+      "Exceptional service and excellent jewelry. Every piece tells a story and adds a touch of elegance to my outfits. I get asked about them all the time!",
+      "High-quality handmade jewelry that looks much more expensive than it is. Really happy with my purchase and will definitely buy more.",
+      "The bracelets are beautiful and sturdy. The craftsmanship is amazing and I love that each item is handmade. Excellent customer support too.",
+      "Truly impressed with the attention to detail. The jewelry feels luxurious and unique. I can tell these are made by skilled artisans."
+    ];
 
-  const reviews = Array.from({ length: 120 }, (_, i) => {
-    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-    const stars = Math.floor(Math.random() * 3) + 3;
-    const text = reviewTexts[Math.floor(Math.random() * reviewTexts.length)];
-    const img = `https://i.pravatar.cc/50?img=${i % 70 + 1}`;
-    return { name: `${firstName} ${lastName}`, stars, text, img };
-  });
-
-  React.useEffect(() => {
-    const container = reviewsContainerRef.current;
-    reviews.forEach(review => {
-      const div = document.createElement('div');
-      div.className = 'review-card';
-      div.innerHTML = `
-        <div class="review-header">
-          <img src="${review.img}" alt="Customer avatar" loading="lazy">
-          <div class="user-name">${review.name}</div>
-        </div>
-        <div class="review-stars">${'★'.repeat(review.stars)}${'☆'.repeat(5 - review.stars)}</div>
-        <div class="review-text">${review.text}</div>
-      `;
-      container.appendChild(div);
+    const reviews = Array.from({ length: 120 }, (_, i) => {
+      const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+      const stars = Math.floor(Math.random() * 3) + 3;
+      const text = reviewTexts[Math.floor(Math.random() * reviewTexts.length)];
+      const img = `https://i.pravatar.cc/50?img=${i % 70 + 1}`;
+      return { name: `${firstName} ${lastName}`, stars, text, img };
     });
 
-    let scrollLeft = 0;
-    const scrollSpeed = 1; // pixels per frame
-
-    const animate = () => {
-      scrollLeft += scrollSpeed;
-      if (scrollLeft >= container.scrollWidth - container.clientWidth) {
-        scrollLeft = 0;
+    // Populate the reviews container once on mount
+    useEffect(() => {
+      const container = reviewsContainerRef.current;
+      if (container) {
+        reviews.forEach(review => {
+          const div = document.createElement('div');
+          div.className = 'review-card';
+          div.innerHTML = `
+            <div class="review-header">
+              <img src="${review.img}" alt="Customer avatar" loading="lazy">
+              <div class="user-name">${review.name}</div>
+            </div>
+            <div class="review-stars">${'★'.repeat(review.stars)}${'☆'.repeat(5 - review.stars)}</div>
+            <div class="review-text">${review.text}</div>
+          `;
+          container.appendChild(div);
+        });
       }
-      container.scrollLeft = scrollLeft;
-      animationRef.current = requestAnimationFrame(animate);
-    };
+    }, [reviews]);
 
-    animationRef.current = requestAnimationFrame(animate);
-
-    // Stop on hover
-    const handleMouseEnter = () => cancelAnimationFrame(animationRef.current);
-    const handleMouseLeave = () => animationRef.current = requestAnimationFrame(animate);
-
-    container.addEventListener('mouseenter', handleMouseEnter);
-    container.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      cancelAnimationFrame(animationRef.current);
-      container.removeEventListener('mouseenter', handleMouseEnter);
-      container.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, []);
-
-  const slideReviews = (direction) => {
-    const scrollAmount = 320; 
-    reviewsContainerRef.current.scrollBy({
-      left: direction * scrollAmount,
-      behavior: 'smooth'
-    });
+    return (
+      <div className="reviews-section">
+        <h2>Customer Reviews - Handmade Jewelry</h2>
+        <div className="reviews-wrapper">
+          <div className="reviews-container" ref={reviewsContainerRef}></div>
+        </div>
+      </div>
+    );
   };
 
-  return (
-    <div className="reviews-section">
-      <h2>Customer Reviews - Handmade Jewelry</h2>
-      <div className="reviews-wrapper">
-       
-        <div className="reviews-container" ref={reviewsContainerRef}></div>
-       
-      </div>
-    </div>
-  );
-};
-
-
-  // Helper function to normalize price to number for cart logic
   function normalizePrice(val) {
     if (typeof val === 'number') return val;
     if (!val) return 0;
@@ -167,10 +128,10 @@ export default function ProductDetail() {
   return (
     <>
       <Header />
-      <div className="flexbox fade-in-page" data-aos="fade-up" data-aos-delay="380" data-aos-once="true">
-        <div className="product-detail" data-aos="fade-up" data-aos-delay="380" data-aos-once="true">
+      <div className="flexbox fade-in-page">
+        <div className="product-detail">
           {/* Image Section */}
-          <div className="product-image" data-aos="fade-up" data-aos-delay="380" data-aos-once="true">
+          <div className="product-image">
             <img
               src={mainProduct?.img || "./imgs/s11.jpg"}
               alt={mainProduct?.name || "Gold Necklace"}
@@ -178,7 +139,7 @@ export default function ProductDetail() {
           </div>
 
           {/* Details Section */}
-          <div className="product-info" data-aos="fade-up" data-aos-delay="380" data-aos-once="true">
+          <div className="product-info">
             <h1>{mainProduct?.name || "Elegant Gold Necklace"}</h1>
             <p className="price">{mainProduct?.price ? `${mainProduct.price} Rs` : "$299.00"}</p>
             {mainProduct?.category && (
@@ -285,15 +246,15 @@ export default function ProductDetail() {
             </button>
             {mainProduct?.category === 'earring'
               ? !(selectedColor && quantity > 0) && (
-                  <div style={{ color: 'red', marginTop: 8, fontSize: 14 }}>
-                    Please select color and quantity before adding to cart.
-                  </div>
-                )
+                <div style={{ color: 'red', marginTop: 8, fontSize: 14 }}>
+                  Please select color and quantity before adding to cart.
+                </div>
+              )
               : !(selectedSize && selectedColor && quantity > 0) && (
-                  <div style={{ color: 'red', marginTop: 8, fontSize: 14 }}>
-                    Please select size, color, and quantity before adding to cart.
-                  </div>
-                )}
+                <div style={{ color: 'red', marginTop: 8, fontSize: 14 }}>
+                  Please select size, color, and quantity before adding to cart.
+                </div>
+              )}
             {cartMessage && (
               <div style={{ color: 'green', marginTop: 8, fontSize: 14 }}>{cartMessage}</div>
             )}
@@ -302,7 +263,7 @@ export default function ProductDetail() {
       </div>
 
       {/* Reviews Slider */}
-      <div className="reviews-container-wrapper" data-aos="fade-up" data-aos-delay="380" data-aos-once="true">
+      <div className="reviews-container-wrapper">
         <ReviewsSlider />
       </div>
 
@@ -313,7 +274,7 @@ export default function ProductDetail() {
             <h1>related products</h1>
           </div>
         </div>
-        <div className={`products-grid points${relatedProducts.length <= 4 ? ' center-few' : ''}`} data-aos="fade-up" data-aos-delay="380" data-aos-once="true"> 
+        <div className={`products-grid points${relatedProducts.length <= 4 ? ' center-few' : ''}`}> 
           {relatedProducts.length === 0 ? (
             <p>No related products found.</p>
           ) : (

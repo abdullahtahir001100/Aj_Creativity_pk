@@ -24,9 +24,8 @@ const dashboardStyles = `
     .recharts-trapezoid{
     fill: var(--primary-color);
     }
-.flk {
-    display: flex
-;
+ .flk {
+    display: flex;
     justify-content: space-between;
     align-items: center;
     }

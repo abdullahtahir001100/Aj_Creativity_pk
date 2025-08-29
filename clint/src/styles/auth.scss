@@ -1,0 +1,141 @@
+/* auth.scss */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+  --primary-color: #5d5dff;
+  --bg-color: #f0f2f5;
+  --card-bg-color: #ffffff;
+  --text-color: #1f2937;
+  --input-border-color: #e5e7eb;
+  --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+}
+
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+  background-color: var(--bg-color);
+  animation: fadeIn 1s ease-out;
+}
+
+.auth-card {
+  background-color: var(--card-bg-color);
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 28rem;
+  border: 1px solid var(--input-border-color);
+  animation: slideInUp 0.8s ease-out;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+.auth-subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  position: relative;
+}
+
+.auth-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #fafafa;
+  border: 1px solid var(--input-border-color);
+  border-radius: 0.75rem;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(93, 93, 255, 0.2);
+  }
+}
+
+.auth-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+  margin-top: 1rem;
+}
+
+.auth-submit-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-light);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #4b4bdf;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-light);
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

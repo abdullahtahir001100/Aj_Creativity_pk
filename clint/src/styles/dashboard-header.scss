@@ -1,0 +1,51 @@
+/* src/components/dashboard-header.scss */
+
+:root {
+  --primary-color: #0d9488;
+  --text-color: #4b5563;
+  --bg-color: #ffffff;
+  --border-color: #e5e7eb;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --radius-sm: 0.5rem;
+}
+
+.dashboard-header {
+  background-color: var(--bg-color);
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-button {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background-color: transparent;
+  color: var(--text-color);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #f3f4f6;
+  }
+  
+  &.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+}

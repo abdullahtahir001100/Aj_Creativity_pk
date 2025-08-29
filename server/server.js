@@ -14,7 +14,6 @@ app.use(cors());
 // ======================
 const connectDB = async () => {
     if (mongoose.connections[0].readyState) {
-        console.log("✅ MongoDB already connected.");
         return;
     }
     try {
@@ -89,7 +88,6 @@ app.post("/api/orders", async (req, res) => {
         await newOrder.save();
         res.status(201).json({ success: true, message: "✅ Order saved successfully", orderId: newOrder._id });
     } catch (error) {
-        console.error("❌ Error saving order:", error);
         res.status(500).json({ success: false, message: "❌ Failed to save order", error: error.message });
     }
 });
@@ -122,7 +120,6 @@ app.delete("/api/orders/:id", async (req, res) => {
         if (!deletedOrder) return res.status(404).json({ success: false, message: "⚠️ Order not found." });
         res.json({ success: true, message: "✅ Order deleted successfully" });
     } catch (error) {
-        console.error("❌ Error deleting order:", error);
         res.status(500).json({ success: false, message: "❌ Failed to delete order", error: error.message });
     }
 });
@@ -154,7 +151,6 @@ app.get("/api/dashboard-metrics", async (req, res) => {
         };
         res.json(dashboardMetrics);
     } catch (error) {
-        console.error("❌ Error fetching dashboard metrics:", error);
         res.status(500).json({ message: "❌ Failed to fetch dashboard metrics", error: error.message });
     }
 });

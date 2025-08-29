@@ -6,7 +6,7 @@ import {
   Funnel, LabelList,
 } from "recharts";
 
-// CSS Styles with High-Impact Animations
+
 const dashboardStyles = `
   :root {
     --primary-color: #3b82f6;
@@ -28,6 +28,9 @@ const dashboardStyles = `
     display: flex;
     justify-content: space-between;
     align-items: center;
+    }
+    .recharts-legend-item-text{
+    font-size: 7px;
     }
     .flk .chart-container{
     width: 49%;

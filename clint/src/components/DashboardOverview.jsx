@@ -28,6 +28,9 @@ const DashboardOverview = () => {
         totalOrders: 0,
         revenue: 0,
         newCustomers: 0,
+        orderTrend: 0,
+        revenueTrend: 0,
+        newCustomersTrend: 0,
       },
       chartData: {
         monthlySales: [],
@@ -49,6 +52,9 @@ const DashboardOverview = () => {
               totalOrders: dashboardData.totalOrders || 0,
               revenue: dashboardData.revenue || 0,
               newCustomers: dashboardData.newCustomers || 0,
+              orderTrend: dashboardData.orderTrend || 0,
+              revenueTrend: dashboardData.revenueTrend || 0,
+              newCustomersTrend: dashboardData.newCustomersTrend || 0,
             },
             chartData: {
               monthlySales: dashboardData.monthlySales || [],
@@ -59,7 +65,7 @@ const DashboardOverview = () => {
         } catch (err) {
           console.error("❌ Failed to fetch dashboard data:", err);
           // Fallback to empty data on error to prevent app crash
-          setDashboardData({ kpiData: {totalOrders: 0, revenue: 0, newCustomers: 0}, chartData: {monthlySales: [], topProducts: [], dailyRevenue: []} });
+          setDashboardData({ kpiData: {totalOrders: 0, revenue: 0, newCustomers: 0, orderTrend: 0, revenueTrend: 0, newCustomersTrend: 0}, chartData: {monthlySales: [], topProducts: [], dailyRevenue: []} });
         } finally {
           setLoading(false);
         }
@@ -69,6 +75,16 @@ const DashboardOverview = () => {
     }, []);
 
     const { kpiData, chartData } = dashboardData;
+    
+    const formatTrend = (trend) => {
+      const sign = trend >= 0 ? '↑' : '↓';
+      const trendClass = trend >= 0 ? 'positive' : 'negative';
+      return (
+        <span className={`kpi-trend ${trendClass}`}>
+          {sign} {Math.abs(trend)}% from last month
+        </span>
+      );
+    };
 
     if (loading) {
         return (
@@ -92,17 +108,17 @@ const DashboardOverview = () => {
                     <div className="card-kpi">
                         <h3 className="kpi-title">Total Orders</h3>
                         <p className="kpi-value">{kpiData.totalOrders.toLocaleString()}</p>
-                        <span className="kpi-trend positive">↑ 12% from last month</span>
+                        {formatTrend(kpiData.orderTrend)}
                     </div>
                     <div className="card-kpi">
                         <h3 className="kpi-title">Total Revenue</h3>
                         <p className="kpi-value">${kpiData.revenue.toLocaleString()}</p>
-                        <span className="kpi-trend positive">↑ 8.5% from last month</span>
+                        {formatTrend(kpiData.revenueTrend)}
                     </div>
                     <div className="card-kpi">
                         <h3 className="kpi-title">New Customers</h3>
                         <p className="kpi-value">{kpiData.newCustomers}</p>
-                        <span className="kpi-trend negative">↓ 3% from last month</span>
+                        {formatTrend(kpiData.newCustomersTrend)}
                     </div>
                 </div>
 

@@ -133,30 +133,53 @@ app.delete("/api/orders/:id", async (req, res) => {
 });
 
 // ======================
-// Dashboard Metrics API (Newly Added)
+// Dashboard Metrics API (Newly Added & Updated)
 // ======================
 app.get("/api/dashboard-metrics", async (req, res) => {
   try {
     await connectDB();
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
 
-    // Get Total Orders
-    const totalOrders = await Order.countDocuments();
-
-    // Get Total Revenue
-    const revenueResult = await Order.aggregate([
-      { $group: { _id: null, total: { $sum: "$totalPrice" } } }
+    // Get Current Period (Last 30 days) and Previous Period (30-60 days ago) Data
+    const [currentPeriodData, previousPeriodData] = await Promise.all([
+      Order.aggregate([
+        { $match: { createdAt: { $gte: thirtyDaysAgo } } },
+        {
+          $group: {
+            _id: null,
+            totalOrders: { $sum: 1 },
+            totalRevenue: { $sum: "$totalPrice" },
+            uniqueCustomers: { $addToSet: "$primaryNumber" }
+          }
+        }
+      ]),
+      Order.aggregate([
+        { $match: { createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo } } },
+        {
+          $group: {
+            _id: null,
+            totalOrders: { $sum: 1 },
+            totalRevenue: { $sum: "$totalPrice" },
+            uniqueCustomers: { $addToSet: "$primaryNumber" }
+          }
+        }
+      ])
     ]);
-    const revenue = revenueResult.length > 0 ? revenueResult[0].total : 0;
 
-    // Get New Customers (example: unique primaryNumber in the last 30 days)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const newCustomersResult = await Order.aggregate([
-      { $match: { createdAt: { $gte: thirtyDaysAgo } } },
-      { $group: { _id: "$primaryNumber" } },
-      { $count: "count" }
-    ]);
-    const newCustomers = newCustomersResult.length > 0 ? newCustomersResult[0].count : 0;
+    const current = currentPeriodData[0] || { totalOrders: 0, totalRevenue: 0, uniqueCustomers: [] };
+    const previous = previousPeriodData[0] || { totalOrders: 0, totalRevenue: 0, uniqueCustomers: [] };
+
+    // Calculate Percentage Changes
+    const calculateTrend = (currentValue, previousValue) => {
+      if (previousValue === 0) return currentValue > 0 ? 100 : 0;
+      return ((currentValue - previousValue) / previousValue) * 100;
+    };
+
+    const orderTrend = calculateTrend(current.totalOrders, previous.totalOrders);
+    const revenueTrend = calculateTrend(current.totalRevenue, previous.totalRevenue);
+    const newCustomersTrend = calculateTrend(current.uniqueCustomers.length, previous.uniqueCustomers.length);
 
     // Monthly Sales Data
     const monthlySales = await Order.aggregate([
@@ -212,9 +235,12 @@ app.get("/api/dashboard-metrics", async (req, res) => {
     ]);
 
     const dashboardMetrics = {
-      totalOrders,
-      revenue,
-      newCustomers,
+      totalOrders: current.totalOrders,
+      revenue: current.totalRevenue,
+      newCustomers: current.uniqueCustomers.length,
+      orderTrend: orderTrend.toFixed(2),
+      revenueTrend: revenueTrend.toFixed(2),
+      newCustomersTrend: newCustomersTrend.toFixed(2),
       monthlySales,
       topProducts,
       dailyRevenue

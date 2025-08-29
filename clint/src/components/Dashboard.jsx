@@ -30,6 +30,7 @@ const dashboardStyles = `
     justify-content: space-between;
     align-items: center;
     }
+    
     .flk .chart-container{
     width: 49%;
     }

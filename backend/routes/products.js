@@ -7,7 +7,6 @@ const cloudinary = require('cloudinary').v2;
 router.post('/add', async (req, res) => {
   try {
     const { name, price, category } = req.body;
-    // Image URL Cloudinary se aa raha hai
     const imageUrl = req.file.path; 
 
     const newProduct = new Product({
@@ -62,7 +61,6 @@ router.delete('/:id', async (req, res) => {
       });
     }
 
-    // Cloudinary se image delete karein
     if (product.image) {
       const publicId = product.image.split('/').slice(-1)[0].split('.')[0];
       await cloudinary.uploader.destroy(`products/${publicId}`);

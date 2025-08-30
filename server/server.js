@@ -1,193 +1,299 @@
+// server.js
+console.log("MONGODB_URI:", process.env.MONGODB_URI);
+
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-
-dotenv.config();
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(express.json());
+app.use(cors());
+
 // ======================
 // MongoDB Connection
 // ======================
-async function connectDB() {
-  try {
-    const uri = process.env.MONGODB_URI || process.env.MONGO_URI;
-    if (!uri) throw new Error("❌ MongoDB URI not found in .env file");
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("MongoDB: 🟢 Connected");
-  } catch (err) {
-    console.error("MongoDB Connection Error ❌:", err.message);
-    process.exit(1);
-  }
-}
-connectDB();
+const connectDB = async () => {
+  if (mongoose.connections[0].readyState) return; // Already connected
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 30000, // 30s timeout
+    });
+    console.log("✅ MongoDB connected");
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err);
+    throw err;
+  }
+};
 
 // ======================
-// Order Schema
+// Order Schema & Model
 // ======================
-const productSchema = new mongoose.Schema({
-  name: String,
-  size: String,
-  color: String,
-  category: String,
-  quantity: Number,
-  image: String,
-  price: Number,
+const orderSchema = new mongoose.Schema({
+  userName: { type: String, required: true },
+  email: { type: String },
+  primaryNumber: { type: String, required: true },
+  altNumber: { type: String },
+  address: { type: String, required: true },
+  location: { type: String, required: true },
+  paymentMethod: { type: String, required: true },
+  totalPrice: { type: Number, required: true },
+  status: { type: String, enum: ["pending", "completed"], default: "pending" },
+  createdAt: { type: Date, default: Date.now },
+  products: [
+    {
+      name: { type: String, required: true },
+      size: { type: String },
+      color: { type: String },
+      category: { type: String },
+      quantity: { type: Number, required: true },
+      image: { type: String },
+      price: { type: Number, required: true },
+    },
+  ],
 });
 
-const orderSchema = new mongoose.Schema(
-  {
-    userName: String,
-    email: String,
-    primaryNumber: String,
-    altNumber: String,
-    address: String,
-    location: String,
-    paymentMethod: String,
-    totalPrice: Number,
-    status: {
-      type: String,
-      enum: ["pending", "completed", "active"],
-      default: "pending",
-    },
-    products: [productSchema],
-  },
-  { timestamps: true }
-);
-
 const Order = mongoose.model("Order", orderSchema);
-
-// ======================
-// Matrix Animation HTML
-// ======================
-function renderMatrixPage(content) {
-  return `
-    <html>
-      <head>
-        <title>Aj Creativity Server</title>
-        <style>
-          body { margin:0; overflow-y:auto; overflow-x:hidden; background:black; color:#00ff00; font-family: "Courier New", monospace; }
-          canvas { position:fixed; top:0; left:0; z-index:0; }
-          .content { position:relative; z-index:1; padding:20px; text-align:center; color:#0f0; text-shadow: 0 0 15px #0f0; animation: fadeIn 2s ease-in-out; }
-          @keyframes fadeIn { from { opacity:0; transform: translateY(-20px); } to { opacity:1; transform: translateY(0); } }
-          .order-box { border:1px solid #0f0; padding:10px; margin:10px; border-radius:8px; background: rgba(0,255,0,0.05); box-shadow:0 0 15px #0f0; animation: glow 1.5s infinite alternate; text-align:left; }
-          @keyframes glow { from { box-shadow:0 0 5px #0f0; } to { box-shadow:0 0 20px #0f0; } }
-          .btn { display:inline-block; padding:12px 20px; margin:8px; border:2px solid #0f0; border-radius:10px; color:#0f0; text-decoration:none; text-shadow:0 0 10px #0f0; box-shadow:0 0 15px #0f0; transition:0.3s; font-weight:bold; }
-          .btn:hover { background:#0f0; color:black; box-shadow:0 0 25px #0f0; }
-          .panel { border:1px solid #0f0; padding:15px; margin:15px auto; border-radius:8px; max-width:500px; background:rgba(0,255,0,0.05); box-shadow:0 0 15px #0f0; animation: fadeIn 2s ease-in-out; }
-          @keyframes glowTitle { from { text-shadow:0 0 10px #0f0,0 0 20px #0f0;} to { text-shadow:0 0 25px #0ff,0 0 50px #0ff;} }
-        </style>
-      </head>
-      <body>
-        <canvas id="matrix"></canvas>
-        <div class="content">
-          ${content}
-        </div>
-        <script>
-          const canvas = document.getElementById("matrix");
-          const ctx = canvas.getContext("2d");
-          canvas.height = window.innerHeight;
-          canvas.width = window.innerWidth;
-          const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%^&*";
-          const matrix = letters.split("");
-          const font_size = 14;
-          const columns = canvas.width / font_size;
-          const drops = [];
-          for(let x=0; x<columns; x++) drops[x]=1;
-          function draw(){
-            ctx.fillStyle="rgba(0,0,0,0.05)";
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle="#0f0";
-            ctx.font=font_size+"px monospace";
-            for(let i=0;i<drops.length;i++){
-              const text = matrix[Math.floor(Math.random()*matrix.length)];
-              ctx.fillText(text,i*font_size,drops[i]*font_size);
-              if(drops[i]*font_size>canvas.height && Math.random()>0.975) drops[i]=0;
-              drops[i]++;
-            }
-          }
-          setInterval(draw,33);
-          function updateClock(){ const now=new Date(); document.getElementById("clock")?.innerText="🕒 "+now.toLocaleTimeString(); }
-          setInterval(updateClock,1000); updateClock();
-        </script>
-      </body>
-    </html>
-  `;
-}
 
 // ======================
 // Routes
 // ======================
 
-// Home Page
-app.get("/", (req,res)=>{
-  res.send(renderMatrixPage(`
-    <h1 style="font-size:3rem; animation: glowTitle 2s infinite alternate;">🚀 Aj Creativity Server Running</h1>
-    <h2 style="color:#0ff; text-shadow:0 0 15px #0ff; margin-bottom:20px;">Welcome to the Matrix Dashboard</h2>
-    <div id="clock" style="font-size:1.5rem; margin-bottom:20px;"></div>
-    <div style="margin:20px;">
-      <a href="/api/orders" class="btn">📦 View Orders</a>
-      <a href="/api/add-order" class="btn">➕ Add Order</a>
-    </div>
-  `));
+// Create New Order
+app.post("/api/orders", async (req, res) => {
+  try {
+    await connectDB();
+
+    const { userName, email, primaryNumber, altNumber, address, location, products, totalPrice, paymentMethod } = req.body;
+
+    if (!userName || !primaryNumber || !address || !location || !products || !totalPrice || !paymentMethod) {
+      return res.status(400).json({ success: false, message: "⚠️ Please provide all required fields." });
+    }
+
+    const newOrder = new Order({ userName, email, primaryNumber, altNumber, address, location, products, totalPrice, paymentMethod, status: "pending" });
+    await newOrder.save();
+
+    res.status(201).json({ success: true, message: "✅ Order saved successfully", orderId: newOrder._id });
+  } catch (error) {
+    console.error("❌ Error saving order:", error);
+    res.status(500).json({ success: false, message: "❌ Failed to save order", error: error.message });
+  }
 });
 
-// Get Orders with Pagination
-app.get("/api/orders", async (req,res)=>{
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = 50;
-    const skip = (page-1)*limit;
+// Get All Orders
+app.get("/api/orders", async (req, res) => {
+  try {
+    await connectDB();
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json({ success: true, orders });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "❌ Failed to fetch orders", error: error.message });
+  }
+});
 
-    const orders = await Order.find()
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+// Update Order Status
+app.put("/api/orders/:id/status", async (req, res) => {
+  try {
+    await connectDB();
 
-    const totalOrders = await Order.countDocuments();
+    const { status } = req.body;
+    if (!["pending", "completed"].includes(status)) {
+      return res.status(400).json({ success: false, message: "⚠️ Invalid status value." });
+    }
 
-    const content = `
-      <h1>📦 Orders Dashboard</h1>
-      <p>Total Orders: ${totalOrders}</p>
-      ${orders.map(o=>`
-        <div class="order-box">
-          <p><b>ID:</b> ${o._id}</p>
-          <p><b>Customer:</b> ${o.userName || "Unknown"}</p>
-          <p><b>Status:</b> ${o.status || "Pending"}</p>
-          <p><b>Total:</b> ${o.totalPrice ?? 0}</p>
-          <p><b>Date:</b> ${o.createdAt.toDateString()}</p>
-          <a href="/api/delete-order/${o._id}" style="color:red;">🗑️ Delete Order</a>
-        </div>
-      `).join("")}
-      <div style="margin-top:20px;">
-        ${page>1 ? `<a href="/api/orders?page=${page-1}" class="btn">⬅️ Previous</a>` : ''}
-        ${skip+orders.length < totalOrders ? `<a href="/api/orders?page=${page+1}" class="btn">➡️ Next</a>` : ''}
-      </div>
-    `;
-    res.send(renderMatrixPage(content));
-  } catch(err){
-    res.status(500).send(renderMatrixPage(`<h1>❌ Error Fetching Orders</h1><p>${err.message}</p>`));
-  }
+    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    if (!updatedOrder) {
+      return res.status(404).json({ success: false, message: "⚠️ Order not found." });
+    }
+
+    res.json({ success: true, message: "✅ Order status updated", order: updatedOrder });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "❌ Failed to update order", error: error.message });
+  }
 });
 
 // Delete Order
-app.get("/api/delete-order/:id", async (req,res)=>{
-  try {
-    const id = req.params.id;
-    await Order.findByIdAndDelete(id);
-    res.redirect("/api/orders");
-  } catch(err){
-    res.status(500).send(renderMatrixPage(`<h1>❌ Error Deleting Order</h1><p>${err.message}</p>`));
-  }
+app.delete("/api/orders/:id", async (req, res) => {
+  try {
+    await connectDB();
+
+    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+    if (!deletedOrder) {
+      return res.status(404).json({ success: false, message: "⚠️ Order not found." });
+    }
+
+    res.json({ success: true, message: "✅ Order deleted successfully" });
+  } catch (error) {
+    console.error("❌ Error deleting order:", error);
+    res.status(500).json({ success: false, message: "❌ Failed to delete order", error: error.message });
+  }
 });
+
+// ======================
+// Dashboard Metrics API (Newly Added & Updated)
+// ======================
+app.get("/api/dashboard-metrics", async (req, res) => {
+  try {
+    await connectDB();
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+    // Get Current Period (Last 30 days) and Previous Period (30-60 days ago) Data
+    const [currentPeriodData, previousPeriodData] = await Promise.all([
+      Order.aggregate([
+        { $match: { createdAt: { $gte: thirtyDaysAgo } } },
+        {
+          $group: {
+            _id: null,
+            totalOrders: { $sum: 1 },
+            totalRevenue: { $sum: "$totalPrice" },
+            uniqueCustomers: { $addToSet: "$primaryNumber" }
+          }
+        }
+      ]),
+      Order.aggregate([
+        { $match: { createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo } } },
+        {
+          $group: {
+            _id: null,
+            totalOrders: { $sum: 1 },
+            totalRevenue: { $sum: "$totalPrice" },
+            uniqueCustomers: { $addToSet: "$primaryNumber" }
+          }
+        }
+      ])
+    ]);
+
+    const current = currentPeriodData[0] || { totalOrders: 0, totalRevenue: 0, uniqueCustomers: [] };
+    const previous = previousPeriodData[0] || { totalOrders: 0, totalRevenue: 0, uniqueCustomers: [] };
+
+    // Calculate Percentage Changes
+    const calculateTrend = (currentValue, previousValue) => {
+      if (previousValue === 0) return currentValue > 0 ? 100 : 0;
+      return ((currentValue - previousValue) / previousValue) * 100;
+    };
+
+    const orderTrend = calculateTrend(current.totalOrders, previous.totalOrders);
+    const revenueTrend = calculateTrend(current.totalRevenue, previous.totalRevenue);
+    const newCustomersTrend = calculateTrend(current.uniqueCustomers.length, previous.uniqueCustomers.length);
+
+    // Monthly Sales Data
+    const monthlySales = await Order.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+          sales: { $sum: "$totalPrice" }
+        }
+      },
+      { $sort: { _id: 1 } },
+      {
+        $project: {
+          _id: 0,
+          name: "$_id",
+          sales: "$sales"
+        }
+      }
+    ]);
+
+    // Top Products Data
+    const topProducts = await Order.aggregate([
+      { $unwind: "$products" },
+      {
+        $group: {
+          _id: "$products.name",
+          value: { $sum: "$products.quantity" }
+        }
+      },
+      { $sort: { value: -1 } },
+      { $limit: 5 },
+      { $project: { _id: 0, name: "$_id", value: "$value" } }
+    ]);
+
+    // Daily Revenue Data (last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const dailyRevenue = await Order.aggregate([
+      { $match: { createdAt: { $gte: sevenDaysAgo } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          revenue: { $sum: "$totalPrice" }
+        }
+      },
+      { $sort: { _id: 1 } },
+      {
+        $project: {
+          _id: 0,
+          name: "$_id",
+          revenue: "$revenue"
+        }
+      }
+    ]);
+  
+    // Order Funnel Data (Newly Added)
+    const orderFunnel = await Order.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          value: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } },
+      {
+        $project: {
+          _id: 0,
+          name: "$_id",
+          value: "$value"
+        }
+      }
+    ]);
+  
+    // Top Locations Data (Newly Added)
+    const topLocations = await Order.aggregate([
+      {
+        $group: {
+          _id: "$location",
+          value: { $sum: 1 }
+        }
+      },
+      { $sort: { value: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: 0,
+          name: "$_id",
+          value: "$value"
+        }
+      }
+    ]);
+
+    const dashboardMetrics = {
+      totalOrders: current.totalOrders,
+      revenue: current.totalRevenue,
+      newCustomers: current.uniqueCustomers.length,
+      orderTrend: orderTrend.toFixed(2),
+      revenueTrend: revenueTrend.toFixed(2),
+      newCustomersTrend: newCustomersTrend.toFixed(2),
+      monthlySales,
+      topProducts,
+      dailyRevenue,
+      orderFunnel,
+      topLocations,
+    };
+
+    res.json(dashboardMetrics);
+  } catch (error) {
+    console.error("❌ Error fetching dashboard metrics:", error);
+    res.status(500).json({ message: "❌ Failed to fetch dashboard metrics", error: error.message });
+  }
+});
+
 
 // ======================
 // Start Server
 // ======================
-app.listen(PORT, ()=>{
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

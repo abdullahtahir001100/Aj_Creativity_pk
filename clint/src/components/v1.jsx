@@ -142,7 +142,7 @@ const Dashboard = () => {
       category: product.category,
       image: null
     });
-    setImagePreviewUrl(`${product.image}`);
+    setImagePreviewUrl(`https://aj-creativity-pk-2dpo.vercel.app${product.image}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -238,7 +238,7 @@ const Dashboard = () => {
                 <div key={product._id} className="product-card">
                   <div className="product-image">
                     <img 
-                      src={`${product.image}`} 
+                      src={`https://aj-creativity-pk-2dpo.vercel.app${product.image}`} 
                       alt={product.name} 
                     />
                   </div>

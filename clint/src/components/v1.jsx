@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/header1';
-import Footer from '../components/Footer';
+
 
 
 const Dashboard = () => {
@@ -151,7 +150,6 @@ const Dashboard = () => {
 
   return (
     <>
-      <Header />
       <div className="dashboard-container">
         <h1>Product Management Dashboard</h1>
 
@@ -272,7 +270,6 @@ const Dashboard = () => {
           )}
         </div>
       </div>
-      <Footer />
     </>
   );
 };

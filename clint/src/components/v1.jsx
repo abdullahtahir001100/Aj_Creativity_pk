@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import Header from '../components/header1';
+import Footer from '../components/Footer';
+
+
 const Dashboard = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [uploading, setUploading] = useState(false); // New state for upload loading
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(null); // New state for image preview
+  const [uploading, setUploading] = useState(false);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -56,7 +60,6 @@ const Dashboard = () => {
         ...formData,
         image: file
       });
-      // Create a URL for the image preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreviewUrl(reader.result);
@@ -83,7 +86,7 @@ const Dashboard = () => {
   // Handle form submission (Add & Edit)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setUploading(true); // Start uploading
+    setUploading(true);
     setError(null);
 
     const data = new FormData();
@@ -106,7 +109,7 @@ const Dashboard = () => {
       const result = await response.json();
       if (result.success) {
         resetForm();
-        fetchProducts(); // Refresh the product list
+        fetchProducts();
       } else {
         setError(result.message || 'Failed to save product');
       }
@@ -114,7 +117,7 @@ const Dashboard = () => {
       setError('Error saving product');
       console.error(err);
     } finally {
-      setUploading(false); // End uploading
+      setUploading(false);
     }
   };
 
@@ -125,7 +128,7 @@ const Dashboard = () => {
         await fetch(`${API_URL}/products/${id}`, {
           method: 'DELETE'
         });
-        fetchProducts(); // Refresh list after deletion
+        fetchProducts();
       } catch (err) {
         setError('Error deleting product');
         console.error(err);
@@ -142,22 +145,23 @@ const Dashboard = () => {
       category: product.category,
       image: null
     });
-    setImagePreviewUrl(`https://aj-creativity-pk-2dpo.vercel.app${product.image}`);
+    setImagePreviewUrl(product.image); // URL seedha use karein
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <>
+      <Header />
       <div className="dashboard-container">
-        <h1>Dashboard</h1>
-        {error && <div className="error-message">{error}</div>}
+        <h1>Product Management Dashboard</h1>
 
-        {/* Add/Edit Product Form */}
+        {/* Add Product Form */}
         <div className="add-product-form">
           <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+          {error && <div className="error-message">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="name">Product Name:</label>
+              <label htmlFor="name">Product Name</label>
               <input
                 type="text"
                 id="name"
@@ -169,7 +173,7 @@ const Dashboard = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="price">Price (Rs):</label>
+              <label htmlFor="price">Price</label>
               <input
                 type="number"
                 id="price"
@@ -177,11 +181,13 @@ const Dashboard = () => {
                 value={formData.price}
                 onChange={handleChange}
                 required
+                min="0"
+                step="0.01"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="category">Category:</label>
+              <label htmlFor="category">Category</label>
               <select
                 id="category"
                 name="category"
@@ -189,40 +195,27 @@ const Dashboard = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="bangle">bangle</option>
-                <option value="gold bangle">gold bangle</option>
-                <option value="earring">earring</option>
+                <option value="bangle">Bangle</option>
+                <option value="gold bangle">Gold Bangle</option>
+                <option value="earring">Earring</option>
               </select>
             </div>
 
-            <div className="form-group file-upload-group">
-              <label htmlFor="image">Product Image:</label>
+            <div className="form-group">
+              <label htmlFor="image-upload">Product Image</label>
               <input
                 type="file"
-                id="image"
+                id="image-upload"
                 name="image"
                 onChange={handleFileChange}
                 accept="image/*"
-                required={!editingProduct}
+                required
               />
-              {/* Image Preview */}
-              {imagePreviewUrl && (
-                <div className="image-preview">
-                  <img src={imagePreviewUrl} alt="Image Preview" />
-                </div>
-              )}
             </div>
-            
-            <div className="form-actions">
-              <button type="submit" disabled={uploading}>
-                {uploading ? 'Uploading...' : editingProduct ? 'Update Product' : 'Add Product'}
-              </button>
-              {editingProduct && (
-                <button type="button" className="cancel-btn" onClick={resetForm}>
-                  Cancel Edit
-                </button>
-              )}
-            </div>
+
+            <button type="submit" disabled={uploading}>
+              {uploading ? 'Uploading...' : 'Add Product'}
+            </button>
           </form>
         </div>
 
@@ -231,35 +224,27 @@ const Dashboard = () => {
           <h2>Product List</h2>
           {loading && <p>Loading products...</p>}
           {products.length === 0 && !loading ? (
-            <p className="no-products-message">No products found. Add some products!</p>
+            <p>No products found. Add some products!</p>
           ) : (
             <div className="product-grid">
               {products.map((product) => (
                 <div key={product._id} className="product-card">
                   <div className="product-image">
                     <img 
-                      src={`https://aj-creativity-pk-2dpo.vercel.app${product.image}`} 
+                      src={product.image} 
                       alt={product.name} 
                     />
                   </div>
                   <div className="product-details">
                     <h3>{product.name}</h3>
                     <p>Price: ${product.price}</p>
-                    <p className="category-tag">{product.category}</p>
-                    <div className="actions">
-                      <button 
-                        className="edit-btn" 
-                        onClick={() => handleEdit(product)}
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        className="delete-btn" 
-                        onClick={() => handleDelete(product._id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
+                    <p>Category: {product.category}</p>
+                    <button 
+                      className="delete-btn" 
+                      onClick={() => handleDelete(product._id)}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               ))}
@@ -267,6 +252,7 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 };

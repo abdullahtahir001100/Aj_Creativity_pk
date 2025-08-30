@@ -145,7 +145,7 @@ const Dashboard = () => {
       category: product.category,
       image: null
     });
-    setImagePreviewUrl(product.image); // URL seedha use karein
+    setImagePreviewUrl(product.image);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -155,7 +155,7 @@ const Dashboard = () => {
       <div className="dashboard-container">
         <h1>Product Management Dashboard</h1>
 
-        {/* Add Product Form */}
+        {/* Add/Edit Product Form */}
         <div className="add-product-form">
           <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
           {error && <div className="error-message">{error}</div>}
@@ -202,20 +202,33 @@ const Dashboard = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="image-upload">Product Image</label>
+              <label htmlFor="image-upload">Product Image:</label>
               <input
                 type="file"
                 id="image-upload"
                 name="image"
                 onChange={handleFileChange}
                 accept="image/*"
-                required
+                required={!editingProduct}
               />
+              {/* Image Preview */}
+              {imagePreviewUrl && (
+                <div className="image-preview">
+                  <img src={imagePreviewUrl} alt="Image Preview" />
+                </div>
+              )}
             </div>
-
-            <button type="submit" disabled={uploading}>
-              {uploading ? 'Uploading...' : 'Add Product'}
-            </button>
+            
+            <div className="form-actions">
+              <button type="submit" disabled={uploading}>
+                {uploading ? 'Uploading...' : editingProduct ? 'Update Product' : 'Add Product'}
+              </button>
+              {editingProduct && (
+                <button type="button" className="cancel-btn" onClick={resetForm}>
+                  Cancel Edit
+                </button>
+              )}
+            </div>
           </form>
         </div>
 
@@ -239,12 +252,19 @@ const Dashboard = () => {
                     <h3>{product.name}</h3>
                     <p>Price: ${product.price}</p>
                     <p>Category: {product.category}</p>
-                    <button 
-                      className="delete-btn" 
-                      onClick={() => handleDelete(product._id)}
-                    >
-                      Delete
-                    </button>
+                    <div className="actions">
+                      <button 
+                        className="edit-btn" 
+                        onClick={() => handleEdit(product)}>
+                        Edit
+                      </button>
+                      <button 
+                        className="delete-btn" 
+                        onClick={() => handleDelete(product._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

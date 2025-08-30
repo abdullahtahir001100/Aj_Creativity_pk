@@ -4,12 +4,10 @@ const Product = require('../models/Product');
 const cloudinary = require('cloudinary').v2;
 
 // Add a new product
-// Ab 'upload' middleware index.js mein handle ho raha hai,
-// isliye yahan direct async function ka use karenge
 router.post('/add', async (req, res) => {
   try {
     const { name, price, category } = req.body;
-    // Cloudinary ka URL req.file se liya jaayega
+    // Image URL Cloudinary se aa raha hai
     const imageUrl = req.file.path; 
 
     const newProduct = new Product({
@@ -27,7 +25,7 @@ router.post('/add', async (req, res) => {
       data: newProduct,
     });
   } catch (error) {
-    res.status(500).json({
+      res.status(500).json({
       success: false,
       message: 'Server Error',
       error: error.message,

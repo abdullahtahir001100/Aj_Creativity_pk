@@ -38,8 +38,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve uploaded files statically
+// Vercel par iski zaroorat nahi hai, isko hata sakte hain
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Mount routes
-// Image upload ke liye, POST route ko alag se define karein aur 'upload' middleware ka use karein
+// Image upload ke liye, POST route ko 'upload' middleware ke saath define karein
 app.post('/api/products/add', upload.single('image'), productRoutes);
 
 // Baki routes ko is tarah se jod de

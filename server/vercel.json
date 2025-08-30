@@ -1,20 +1,14 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
+    { "src": "server/server.js", "use": "@vercel/node" },
+    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/server.js"
-    }
+    { "src": "/api/(.*)", "dest": "/server/server.js" }
   ],
- "env": {
-  "MONGODB_URI": "mongodb+srv://at4105168:2FWz679VE0UmJpL4@cluster0.czsqioy.mongodb.net/aj_creativity?retryWrites=true&w=majority",
-  "PORT": "5000"
-}
-
+  "env": {
+    "MONGODB_URI": "YOUR_MONGODB_URI_HERE",
+    "PORT": "5000"
+  }
 }

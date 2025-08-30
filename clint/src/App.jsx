@@ -13,7 +13,7 @@ import DashboardProtectedWrapper from "./components/DashboardOverview";
 import NotFound from "./components/NotFound";
 import RightClickBlocker from "./components/RightClickBlocker";
 import Loader from "./components/loader";
-import v1 from "./components/v1";
+import V1 from "./components/v1";
 import Dashboard from "./components/DashboardProtectedWrapper";
 import BackToTopButton from "./components/BackToTopButton";
 import OrderManagement from "./components/OrderManagement";
@@ -52,7 +52,7 @@ function App() {
             <Route path="/OrderManagement" element={<OrderManagement />} />
             <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="v1" element={<v1 />} />
+            <Route path="/V1" element={<V1 />} />
           </Routes>
           <BackToTopButton />
         </>

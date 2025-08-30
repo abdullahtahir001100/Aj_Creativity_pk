@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/header1';
 import Footer from '../components/Footer';
-import '../styles/Dashboard.css';
 
 // API URL is hardcoded to fix the 'process is not defined' error
 const API_URL = 'http://localhost:5000/api';

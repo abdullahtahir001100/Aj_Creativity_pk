@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
 // Import routes
@@ -11,34 +14,45 @@ const authRoutes = require('./routes/auth');
 // Initialize express app
 const app = express();
 
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Multer storage setup for Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'products', // Cloudinary par folder ka naam
+    format: async (req, file) => 'jpg',
+    public_id: (req, file) => Date.now() + '-' + file.originalname,
+  },
+});
+
+const upload = multer({ storage: storage });
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files statically
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 // Mount routes
-app.use('/api', productRoutes);
+// Image upload ke liye, POST route ko alag se define karein aur 'upload' middleware ka use karein
+app.post('/api/products/add', upload.single('image'), productRoutes);
+
+// Baki routes ko is tarah se jod de
+app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 
 // Connect to MongoDB
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// Vercel deployment ke liye, yeh if-condition hata di gayi hai.
-// Isse Vercel environment variables seedhe access kar payega.
-// if (!MONGODB_URI) {
-//   console.error("Error: MONGODB_URI not found in .env file.");
-//   process.exit(1);
-// }
-
-// MongoDB se connect karein
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => {
     console.error('MongoDB connection error:', err);
-    // Connection fail hone par process ko exit kar dein
     process.exit(1);
   });
 

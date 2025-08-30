@@ -14,6 +14,14 @@ const authRoutes = require('./routes/auth');
 // Initialize express app
 const app = express();
 
+// CORS configuration to allow requests from your frontend domain
+const corsOptions = {
+  origin: 'https://aj-creativity.vercel.app',
+  optionsSuccessStatus: 200 // For legacy browser support
+};
+
+app.use(cors(corsOptions));
+
 // Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -34,17 +42,15 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded files statically
-// Vercel par iski zaroorat nahi hai, isko hata sakte hain
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Mount routes
 // Image upload ke liye, POST route ko 'upload' middleware ke saath define karein
-app.post('/api/products/add', upload.single('image'), productRoutes);
+app.post('/api/products/add', upload.single('image'), productRoutes.addProduct);
 
 // Baki routes ko is tarah se jod de
 app.use('/api/products', productRoutes);

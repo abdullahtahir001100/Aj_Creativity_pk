@@ -155,7 +155,7 @@ const Product = () => {
                 <div className="product-card" key={product._id || idx} onClick={() => handleProductClick(product)} style={{ cursor: 'pointer' }} data-aos="fade-up" data-aos-delay="380" data-aos-once="true">
                   <LazyLoadImage
                     alt={product.name}
-                    src={`${API_URL.replace('/api', '')}${product.image}`}
+                    src={product.image} // Yahan URL theek kiya gaya hai
                     effect="blur"
                     width="100%"
                     height="300px"

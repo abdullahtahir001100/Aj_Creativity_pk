@@ -45,16 +45,13 @@ const upload = multer({ storage: storage });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files statically
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Mount routes
-// Image upload ke liye, POST route ko 'upload' middleware ke saath define karein
-app.post('/api/products/add', upload.single('image'), productRoutes.addProduct);
-
-// Baki routes ko is tarah se jod de
-app.use('/api/products', productRoutes);
+// --- Yahan Zaroori Badlav Kiya Gaya Hai ---
+// 'upload' middleware ko '/api/products' route par lagaya gaya hai.
+// Ab sabhi /api/products routes par files upload ho payengi.
+app.use('/api/products', upload.single('image'), productRoutes);
+// 'authRoutes' router ke liye ek alag route define kiya gaya hai
 app.use('/api/auth', authRoutes);
+// --- Badlav Yahan Khatam Hota Hai ---
 
 // Connect to MongoDB
 const MONGODB_URI = process.env.MONGODB_URI;

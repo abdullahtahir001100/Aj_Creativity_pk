@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import DashboardOverview from "./DashboardOverview";
 import OrderManagement from "./OrderManagement";
+import V1 from "./v1";
 import AuthForm from "../components/AuthForm.jsx";
 import "../styles/dashboard-header.scss"; // Naya SCSS file import kiya gaya hai
 
@@ -46,7 +47,7 @@ const DashboardProtectedWrapper = () => {
       <main style={{ flexGrow: 1, backgroundColor: '#f8fafc' }}>
         {currentPage === "overview" && <DashboardOverview />}
         {currentPage === "orders" && <OrderManagement />}
-        {currentPage === "products" && <div>Product Management Page (Coming Soon)</div>}
+        {currentPage === "products" && <V1 />}
       </main>
     </div>
   );

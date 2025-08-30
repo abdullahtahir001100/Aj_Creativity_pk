@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/header1';
-import Footer from '../components/Footer';
-
-// API URL is hardcoded to fix the 'process is not defined' error
-const API_URL = 'http://localhost:5000/api';
-
 const Dashboard = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [uploading, setUploading] = useState(false); // New state for upload loading
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null); // New state for image preview
+
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -16,7 +14,9 @@ const Dashboard = () => {
     image: null
   });
 
-  // Products fetch karne ka function
+  const API_URL = 'http://localhost:5000/api';
+
+  // Fetch products from the API
   const fetchProducts = async () => {
     setLoading(true);
     try {
@@ -35,12 +35,11 @@ const Dashboard = () => {
     }
   };
 
-  // Component load hone par products fetch karein
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  // Form input changes handle karein
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -49,177 +48,227 @@ const Dashboard = () => {
     });
   };
 
-  // File input change handle karein
+  // Handle file input change and show a preview
   const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      image: e.target.files[0]
-    });
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({
+        ...formData,
+        image: file
+      });
+      // Create a URL for the image preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFormData({ ...formData, image: null });
+      setImagePreviewUrl(null);
+    }
   };
 
-  // Form submit handle karein
+  // Reset the form after submission
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      price: '',
+      category: 'bangle',
+      image: null
+    });
+    setImagePreviewUrl(null);
+    setEditingProduct(null);
+  };
+
+  // Handle form submission (Add & Edit)
   const handleSubmit = async (e) => {
-      e.preventDefault();
-      setLoading(true);
-      setError(null);
+    e.preventDefault();
+    setUploading(true); // Start uploading
+    setError(null);
 
-      const data = new FormData();
-      data.append('name', formData.name);
-      data.append('price', formData.price);
-      data.append('category', formData.category);
+    const data = new FormData();
+    data.append('name', formData.name);
+    data.append('price', formData.price);
+    data.append('category', formData.category);
+    if (formData.image) {
       data.append('image', formData.image);
+    }
 
+    const url = editingProduct ? `${API_URL}/products/${editingProduct._id}` : `${API_URL}/products/add`;
+    const method = editingProduct ? 'PUT' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method: method,
+        body: data
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        resetForm();
+        fetchProducts(); // Refresh the product list
+      } else {
+        setError(result.message || 'Failed to save product');
+      }
+    } catch (err) {
+      setError('Error saving product');
+      console.error(err);
+    } finally {
+      setUploading(false); // End uploading
+    }
+  };
+
+  // Handle product deletion
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        const response = await fetch(`${API_URL}/products/add`, {
-          method: 'POST',
-          body: data
+        await fetch(`${API_URL}/products/${id}`, {
+          method: 'DELETE'
         });
-
-        const result = await response.json();
-        if (result.success) {
-          setFormData({
-            name: '',
-            price: '',
-            category: 'bangle',
-            image: null
-          });
-          fetchProducts(); // Products list ko refresh karein
-        } else {
-          setError(result.message || 'Failed to add product');
-        }
+        fetchProducts(); // Refresh list after deletion
       } catch (err) {
-        setError('Error adding product');
+        setError('Error deleting product');
         console.error(err);
-      } finally {
-        setLoading(false);
       }
-    };
+    }
+  };
 
-    // Product delete karne ka function
-    const handleDelete = async (id) => {
-      if (window.confirm('Are you sure you want to delete this product?')) {
-        try {
-          const response = await fetch(`${API_URL}/products/${id}`, {
-            method: 'DELETE'
-          });
+  // Handle product edit
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      price: product.price,
+      category: product.category,
+      image: null
+    });
+    setImagePreviewUrl(`http://localhost:5000${product.image}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-          const result = await response.json();
-          if (result.success) {
-            fetchProducts(); // Products list ko refresh karein
-          } else {
-            setError(result.message || 'Failed to delete product');
-          }
-        } catch (err) {
-          setError('Error deleting product');
-          console.error(err);
-        }
-      }
-    };
+  return (
+    <>
+      <div className="dashboard-container">
+        <h1>Dashboard</h1>
+        {error && <div className="error-message">{error}</div>}
 
-    return (
-      <>
-        <Header />
-        <div className="dashboard-container">
-          <h1>Dashboard</h1>
-          {error && <div className="error-message">{error}</div>}
+        {/* Add/Edit Product Form */}
+        <div className="add-product-form">
+          <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="name">Product Name:</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-          {/* Add Product Form */}
-          <div className="add-product-form">
-            <h2>Add New Product</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="name">Product Name:</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+            <div className="form-group">
+              <label htmlFor="price">Price (Rs):</label>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-              <div className="form-group">
-                <label htmlFor="price">Price (Rs):</label>
-                <input
-                  type="number"
-                  id="price"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+            <div className="form-group">
+              <label htmlFor="category">Category:</label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              >
+                <option value="bangle">bangle</option>
+                <option value="gold bangle">gold bangle</option>
+                <option value="earring">earring</option>
+              </select>
+            </div>
 
-              <div className="form-group">
-                <label htmlFor="category">Category:</label>
-                <select
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="bangle">bangle</option>
-                  <option value="gold bangle">gold bangle</option>
-                  <option value="earring">earring</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="image">Product Image:</label>
-                <input
-                  type="file"
-                  id="image"
-                  name="image"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  required
-                />
-              </div>
-
-              <button type="submit" disabled={loading}>
-                {loading ? 'Adding...' : 'Add Product'}
+            <div className="form-group file-upload-group">
+              <label htmlFor="image">Product Image:</label>
+              <input
+                type="file"
+                id="image"
+                name="image"
+                onChange={handleFileChange}
+                accept="image/*"
+                required={!editingProduct}
+              />
+              {/* Image Preview */}
+              {imagePreviewUrl && (
+                <div className="image-preview">
+                  <img src={imagePreviewUrl} alt="Image Preview" />
+                </div>
+              )}
+            </div>
+            
+            <div className="form-actions">
+              <button type="submit" disabled={uploading}>
+                {uploading ? 'Uploading...' : editingProduct ? 'Update Product' : 'Add Product'}
               </button>
-            </form>
-          </div>
+              {editingProduct && (
+                <button type="button" className="cancel-btn" onClick={resetForm}>
+                  Cancel Edit
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
 
-          {/* Product List */}
-          <div className="product-list">
-            <h2>Product List</h2>
-            {loading && <p>Loading products...</p>}
-            {products.length === 0 && !loading ? (
-              <p>No products found. Add some products!</p>
-            ) : (
-              <div className="product-grid">
-                {products.map((product) => (
-                  <div key={product._id} className="product-card">
-                    <div className="product-image">
-                      <img
-                        src={`${API_URL.replace('/api', '')}${product.image}`}
-                        alt={product.name}
-                      />
-                    </div>
-                    <div className="product-details">
-                      <h3>{product.name}</h3>
-                      <p>Price: ${product.price}</p>
-                      <p>Category: {product.category}</p>
-                      <button
-                        className="delete-btn"
+        {/* Product List */}
+        <div className="product-list">
+          <h2>Product List</h2>
+          {loading && <p>Loading products...</p>}
+          {products.length === 0 && !loading ? (
+            <p className="no-products-message">No products found. Add some products!</p>
+          ) : (
+            <div className="product-grid">
+              {products.map((product) => (
+                <div key={product._id} className="product-card">
+                  <div className="product-image">
+                    <img 
+                      src={`http://localhost:5000${product.image}`} 
+                      alt={product.name} 
+                    />
+                  </div>
+                  <div className="product-details">
+                    <h3>{product.name}</h3>
+                    <p>Price: ${product.price}</p>
+                    <p className="category-tag">{product.category}</p>
+                    <div className="actions">
+                      <button 
+                        className="edit-btn" 
+                        onClick={() => handleEdit(product)}
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        className="delete-btn" 
                         onClick={() => handleDelete(product._id)}
                       >
                         Delete
                       </button>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-        <Footer />
-      </>
-    );
-  };
+      </div>
+    </>
+  );
+};
 
-  export default Dashboard;
+export default Dashboard;

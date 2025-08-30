@@ -15,7 +15,7 @@ const priceRanges = [
   { label: "1001 - 2000", min: 1001, max: 2000 },
   { label: "2001+", min: 2001, max: Infinity }
 ];
-
+//aoa
 const categories = ["bangle", "gold bangle", "earring"];
 
 const Product = () => {

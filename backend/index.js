@@ -26,14 +26,21 @@ app.use('/api/auth', authRoutes);
 // Connect to MongoDB
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  console.error("Error: MONGODB_URI not found in .env file.");
-  process.exit(1);
-}
+// Vercel deployment ke liye, yeh if-condition hata di gayi hai.
+// Isse Vercel environment variables seedhe access kar payega.
+// if (!MONGODB_URI) {
+//   console.error("Error: MONGODB_URI not found in .env file.");
+//   process.exit(1);
+// }
 
+// MongoDB se connect karein
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    // Connection fail hone par process ko exit kar dein
+    process.exit(1);
+  });
 
 // Start server
 const PORT = process.env.PORT || 5000;

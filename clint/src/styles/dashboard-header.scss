@@ -351,3 +351,9 @@ input[type="file"]::-webkit-file-upload-button {
     }
   }
 }
+.image-preview img{
+      object-fit: cover;
+    width: 12%;
+    height: 7rem;
+    margin: 34px 0px 0px 17px;
+}

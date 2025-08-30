@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 // import "../styles/Product.css";
 
 // Hardcoded API URL to avoid 'process is not defined' error
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://aj-creativity-pk-2dpo.vercel.app/api';
 
 const priceRanges = [
   { label: "0 - 500", min: 0, max: 500 },

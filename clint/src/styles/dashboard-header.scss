@@ -275,7 +275,7 @@ input[type="file"]::-webkit-file-upload-button {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
       display: flex;
-      width: calc(100% / 4 - 20px);
+      width: calc(100% / 5 - 20px);
       flex-direction: column;
 
       &:hover {

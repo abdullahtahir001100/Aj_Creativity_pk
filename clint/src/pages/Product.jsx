@@ -178,6 +178,7 @@ const Product = () => {
       {cartMessage && (
         <div style={{ position: 'fixed', top: 10, right: 30, background: '#4BB543', color: '#fff', padding: '12px 28px', borderRadius: 10, fontWeight: 600, zIndex: 9999, boxShadow: '0 4px 16px rgba(0,0,0,0.13)' }}>
           {cartMessage}
+        
         </div>
       )}
       <div ref={footerRef}>
@@ -188,3 +189,4 @@ const Product = () => {
 };
 
 export default Product;
+//aoa

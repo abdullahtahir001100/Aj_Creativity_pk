@@ -189,4 +189,3 @@ const Product = () => {
 };
 
 export default Product;
-//aoa

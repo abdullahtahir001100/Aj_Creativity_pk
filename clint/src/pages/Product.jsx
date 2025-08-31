@@ -167,7 +167,7 @@ const Product = () => {
                       <h4>{product.name}</h4>
                       <p>{product.price} Rs</p>
                     </div>
-                    <img src="/Aj_Creativity/cart.png" alt="Add to cart" className="carts" style={{ cursor: 'pointer' }} onClick={e => { e.stopPropagation(); handleAddToCart(product); }} />
+                    <img src="./cart.png" alt="Add to cart" className="carts" style={{ cursor: 'pointer' }} onClick={e => { e.stopPropagation(); handleAddToCart(product); }} />
                   </div>
                 </div>
               ))

@@ -12,7 +12,6 @@ const Dashboard = () => {
     name: '',
     price: '',
     category: 'bangle',
-    description: '', // ADDED: Description field to match backend
     image: null,
   });
 
@@ -75,7 +74,6 @@ const Dashboard = () => {
       name: '',
       price: '',
       category: 'bangle',
-      description: '', // ADDED: Reset description
       image: null,
     });
     setImagePreviewUrl(null);
@@ -92,9 +90,12 @@ const Dashboard = () => {
     data.append('name', formData.name);
     data.append('price', formData.price);
     data.append('category', formData.category);
-    data.append('description', formData.description); // ADDED: Append description
     if (formData.image) {
       data.append('image', formData.image);
+    } else {
+      setUploading(false);
+      setError('Please select an image before submitting.');
+      return;
     }
 
     const url = editingProduct
@@ -145,7 +146,6 @@ const Dashboard = () => {
       name: product.name,
       price: product.price,
       category: product.category,
-      description: product.description, // ADDED: Set description for edit
       image: null,
     });
     setImagePreviewUrl(product.image);
@@ -201,18 +201,6 @@ const Dashboard = () => {
                 <option value="gold bangle">Gold Bangle</option>
                 <option value="earring">Earring</option>
               </select>
-            </div>
-
-            {/* ADDED: Description input field */}
-            <div className="form-group">
-              <label htmlFor="description">Description</label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                required
-              />
             </div>
 
             <div className="form-group">

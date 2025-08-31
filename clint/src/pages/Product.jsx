@@ -155,7 +155,7 @@ const Product = () => {
                 <div className="product-card" key={product._id || idx} onClick={() => handleProductClick(product)} style={{ cursor: 'pointer' }} data-aos="fade-up" data-aos-delay="380" data-aos-once="true">
                   <LazyLoadImage
                     alt={product.name}
-                    src={product.image} // Yahan URL theek kiya gaya hai
+                    src={product.image}
                     effect="blur"
                     width="100%"
                     height="300px"
@@ -178,7 +178,6 @@ const Product = () => {
       {cartMessage && (
         <div style={{ position: 'fixed', top: 10, right: 30, background: '#4BB543', color: '#fff', padding: '12px 28px', borderRadius: 10, fontWeight: 600, zIndex: 9999, boxShadow: '0 4px 16px rgba(0,0,0,0.13)' }}>
           {cartMessage}
-        
         </div>
       )}
       <div ref={footerRef}>

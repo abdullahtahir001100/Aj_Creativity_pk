@@ -7,10 +7,10 @@ module.exports = (upload) => {
     // Add a new product with image upload
     router.post('/add', upload.single('image'), async (req, res) => {
         try {
-            const { name, category, price, description } = req.body;
+            const { name, category, price } = req.body;
             const imageUrl = req.file ? req.file.path : null;
 
-            if (!name || !category || !price || !description || !imageUrl) {
+            if (!name || !category || !price || !imageUrl) {
                 if (req.file) {
                     await cloudinary.uploader.destroy(req.file.filename);
                 }
@@ -21,7 +21,6 @@ module.exports = (upload) => {
                 name,
                 category,
                 price,
-                description,
                 image: imageUrl
             });
 

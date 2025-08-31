@@ -14,8 +14,6 @@ const authRoutes = require('./routes/auth');
 // Initialize express app
 const app = express();
 
-// WARNING: THIS IS FOR DEVELOPMENT/TESTING ONLY
-// To bypass CORS and allow all domains, use cors() without options.
 app.use(cors());
 
 // Cloudinary configuration
@@ -41,8 +39,7 @@ const upload = multer({ storage: storage });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Sahi tareeke se routes mount karein
-// Pass the 'upload' middleware to your productRoutes file
+// Correctly mount the routes by passing the 'upload' middleware
 app.use('/api/products', productRoutes(upload));
 app.use('/api/auth', authRoutes);
 

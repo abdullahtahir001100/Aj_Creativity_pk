@@ -7,20 +7,21 @@ module.exports = (upload) => {
     // Add a new product with image upload
     router.post('/add', upload.single('image'), async (req, res) => {
         try {
-            const { name, description, price } = req.body;
+            const { name, category, price, description } = req.body;
             const imageUrl = req.file ? req.file.path : null;
 
-            if (!name || !description || !price || !imageUrl) {
+            if (!name || !category || !price || !description || !imageUrl) {
                 if (req.file) {
                     await cloudinary.uploader.destroy(req.file.filename);
                 }
-                return res.status(400).json({ message: 'All fields and an image are required.' });
+                return res.status(400).json({ success: false, message: 'All fields and an image are required.' });
             }
 
             const newProduct = new Product({
                 name,
-                description,
+                category,
                 price,
+                description,
                 image: imageUrl
             });
 
@@ -74,9 +75,8 @@ module.exports = (upload) => {
             }
 
             if (product.image) {
-                // Extract public ID from the image URL to delete from Cloudinary
-                const publicId = product.image.split('/').slice(-1)[0].split('.')[0];
-                await cloudinary.uploader.destroy(`products/${publicId}`);
+                const publicId = product.image.split('/').pop().split('.')[0];
+                await cloudinary.uploader.destroy(publicId);
             }
 
             res.status(200).json({

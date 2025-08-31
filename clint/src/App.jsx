@@ -15,6 +15,7 @@ import RightClickBlocker from "./components/RightClickBlocker";
 import Loader from "./components/loader";
 import V1 from "./components/v1";
 import Dashboard from "./components/DashboardProtectedWrapper";
+import V2 from "./components/Dashboard";
 import BackToTopButton from "./components/BackToTopButton";
 import OrderManagement from "./components/OrderManagement";
 
@@ -47,7 +48,7 @@ function App() {
             <Route path="/Paymants" element={<Paymants />} />
             <Route path="/Details" element={<Details />} />
             {/* Yah route ab DashboardProtectedWrapper ko render kar raha hai */}
-            
+            <Route path="/V2" element={<V2 />} />
             <Route path="/DashboardProtectedWrapper" element={<DashboardProtectedWrapper />} />
             <Route path="/OrderManagement" element={<OrderManagement />} />
             <Route path="/Dashboard" element={<Dashboard />} />

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-
-
 const Dashboard = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -14,7 +12,8 @@ const Dashboard = () => {
     name: '',
     price: '',
     category: 'bangle',
-    image: null
+    description: '', // ADDED: Description field to match backend
+    image: null,
   });
 
   const API_URL = 'https://aj-creativity-pk-2dpo.vercel.app/api';
@@ -47,7 +46,7 @@ const Dashboard = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -57,7 +56,7 @@ const Dashboard = () => {
     if (file) {
       setFormData({
         ...formData,
-        image: file
+        image: file,
       });
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -76,7 +75,8 @@ const Dashboard = () => {
       name: '',
       price: '',
       category: 'bangle',
-      image: null
+      description: '', // ADDED: Reset description
+      image: null,
     });
     setImagePreviewUrl(null);
     setEditingProduct(null);
@@ -92,17 +92,20 @@ const Dashboard = () => {
     data.append('name', formData.name);
     data.append('price', formData.price);
     data.append('category', formData.category);
+    data.append('description', formData.description); // ADDED: Append description
     if (formData.image) {
       data.append('image', formData.image);
     }
 
-    const url = editingProduct ? `${API_URL}/products/${editingProduct._id}` : `${API_URL}/products/add`;
+    const url = editingProduct
+      ? `${API_URL}/products/${editingProduct._id}`
+      : `${API_URL}/products/add`;
     const method = editingProduct ? 'PUT' : 'POST';
 
     try {
       const response = await fetch(url, {
         method: method,
-        body: data
+        body: data,
       });
 
       const result = await response.json();
@@ -125,7 +128,7 @@ const Dashboard = () => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         await fetch(`${API_URL}/products/${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
         });
         fetchProducts();
       } catch (err) {
@@ -142,7 +145,8 @@ const Dashboard = () => {
       name: product.name,
       price: product.price,
       category: product.category,
-      image: null
+      description: product.description, // ADDED: Set description for edit
+      image: null,
     });
     setImagePreviewUrl(product.image);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -197,6 +201,18 @@ const Dashboard = () => {
                 <option value="gold bangle">Gold Bangle</option>
                 <option value="earring">Earring</option>
               </select>
+            </div>
+
+            {/* ADDED: Description input field */}
+            <div className="form-group">
+              <label htmlFor="description">Description</label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <div className="form-group">

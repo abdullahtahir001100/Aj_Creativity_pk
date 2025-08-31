@@ -913,7 +913,7 @@ export default function App() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch("https://aj-creativitypk.vercel.app/api/orders");
+        const res = await fetch("https://aj-creativity-pk.vercel.app/api/orders");
         const data = await res.json();
         if (data.success && Array.isArray(data.orders)) {
           setOrders(data.orders);
@@ -941,7 +941,7 @@ export default function App() {
       onConfirm: async () => {
         setModal({ ...modal, show: false });
         try {
-          const res = await fetch(`https://aj-creativitypk.vercel.app/api/orders/${id}`, {
+          const res = await fetch(`https://aj-creativity-pk.vercel.app/api/orders/${id}`, {
             method: "DELETE",
           });
           const data = await res.json();
@@ -973,7 +973,7 @@ export default function App() {
 
   const handleComplete = async (id) => {
     try {
-      const res = await fetch(`https://aj-creativitypk.vercel.app/api/orders/${id}/status`, {
+      const res = await fetch(`https://aj-creativity-pk.vercel.app/api/orders/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "completed" }),

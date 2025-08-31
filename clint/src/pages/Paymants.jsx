@@ -134,7 +134,7 @@ export default function PaymentPage() {
     }
 
     try {
-      const response = await fetch("https://aj-creativitypk.vercel.app/api/orders", {
+      const response = await fetch("https://aj-creativity-pk.vercel.app/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -44,7 +44,7 @@ const DashboardOverview = () => {
       const fetchAllData = async () => {
         setLoading(true);
         try {
-          const dashboardRes = await fetch("https://aj-creativitypk.vercel.app/api/dashboard-metrics");
+          const dashboardRes = await fetch("https://aj-creativity-pk.vercel.app/api/dashboard-metrics");
           const dashboardData = await dashboardRes.json();
 
           setDashboardData({

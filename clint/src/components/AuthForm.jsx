@@ -9,10 +9,10 @@ const AuthForm = ({ onLoginSuccess }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username === "admin" && password === "password") {
+    if (username === "pak123" && password === "pakistan30") {
       onLoginSuccess();
     } else {
-      setError("Invalid credentials. Please use 'admin' and 'password'.");
+      setError("Invalid credentials.");
     }
   };
 

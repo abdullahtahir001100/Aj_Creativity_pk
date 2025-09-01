@@ -354,7 +354,7 @@ input[type="file"]::-webkit-file-upload-button {
 }
 .image-preview img{
       object-fit: cover;
-    width: 12%;
+    width: 102%;
     height: 7rem;
     margin: 34px 0px 0px 17px;
 }
@@ -700,4 +700,7 @@ h1 {
 }
 .modal-header{
   margin: 0 !important;
+}
+.product-detail .product-info h1{
+  text-align: justify;
 }

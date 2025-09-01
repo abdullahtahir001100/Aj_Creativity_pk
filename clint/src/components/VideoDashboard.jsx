@@ -132,7 +132,7 @@ const VideoDashboard = () => {
         {/* Navigation buttons */}
         <div className="nav-buttons">
           <Link to="/HomeDashboard" className="nav-button">Manage Products</Link>
-          <Link to="/video-dashboard" className="nav-button">Manage Videos</Link>
+          <Link to="/dashboard" className="nav-button">Manage Dashboard</Link>
         </div>
 
         {/* Video Upload Form */}

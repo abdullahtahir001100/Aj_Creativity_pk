@@ -7,6 +7,10 @@ const Dashboard = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+  
+  // New state variables for handling image URLs
+  const [useUrl, setUseUrl] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -66,6 +70,16 @@ const Dashboard = () => {
       setFormData({ ...formData, image: null });
       setImagePreviewUrl(null);
     }
+    // Clear the URL input when a file is selected
+    setImageUrl('');
+  };
+
+  // Handle URL input change
+  const handleUrlChange = (e) => {
+    const { value } = e.target;
+    setImageUrl(value);
+    setImagePreviewUrl(value); // Show a preview from the URL
+    setFormData({ ...formData, image: null }); // Clear the file state
   };
 
   // Reset the form after submission
@@ -78,6 +92,8 @@ const Dashboard = () => {
     });
     setImagePreviewUrl(null);
     setEditingProduct(null);
+    setImageUrl(''); // Reset the URL state
+    setUseUrl(false); // Reset the source toggle
   };
 
   // Handle form submission (Add & Edit)
@@ -90,11 +106,15 @@ const Dashboard = () => {
     data.append('name', formData.name);
     data.append('price', formData.price);
     data.append('category', formData.category);
-    if (formData.image) {
-      data.append('image', formData.image);
+    
+    // Conditional logic to handle image based on user's choice
+    if (useUrl && imageUrl) {
+      data.append('image', imageUrl); // Append the URL directly
+    } else if (formData.image) {
+      data.append('image', formData.image); // Append the file from upload
     } else {
       setUploading(false);
-      setError('Please select an image before submitting.');
+      setError('Please provide an image from a file or a URL.');
       return;
     }
 
@@ -149,6 +169,10 @@ const Dashboard = () => {
       image: null,
     });
     setImagePreviewUrl(product.image);
+    // Set the URL state if the existing image is a URL
+    setImageUrl(product.image);
+    // Determine if the product image is a URL or not to set the radio button
+    setUseUrl(typeof product.image === 'string' && product.image.startsWith('http'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -203,16 +227,67 @@ const Dashboard = () => {
               </select>
             </div>
 
+            {/* Image Source Selection */}
             <div className="form-group">
-              <label htmlFor="image-upload">Product Image:</label>
-              <input
-                type="file"
-                id="image-upload"
-                name="image"
-                onChange={handleFileChange}
-                accept="image/*"
-                required={!editingProduct}
-              />
+              <label>Image Source:</label>
+              <div className="radio-group">
+                <label>
+                  <input
+                    type="radio"
+                    name="imageSource"
+                    checked={!useUrl}
+                    onChange={() => {
+                      setUseUrl(false);
+                      setImagePreviewUrl(null);
+                      setImageUrl('');
+                    }}
+                  />
+                  Upload File
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="imageSource"
+                    checked={useUrl}
+                    onChange={() => {
+                      setUseUrl(true);
+                      setImagePreviewUrl(null);
+                      setFormData({ ...formData, image: null });
+                    }}
+                  />
+                  Image URL
+                </label>
+              </div>
+            </div>
+
+            {/* Conditional Image Input Field */}
+            <div className="form-group">
+              {useUrl ? (
+                <>
+                  <label htmlFor="image-url">Product Image URL:</label>
+                  <input
+                    type="url"
+                    id="image-url"
+                    name="imageUrl"
+                    value={imageUrl}
+                    onChange={handleUrlChange}
+                    required={!editingProduct}
+                  />
+                </>
+              ) : (
+                <>
+                  <label htmlFor="image-upload">Product Image:</label>
+                  <input
+                    type="file"
+                    id="image-upload"
+                    name="image"
+                    onChange={handleFileChange}
+                    accept="image/*"
+                    required={!editingProduct}
+                  />
+                </>
+              )}
+
               {/* Image Preview */}
               {imagePreviewUrl && (
                 <div className="image-preview">
@@ -220,7 +295,7 @@ const Dashboard = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="form-actions">
               <button type="submit" disabled={uploading}>
                 {uploading ? 'Uploading...' : editingProduct ? 'Update Product' : 'Add Product'}
@@ -245,9 +320,9 @@ const Dashboard = () => {
               {products.map((product) => (
                 <div key={product._id} className="product-card">
                   <div className="product-image">
-                    <img 
-                      src={product.image} 
-                      alt={product.name} 
+                    <img
+                      src={product.image}
+                      alt={product.name}
                     />
                   </div>
                   <div className="product-details">
@@ -255,13 +330,13 @@ const Dashboard = () => {
                     <p>Price: Rs {product.price}</p>
                     <p>Category: {product.category}</p>
                     <div className="actions">
-                      <button 
-                        className="edit-btn" 
+                      <button
+                        className="edit-btn"
                         onClick={() => handleEdit(product)}>
                         Edit
                       </button>
-                      <button 
-                        className="delete-btn" 
+                      <button
+                        className="delete-btn"
                         onClick={() => handleDelete(product._id)}
                       >
                         Delete

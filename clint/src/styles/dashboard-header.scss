@@ -725,3 +725,13 @@ h1 {
     }
   }
 }
+.radio-group{
+  display: flex;
+  align-items: center;
+  gap: 0 20px;
+  input{
+    box-shadow: none !important;
+    width: fit-content !important;
+    margin-right: 10px;
+  }
+}

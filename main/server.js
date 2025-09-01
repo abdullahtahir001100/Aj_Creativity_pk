@@ -28,10 +28,14 @@ const connectDB = async () => {
     } catch (err) {
         console.error('MongoDB connection error:', err);
         isConnected = false;
-        // Optionally, rethrow the error to halt the application startup if connection fails.
+        // Rethrow the error to halt the application startup if connection fails.
         throw new Error('Failed to connect to MongoDB');
     }
 };
+
+// Immediately attempt to connect to the database. This is a common practice for
+// serverless functions to handle cold starts efficiently.
+connectDB();
 
 // --- Mongoose Schemas and Models ---
 // For a larger application, these schemas would ideally be in their own separate files.
@@ -59,10 +63,14 @@ const Product = mongoose.model('Product', productSchema);
 // --- API Endpoints ---
 // Each endpoint will attempt to connect to the database before processing the request.
 
+// Health check endpoint to confirm the server is running
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok', message: 'Server is running' });
+});
+
 // Video Endpoints
 app.get('/api/videos', async (req, res) => {
     try {
-        await connectDB();
         const videos = await Video.find();
         res.status(200).json({ success: true, data: videos });
     } catch (err) {
@@ -72,7 +80,6 @@ app.get('/api/videos', async (req, res) => {
 
 app.post('/api/videos', async (req, res) => {
     try {
-        await connectDB();
         const newVideo = new Video(req.body);
         const savedVideo = await newVideo.save();
         res.status(201).json({ success: true, data: savedVideo });
@@ -83,7 +90,6 @@ app.post('/api/videos', async (req, res) => {
 
 app.delete('/api/videos/:id', async (req, res) => {
     try {
-        await connectDB();
         const deletedVideo = await Video.findByIdAndDelete(req.params.id);
         if (!deletedVideo) {
             return res.status(404).json({ success: false, message: 'Video not found' });
@@ -97,7 +103,6 @@ app.delete('/api/videos/:id', async (req, res) => {
 // Product Endpoints
 app.get('/api/data', async (req, res) => {
     try {
-        await connectDB();
         // Sorting by createdAt in descending order to get the latest products first
         const products = await Product.find().sort({ createdAt: -1 });
         res.status(200).json({ success: true, data: products });
@@ -108,7 +113,6 @@ app.get('/api/data', async (req, res) => {
 
 app.post('/api/data', async (req, res) => {
     try {
-        await connectDB();
         const newProduct = new Product(req.body);
         const savedProduct = await newProduct.save();
         res.status(201).json({ success: true, data: savedProduct });
@@ -119,7 +123,6 @@ app.post('/api/data', async (req, res) => {
 
 app.put('/api/data/:id', async (req, res) => {
     try {
-        await connectDB();
         const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedProduct) {
             return res.status(404).json({ success: false, message: 'Product not found' });
@@ -132,7 +135,6 @@ app.put('/api/data/:id', async (req, res) => {
 
 app.delete('/api/data/:id', async (req, res) => {
     try {
-        await connectDB();
         const deletedProduct = await Product.findByIdAndDelete(req.params.id);
         if (!deletedProduct) {
             return res.status(404).json({ success: false, message: 'Product not found' });

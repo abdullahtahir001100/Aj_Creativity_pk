@@ -7,7 +7,7 @@ const CLOUDINARY_CLOUD_NAME = 'dwnnadeb0';
 const CLOUDINARY_UPLOAD_PRESET_VIDEOS = 'aj_creativity_video_preset'; 
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
 
-const API_URL = 'http://localhost:5000/api/videos';
+const API_URL = 'https://server-nine-kappa-75.vercel.app/api/videos';
 
 const VideoDashboard = () => {
   const [videos, setVideos] = useState([]);

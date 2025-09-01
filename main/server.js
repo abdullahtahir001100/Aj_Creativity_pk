@@ -61,7 +61,11 @@ const productSchema = new mongoose.Schema({
 const Product = mongoose.model('Product', productSchema);
 
 // --- API Endpoints ---
-// Each endpoint will attempt to connect to the database before processing the request.
+
+// New route to handle the root URL, preventing a 404 error
+app.get('/', (req, res) => {
+  res.status(200).json({ success: true, message: 'Server is running. Please use the /api/ endpoint to access data.' });
+});
 
 // Health check endpoint to confirm the server is running
 app.get('/api/health', (req, res) => {

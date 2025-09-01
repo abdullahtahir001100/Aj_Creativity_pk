@@ -95,16 +95,11 @@ app.get("/api/orders", async (req, res) => {
 });
 
 // Update Order Status
-app.put("/api/orders/:id/status", async (req, res) => {
+app.patch("/api/orders/:id/complete", async (req, res) => {
   try {
     await connectDB();
 
-    const { status } = req.body;
-    if (!["pending", "completed"].includes(status)) {
-      return res.status(400).json({ success: false, message: "⚠️ Invalid status value." });
-    }
-
-    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, { status: "completed" }, { new: true });
     if (!updatedOrder) {
       return res.status(404).json({ success: false, message: "⚠️ Order not found." });
     }
@@ -114,6 +109,7 @@ app.put("/api/orders/:id/status", async (req, res) => {
     res.status(500).json({ success: false, message: "❌ Failed to update order", error: error.message });
   }
 });
+
 
 // Delete Order
 app.delete("/api/orders/:id", async (req, res) => {

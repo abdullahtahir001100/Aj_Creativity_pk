@@ -4,18 +4,19 @@ import ScrollToTop from "./ScrollToTop";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Blogs from "./pages/Blogs";
+import Blogs from "./pages/Blogs"; 
 import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import Details from "./pages/Details";
 import Paymants from "./pages/Paymants";
-import DashboardProtectedWrapper from "./components/DashboardOverview";
+import DashboardOverview from "./components/DashboardOverview";
 import NotFound from "./components/NotFound";
 import RightClickBlocker from "./components/RightClickBlocker";
 import Loader from "./components/loader";
-import V1 from "./components/v1";
+import ProductDashboard from "./components/v1";
+import VideoDashboard from "./components/VideoDashboard";
 import Dashboard from "./components/DashboardProtectedWrapper";
-import V2 from "./components/Dashboard";
+import HomeDashboard from "./components/Dashboard";
 import BackToTopButton from "./components/BackToTopButton";
 import OrderManagement from "./components/OrderManagement";
 
@@ -47,13 +48,13 @@ function App() {
             <Route path="/Blogs" element={<Blogs />} />
             <Route path="/Paymants" element={<Paymants />} />
             <Route path="/Details" element={<Details />} />
-            {/* Yah route ab DashboardProtectedWrapper ko render kar raha hai */}
-            <Route path="/V2" element={<V2 />} />
-            <Route path="/DashboardProtectedWrapper" element={<DashboardProtectedWrapper />} />
+           <Route path="/HomeDashboard" element={<HomeDashboard />} />
+            <Route path="/VideoDashboard" element={<VideoDashboard />} />
+            <Route path="/DashboardOverview" element={<DashboardOverview />} />
             <Route path="/OrderManagement" element={<OrderManagement />} />
             <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="/V1" element={<V1 />} />
+            <Route path="/ProductDashboard" element={<ProductDashboard />} />
           </Routes>
           <BackToTopButton />
         </>

@@ -252,7 +252,7 @@ const Dashboard = () => {
                   </div>
                   <div className="product-details">
                     <h3>{product.name}</h3>
-                    <p>Price: ${product.price}</p>
+                    <p>Price: Rs {product.price}</p>
                     <p>Category: {product.category}</p>
                     <div className="actions">
                       <button 

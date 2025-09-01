@@ -1,8 +1,8 @@
 /* src/components/dashboard-header.scss */
 
 :root {
-  --primary-color: #0d9488;
-  --text-color: #4b5563;
+  --primary-color: #1da6ea;
+  --text-color: #fff;
   --bg-color: #ffffff;
   --border-color: #e5e7eb;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -21,8 +21,9 @@
 
 .dashboard-title {
   font-size: 1.5rem;
+  padding-bottom: 20px;
   font-weight: bold;
-  color: var(--primary-color);
+  color: #1da6ea;
 }
 
 .nav-links {
@@ -52,13 +53,13 @@
 .dashboard-header{
   position: relative !important;
   button{
-    background-color: #0d9488 !important;
+    background-color: #1da6ea !important;
     &:hover{
-      background-color: #0f766e !important;
+      background-color: #1da6ea !important;
       box-shadow: none !important;
     }
     &.active{
-      background-color: #0f766e !important;
+      background-color: #1da6ea !important;
       box-shadow: none !important;
     }
   }
@@ -69,10 +70,10 @@
 $primary-bg: #f5f7fa;      // Very light gray for background
 $card-bg: #ffffff;         // Pure white for cards and forms
 $primary-text: #2c3e50;    // Dark gray for primary text
-$secondary-text: #1596a0;  // Medium gray for secondary text
+$secondary-text: #2c3e50;  // Medium gray for secondary text
 $accent-color: #3498db;    // A professional blue accent
 $accent-hover: #2980b9;    // Darker blue for hover
-$success-color: #2ecc71;
+$success-color: #1da6ea;
 $danger-color: #e74c3c;
 $border-color: #e0e6ed;    // Light border color
 $box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55); // Subtle shadow
@@ -356,4 +357,347 @@ input[type="file"]::-webkit-file-upload-button {
     width: 12%;
     height: 7rem;
     margin: 34px 0px 0px 17px;
+}
+.modal-actions-footer{
+  float: right !important;
+  button{
+    background-color: none !important;
+    background: none !important;
+    color: #1da6ea;
+    text-decoration: underline;
+    padding: 0px !important;
+    margin-right: 10px;
+    &:hover{
+      background: none !important;
+      box-shadow: none !important;
+      border: none !important;
+      color: #1da6ea !important;
+    }
+    &.active{
+      background: none !important;
+      box-shadow: none !important;
+      color: #1da6ea;
+    }
+  }
+
+}
+.modal-actions{
+  button{
+    margin: 0 10px;
+  }
+}
+td,.modal-content,.kpi-grid,.kpi-value,.form-group{
+  color: #2c3e50 !important;
+}
+/* Dashboard.scss */
+.dashboard-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+}
+
+.nav-buttons {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.nav-button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  background-color: #333;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #555;
+  }
+}
+
+.product-management {
+  margin-bottom: 40px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.input-file {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.form-container {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  padding: 15px;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+  .form-input{
+    background: transparent !important;
+    box-shadow: 0 0 0 0px #000000 !important;
+    border: 1px solid #286ace !important;
+    border-radius: 8px !important;
+    -webkit-border-radius: 8px !important;
+    -moz-border-radius: 8px !important;
+    -ms-border-radius: 8px !important;
+    -o-border-radius: 8px !important;
+  
+    color: #2c3e50 !important;
+    overflow: hidden !important;
+    font-size: 1rem !important;
+    padding: 10px 15px !important;
+    width: 100% !important;
+    outline: none !important;
+    transition: all 0.3s ease !important;
+    &:focus {
+      outline: none !important;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1) !important;
+    }
+    &::placeholder {
+      color: #95a5a6 !important;
+    }
+    &:-ms-input-placeholder {
+      color: #95a5a6 !important;
+    }
+    &::-ms-input-placeholder {
+      color: #95a5a6 !important;
+    }
+}
+
+.form-container{
+  .submit-button{
+    margin: 20px !important;
+  }
+}
+.image-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+
+  margin-bottom: 15px;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  margin: 10px 0 !important;
+  color: white;
+  background-color: #333;
+  border: none;
+  cursor: pointer;
+  &:hover{
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+}
+
+  &:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+}
+
+.cancel-button {
+  @extend .submit-button;
+  background-color: #888;
+  margin-left: 10px;
+}
+
+.loading-text {
+  color: #007bff;
+}
+
+.error-text {
+  color: red;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.product-details {
+  padding: 10px;
+}
+
+.product-buttons {
+  margin-top: 10px;
+}
+
+.edit-button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.delete-button {
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+/* VideoDashboard.scss */
+.video-dashboard-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.dashboard-title {
+  text-align: center;
+}
+
+.nav-buttons {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.nav-button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  background-color: #333;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #555;
+  }
+}
+
+.upload-form-section {
+  margin-bottom: 40px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+
+  margin-bottom: 10px;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  color: white;
+  margin: 0 auto;
+  width: 100%;
+  background-color: #333;
+  border: none;
+  cursor: pointer;
+
+  &:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+}
+
+.loading-text {
+  color: #007bff;
+}
+
+.error-text {
+  color: red;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.video-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.video-player {
+  width: 100%;
+  display: block;
+}
+
+.video-details {
+  padding: 10px;
+}
+
+.delete-button {
+  padding: 5px 10px;
+  background-color: #dc3545;
+  width: 100%;
+  margin: 0 auto;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.button{
+  background-color: #1da6ea !important;
+  color: white !important;
+      border-radius: 8px;
+    padding: 10px;
+  &:hover{
+    background-color: #1da6ea !important;
+    box-shadow: none !important;
+  }
+  &.active{
+    background-color: #1da6ea !important;
+    box-shadow: none !important;
+  }
+}
+.main{
+  max-width: 1200px;
+  margin: auto;
+  padding-top: 20px;
+  .product-grid{
+    padding: 10px 0;
+  }
+  .edit-button{
+    width: 100%;
+  }
+}
+.confirm-button{
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+.modal-header{
+  margin: 0 !important;
 }

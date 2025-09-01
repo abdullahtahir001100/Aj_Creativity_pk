@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/header1";
 import Footer from "../components/Footer";
 
 export default function ProductDetail() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   // ReviewsSlider component - No animations
   const ReviewsSlider = () => {
-    const reviewsContainerRef = React.useRef(null);
+    const reviewsContainerRef = useRef(null);
 
     const firstNames = ["Eman", "Hamna", "Ayesha", "Subhan", "Aliya", "Zain", "Sana", "Bilal", "Hira", "Osman", "Mahnoor", "Hamza", "Sarah", "Adil", "Faiza", "Shahbaz", "Iqra", "Rizwan", "Maria", "Tariq", "Noor", "Saim", "Hafsa", "Arsalan", "Zoya"];
     const lastNames = ["Khan", "Ali", "Subhan", "Raza", "Mir", "Malik", "Shah", "Ahmed", "Qureshi", "Farooq", "Iqbal", "Tariq", "Javed", "Riaz", "Saleem", "Hussain", "Sheikh", "Zafar", "Aslam", "Saeed", "Nawaz", "Hashmi", "Aziz", "Anwar", "Sattar"];
@@ -34,7 +35,6 @@ export default function ProductDetail() {
       return { name: `${firstName} ${lastName}`, stars, text, img };
     });
 
-    // Populate the reviews container once on mount
     useEffect(() => {
       const container = reviewsContainerRef.current;
       if (container) {
@@ -73,44 +73,57 @@ export default function ProductDetail() {
   const initialProduct = location.state?.product
     ? { ...location.state.product, price: normalizePrice(location.state.product.price) }
     : undefined;
+
   const [mainProduct, setMainProduct] = useState(initialProduct);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [mainProduct]);
-
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [cartMessage, setCartMessage] = useState("");
 
+  // A helper function to fetch a product by its ID
+  const fetchProductById = async (id) => {
+    try {
+      const response = await fetch(`https://aj-creativity-pk-2dpo.vercel.app/api/products/${id}`);
+      const data = await response.json();
+      if (data.success && data.data) {
+        setMainProduct(data.data);
+      } else {
+        console.error("Failed to fetch product by ID:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching product from API:", error);
+    }
+  };
+
+  // Hardcoded products for the related products section
+  // Note: These are not used for the main product display anymore
   const products = [
-    { img: '/imgs/s1.jpg', name: 'Royal Radiance', price: '1,550', category: 'gold bangle' },
-    { img: '/imgs/s2.jpg', name: 'Timeless Spark', price: '500', category: 'bangle' },
-    { img: '/imgs/s3.jpg', name: 'Heritage Grace', price: '590', category: 'bangle' },
-    { img: '/imgs/s5.jpg', name: 'Elegant Loop', price: '1,350', category: 'bangle' },
-    { img: '/imgs/s6.jpg', name: 'Pearl Essence', price: '1,800', category: 'bangle' },
-    { img: '/imgs/s7.jpg', name: 'Golden Dream', price: '1,990', category: 'bangle' },
-    { img: '/imgs/s8.jpg', name: 'Textured Shine', price: '1,550', category: 'bangle' },
-    { img: '/imgs/s9.jpg', name: 'Floral Dream', price: '1,800', category: 'bangle' },
-    { img: '/imgs/s10.jpg', name: 'Artisan Touch', price: '1,350', category: 'bangle' },
-    { img: '/imgs/s11.jpg', name: 'Enamel Blossom', price: '1,550', category: 'bangle' },
-    { img: '/imgs/s12.jpg', name: 'Modern Chic', price: '550', category: 'earring' },
-    { img: '/imgs/s13.jpg', name: 'Vintage Aura', price: '490', category: 'earring' },
-    { img: '/imgs/s14.jpg', name: 'Pearl Drop', price: '500', category: 'earring' },
-    { img: '/imgs/s15.jpg', name: 'Signature Shine', price: '150', category: 'earring' },
-    { img: '/imgs/s16.jpg', name: 'Chic Hoops', price: '590', category: 'earring' },
-    { img: '/imgs/s17.jpg', name: 'Crystal Spark', price: '1,200', category: 'earring' },
-    { img: '/imgs/s18.jpg', name: 'Dazzle Drop', price: '1,350', category: 'earring' },
-    { img: '/imgs/s19.jpg', name: 'Petal Studs', price: '1,550', category: 'earring' },
-    { img: '/imgs/s20.jpg', name: 'Twist Loop', price: '1,800', category: 'earring' },
+    { image: '/imgs/s1.jpg', name: 'Royal Radiance', price: '1,550', category: 'gold bangle' },
+    { image: '/imgs/s2.jpg', name: 'Timeless Spark', price: '500', category: 'bangle' },
+    { image: '/imgs/s3.jpg', name: 'Heritage Grace', price: '590', category: 'bangle' },
+    { image: '/imgs/s5.jpg', name: 'Elegant Loop', price: '1,350', category: 'bangle' },
+    { image: '/imgs/s6.jpg', name: 'Pearl Essence', price: '1,800', category: 'bangle' },
+    { image: '/imgs/s7.jpg', name: 'Golden Dream', price: '1,990', category: 'bangle' },
+    { image: '/imgs/s8.jpg', name: 'Textured Shine', price: '1,550', category: 'bangle' },
+    { image: '/imgs/s9.jpg', name: 'Floral Dream', price: '1,800', category: 'bangle' },
+    { image: '/imgs/s10.jpg', name: 'Artisan Touch', price: '1,350', category: 'bangle' },
+    { image: '/imgs/s11.jpg', name: 'Enamel Blossom', price: '1,550', category: 'bangle' },
+    { image: '/imgs/s12.jpg', name: 'Modern Chic', price: '550', category: 'earring' },
+    { image: '/imgs/s13.jpg', name: 'Vintage Aura', price: '490', category: 'earring' },
+    { image: '/imgs/s14.jpg', name: 'Pearl Drop', price: '500', category: 'earring' },
+    { image: '/imgs/s15.jpg', name: 'Signature Shine', price: '150', category: 'earring' },
+    { image: '/imgs/s16.jpg', name: 'Chic Hoops', price: '590', category: 'earring' },
+    { image: '/imgs/s17.jpg', name: 'Crystal Spark', price: '1,200', category: 'earring' },
+    { image: '/imgs/s18.jpg', name: 'Dazzle Drop', price: '1,350', category: 'earring' },
+    { image: '/imgs/s19.jpg', name: 'Petal Studs', price: '1,550', category: 'earring' },
+    { image: '/imgs/s20.jpg', name: 'Twist Loop', price: '1,800', category: 'earring' },
   ];
 
   let relatedProducts = mainProduct
     ? products.filter(
         (p) =>
           p.category === mainProduct.category &&
-          (p.name !== mainProduct.name || p.img !== mainProduct.img)
+          p.name !== mainProduct.name
       )
     : products;
 
@@ -125,6 +138,15 @@ export default function ProductDetail() {
 
   relatedProducts = shuffle(relatedProducts).slice(0, 4);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // If the main product exists in the location state, use that.
+    if (location.state?.product) {
+      setMainProduct({ ...location.state.product, price: normalizePrice(location.state.product.price) });
+    }
+  }, [location.state?.product]);
+
+
   return (
     <>
       <Header />
@@ -132,9 +154,10 @@ export default function ProductDetail() {
         <div className="product-detail">
           {/* Image Section */}
           <div className="product-image">
+            {/* The fix is here: using 'image' instead of 'img' */}
             <img
-              src={mainProduct?.img || "./imgs/s11.jpg"}
-              alt={mainProduct?.name || "Gold Necklace"}
+              src={mainProduct?.image || "/imgs/s11.jpg"}
+              alt={mainProduct?.name || "Product Image"}
             />
           </div>
 
@@ -231,7 +254,7 @@ export default function ProductDetail() {
                   size: mainProduct.category === 'earring' ? undefined : selectedSize,
                   price: Number(String(mainProduct.price).replace(/[^\d]/g, "")),
                   quantity,
-                  img: mainProduct.img
+                  img: mainProduct.image // Use 'image' property
                 };
                 let cart = [];
                 try { cart = JSON.parse(localStorage.getItem("cart")) || []; } catch (e) {}
@@ -284,13 +307,15 @@ export default function ProductDetail() {
                 key={idx}
                 style={{ cursor: "pointer" }}
                 onClick={() => {
+                  navigate('/details', { state: { product: { ...product, image: product.image, price: normalizePrice(product.price) } }});
                   setMainProduct(product);
                   setSelectedSize("");
                   setSelectedColor("");
                   setQuantity(1);
                 }}
               >
-                <img src={product.img} alt={product.name} />
+                {/* Fix: Use 'image' instead of 'img' for related products */}
+                <img src={product.image} alt={product.name} />
                 <div className="flex-1">
                   <div className="detail">
                     <small>{product.category}</small>

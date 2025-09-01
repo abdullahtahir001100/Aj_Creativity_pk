@@ -41,6 +41,8 @@ const DashboardProtectedWrapper = () => {
           >
             Products
           </button>
+         <a href="/#/HomeDashboard" className="button">HomeDashboard</a>
+        
         </nav>
       </header>
 

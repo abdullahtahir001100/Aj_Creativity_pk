@@ -27,6 +27,16 @@ li {
 .product .sec-1 {
   padding: 0 !important;
 }
+  .shop-grid{
+  .image{
+    img{
+      width: 100% !important;
+      height: 300px !important;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.6) !important;
+      object-fit: cover;
+    }
+  }
+}
 
 .watch{
   margin-bottom: 10px !important;

@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/dashboard-header.scss'; // Import the SCSS file
 
-// Cloudinary configuration (VERIFY THESE VALUES)
+// Cloudinary configuration
 const CLOUDINARY_CLOUD_NAME = 'dwnnadeb0';
 const CLOUDINARY_UPLOAD_PRESET = 'aj_creativity_preset';
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
-const API_URL = 'https://server-nine-kappa-75.vercel.app/api/data';
+// Updated API URL to match your backend's new root path
+const API_URL = 'https://server-nine-kappa-75.vercel.app/data';
 
 const Dashboard = () => {
   const [products, setProducts] = useState([]);
@@ -28,7 +29,7 @@ const Dashboard = () => {
     try {
       const response = await fetch(API_URL);
       if (!response.ok) throw new Error('Failed to fetch products');
-      const data = await response.json();
+      const { data } = await response.json(); // Correctly destructure to get the array
       setProducts(data);
     } catch (err) {
       setError(err.message);
@@ -50,7 +51,7 @@ const Dashboard = () => {
         placement: 'latest'
       }));
       setDynamicForms(newForms);
-      setIsEditing(false); // Can't edit multiple at once, reset form
+      setIsEditing(false);
     } else {
       setDynamicForms([]);
     }
@@ -71,7 +72,7 @@ const Dashboard = () => {
     const imageUrls = [];
 
     for (const form of dynamicForms) {
-      if (!form.imageFile) continue; // Skip if no file is present
+      if (!form.imageFile) continue;
 
       const formData = new FormData();
       formData.append('file', form.imageFile);

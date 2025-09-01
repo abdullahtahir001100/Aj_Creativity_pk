@@ -5,6 +5,8 @@ import Footer from '../components/Footer';
 import '../styles/main.scss';
 import '../styles/animation.scss';
 
+const API_BASE_URL = 'https://server-nine-kappa-75.vercel.app';
+
 const Home = () => {
   const [splashVisible, setSplashVisible] = useState(true);
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -27,22 +29,25 @@ const Home = () => {
     const fetchAllData = async () => {
       try {
         // Fetch products
-        const productsResponse = await fetch('https://server-nine-kappa-75.vercel.app/api/data');
+        const productsResponse = await fetch(`${API_BASE_URL}/data`);
         if (!productsResponse.ok) throw new Error('Failed to fetch products');
         const productsData = await productsResponse.json();
         
-        // Filter products for featured and latest sections
-        const fetchedFeatured = productsData.filter(p => p.placement === 'featured');
-        const fetchedLatest = productsData.filter(p => p.placement === 'latest');
+        // Correctly filter from the 'data' property of the response
+        const fetchedFeatured = productsData.data.filter(p => p.placement === 'featured');
+        const fetchedLatest = productsData.data.filter(p => p.placement === 'latest');
         
         setFeaturedProducts(fetchedFeatured);
         setLatestProducts(fetchedLatest);
 
         // Fetch videos
-        const videosResponse = await fetch('https://server-nine-kappa-75.vercel.app/api/videos');
+        const videosResponse = await fetch(`${API_BASE_URL}/videos`);
         if (!videosResponse.ok) throw new Error('Failed to fetch videos');
         const videosData = await videosResponse.json();
-        setVideos(videosData);
+        
+        // Correctly access the 'data' property
+        const fetchedVideos = videosData.data || [];
+        setVideos(fetchedVideos);
 
       } catch (err) {
         setError(err.message);
@@ -247,42 +252,41 @@ const Home = () => {
       </section>
 
       {/* Watch (Videos) Section */}
-    {/* Watch (Videos) Section */}
-      <section className="watch" data-aos="fade-up" data-aos-delay="780" data-aos-once="true">
-        <div className="cointain">
-          <div className="heading">
-            <div className="h1">
-              <h1>Our Collections</h1>
-            </div>
-          </div>
-          <div className="line"></div>
-          <div className="backcolor">
-            <div className="shop-grid videos-grid" data-aos="fade-up" data-aos-delay="580" data-aos-once="true">
-              {videos.length > 0 ? (
-                videos.map((video, idx) => (
-                  <div className="video-wrapper" key={video._id || idx}>
-                    <video
-                      className="video-player"
-                      controls
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      loading="lazy"
-                      poster="/imgs/logo.png"
-                    >
-                      <source src={video.videoUrl} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                ))
-              ) : (
-                <p style={{ textAlign: 'center', width: '100%' }}>No videos available.</p>
-              )}
-          </div>
-          </div>
-        </div>
-      </section>
+      <section className="watch" data-aos="fade-up" data-aos-delay="780" data-aos-once="true">
+        <div className="cointain">
+          <div className="heading">
+            <div className="h1">
+              <h1>Our Collections</h1>
+            </div>
+          </div>
+          <div className="line"></div>
+          <div className="backcolor">
+            <div className="shop-grid videos-grid" data-aos="fade-up" data-aos-delay="580" data-aos-once="true">
+              {videos.length > 0 ? (
+                videos.map((video, idx) => (
+                  <div className="video-wrapper" key={video._id || idx}>
+                    <video
+                      className="video-player"
+                      controls
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      loading="lazy"
+                      poster="/imgs/logo.png"
+                    >
+                      <source src={video.videoUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ))
+              ) : (
+                <p style={{ textAlign: 'center', width: '100%' }}>No videos available.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {cartMessage && (
         <div style={{ position: 'fixed', top: 10, right: 30, background: '#4BB543', color: '#fff', padding: '12px 28px', borderRadius: 10, fontWeight: 600, zIndex: 9999, boxShadow: '0 4px 16px rgba(0,0,0,0.13)' }}>

@@ -7,7 +7,8 @@ const CLOUDINARY_CLOUD_NAME = 'dwnnadeb0';
 const CLOUDINARY_UPLOAD_PRESET_VIDEOS = 'aj_creativity_video_preset'; 
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
 
-const API_URL = 'https://server-nine-kappa-75.vercel.app/api/videos';
+// Updated API URL to match your backend's new root path
+const API_URL = 'https://server-nine-kappa-75.vercel.app/videos';
 
 const VideoDashboard = () => {
   const [videos, setVideos] = useState([]);
@@ -26,7 +27,7 @@ const VideoDashboard = () => {
     try {
       const response = await fetch(API_URL);
       if (!response.ok) throw new Error('Failed to fetch videos');
-      const data = await response.json();
+      const { data } = await response.json(); // Correctly destructure to get the array
       setVideos(data);
     } catch (err) {
       setError(err.message);
@@ -130,7 +131,7 @@ const VideoDashboard = () => {
         <h1 className="dashboard-title">Manage Videos</h1>
         
         {/* Navigation buttons */}
-       
+        
 
         {/* Video Upload Form */}
         <div className="upload-form-section">

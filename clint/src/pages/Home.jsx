@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import '../styles/main.scss';
 import '../styles/animation.scss';
 
-const API_BASE_URL = 'https://server-nine-kappa-75.vercel.app';
+const API_BASE_URL = 'https://server-nine-kappa-75.vercel.app/api';
 
 const Home = () => {
   const [splashVisible, setSplashVisible] = useState(true);

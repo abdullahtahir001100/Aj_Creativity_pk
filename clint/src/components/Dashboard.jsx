@@ -8,7 +8,7 @@ const CLOUDINARY_UPLOAD_PRESET = 'aj_creativity_preset';
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 // Updated API URL to match your backend's new root path
-const API_URL = 'https://server-nine-kappa-75.vercel.app/data';
+const API_URL = 'https://server-nine-kappa-75.vercel.app/api/data';
 
 const Dashboard = () => {
   const [products, setProducts] = useState([]);

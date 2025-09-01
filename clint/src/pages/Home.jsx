@@ -27,7 +27,7 @@ const Home = () => {
     const fetchAllData = async () => {
       try {
         // Fetch products
-        const productsResponse = await fetch('http://localhost:5000/api/data');
+        const productsResponse = await fetch('https://server-nine-kappa-75.vercel.app/api/data');
         if (!productsResponse.ok) throw new Error('Failed to fetch products');
         const productsData = await productsResponse.json();
         
@@ -39,7 +39,7 @@ const Home = () => {
         setLatestProducts(fetchedLatest);
 
         // Fetch videos
-        const videosResponse = await fetch('http://localhost:5000/api/videos');
+        const videosResponse = await fetch('https://server-nine-kappa-75.vercel.app/api/videos');
         if (!videosResponse.ok) throw new Error('Failed to fetch videos');
         const videosData = await videosResponse.json();
         setVideos(videosData);

@@ -130,10 +130,7 @@ const VideoDashboard = () => {
         <h1 className="dashboard-title">Manage Videos</h1>
         
         {/* Navigation buttons */}
-        <div className="nav-buttons">
-          <Link to="/HomeDashboard" className="nav-button">Manage Products</Link>
-          <Link to="/dashboard" className="nav-button">Manage Dashboard</Link>
-        </div>
+       
 
         {/* Video Upload Form */}
         <div className="upload-form-section">

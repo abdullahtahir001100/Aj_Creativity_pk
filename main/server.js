@@ -4,25 +4,38 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const app = express();
-const port = 5000;
 
-// Your MongoDB Atlas Connection URI
-const MONGODB_URI = 'mongodb+srv://at4105168:2FWz679VE0UmJpL4@cluster0.czsqioy.mongodb.net/aj_new_project?retryWrites=true&w=majority';
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
 
-// Connect to MongoDB
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log('Successfully connected to MongoDB!'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// Check if mongoose is already connected to prevent hot-reloading issues on Vercel
+let isConnected = false;
+const connectDB = async () => {
+  if (isConnected) {
+    console.log('Using existing database connection');
+    return;
+  }
+  try {
+    // Vercel ke environment variables se MONGODB_URI use karen
+    // Use MONGODB_URI from Vercel's environment variables
+    await mongoose.connect(process.env.MONGODB_URI);
+    isConnected = true;
+    console.log('Successfully connected to MongoDB!');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+    isConnected = false;
+  }
+};
 
-// Define the Video Schema
+// Video Schema
 const videoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   videoUrl: { type: String, required: true }
 });
-
 const Video = mongoose.model('Video', videoSchema);
 
-// Define a Mongoose Schema for a Product (from your previous code)
+// Product Schema
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: String, required: true },
@@ -37,90 +50,99 @@ const productSchema = new mongoose.Schema({
 });
 const Product = mongoose.model('Product', productSchema);
 
-// Use middleware
-app.use(cors());
-app.use(bodyParser.json());
-
 // API Endpoints for Videos
-// READ all videos (GET)
 app.get('/api/videos', async (req, res) => {
+  await connectDB();
   try {
     const videos = await Video.find();
-    res.json(videos);
+    res.json({ success: true, data: videos });
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching videos', error: err.message });
+    res.status(500).json({ success: false, message: 'Error fetching videos', error: err.message });
   }
 });
 
-// CREATE a new video (POST)
 app.post('/api/videos', async (req, res) => {
+  await connectDB();
   try {
     const newVideo = new Video(req.body);
     const savedVideo = await newVideo.save();
-    res.status(201).json(savedVideo);
+    res.status(201).json({ success: true, data: savedVideo });
   } catch (err) {
-    res.status(400).json({ message: 'Error adding video', error: err.message });
+    res.status(400).json({ success: false, message: 'Error adding video', error: err.message });
   }
 });
 
-// DELETE a video (DELETE)
 app.delete('/api/videos/:id', async (req, res) => {
+  await connectDB();
   try {
     const deletedVideo = await Video.findByIdAndDelete(req.params.id);
     if (!deletedVideo) {
-      return res.status(404).json({ message: 'Video not found' });
+      return res.status(404).json({ success: false, message: 'Video not found' });
     }
-    res.status(200).json({ message: 'Video deleted successfully' });
+    res.status(200).json({ success: true, message: 'Video deleted successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Error deleting video', error: err.message });
+    res.status(500).json({ success: false, message: 'Error deleting video', error: err.message });
   }
 });
 
-// API Endpoints for Products (from your previous code)
+// API Endpoints for Products
 app.get('/api/data', async (req, res) => {
+  await connectDB();
   try {
     const products = await Product.find().sort({ createdAt: -1 });
-    res.json(products);
+    res.json({ success: true, data: products });
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching products', error: err.message });
+    res.status(500).json({ success: false, message: 'Error fetching products', error: err.message });
+  }
+});
+
+app.get('/api/products', async (req, res) => {
+  await connectDB();
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json({ success: true, data: products });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Error fetching products', error: err.message });
   }
 });
 
 app.post('/api/data', async (req, res) => {
+  await connectDB();
   try {
     const newProduct = new Product(req.body);
     const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct);
+    res.status(201).json({ success: true, data: savedProduct });
   } catch (err) {
-    res.status(400).json({ message: 'Error adding product', error: err.message });
+    res.status(400).json({ success: false, message: 'Error adding product', error: err.message });
   }
 });
 
 app.put('/api/data/:id', async (req, res) => {
+  await connectDB();
   try {
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ success: false, message: 'Product not found' });
     }
-    res.json(updatedProduct);
+    res.json({ success: true, data: updatedProduct });
   } catch (err) {
-    res.status(400).json({ message: 'Error updating product', error: err.message });
+    res.status(400).json({ success: false, message: 'Error updating product', error: err.message });
   }
 });
 
 app.delete('/api/data/:id', async (req, res) => {
+  await connectDB();
   try {
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
     if (!deletedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ success: false, message: 'Product not found' });
     }
-    res.status(200).json({ message: 'Product deleted successfully' });
+    res.status(200).json({ success: true, message: 'Product deleted successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Error deleting product', error: err.message });
+    res.status(500).json({ success: false, message: 'Error deleting product', error: err.message });
   }
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+// Vercel ke liye, app ko export karna zaroori hai.
+// For Vercel, it is necessary to export the app.
+module.exports = app;

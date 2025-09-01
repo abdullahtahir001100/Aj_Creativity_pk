@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import DashboardOverview from "./DashboardOverview";
 import OrderManagement from "./OrderManagement";
 import V1 from "./v1";
+import Home from "./Dashboard"; 
+import Video from "./VideoDashboard";// Added import for the Home component
 import AuthForm from "../components/AuthForm.jsx";
-import "../styles/dashboard-header.scss"; // Naya SCSS file import kiya gaya hai
+import "../styles/dashboard-header.scss";
 
 const DashboardProtectedWrapper = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -19,7 +21,6 @@ const DashboardProtectedWrapper = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Naya Header */}
       <header className="dashboard-header">
         <h1 className="dashboard-title">Admin Dashboard</h1>
         <nav className="nav-links">
@@ -41,8 +42,18 @@ const DashboardProtectedWrapper = () => {
           >
             Products
           </button>
-         <a href="/#/HomeDashboard" className="button">HomeDashboard</a>
-        
+          <button
+            onClick={() => setCurrentPage("homeDashboard")}
+            className={`nav-button ${currentPage === "homeDashboard" ? "active" : ""}`}
+          >
+            Home Dashboard
+          </button>
+          <button style={{fontSize: '12px'}}
+            onClick={() => setCurrentPage("VideoDashboard")}
+            className={`nav-button ${currentPage === "VideoDashboard" ? "active" : ""}`}
+          >
+            Video Dashboard
+          </button>
         </nav>
       </header>
 
@@ -50,6 +61,8 @@ const DashboardProtectedWrapper = () => {
         {currentPage === "overview" && <DashboardOverview />}
         {currentPage === "orders" && <OrderManagement />}
         {currentPage === "products" && <V1 />}
+        {currentPage === "homeDashboard" && <Home />}
+        {currentPage === "VideoDashboard" && <Video />}
       </main>
     </div>
   );

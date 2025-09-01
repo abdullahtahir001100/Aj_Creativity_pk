@@ -232,14 +232,7 @@ const Dashboard = () => {
   return (
     <>
       <div className="dashboard-container">
-        <h1>Admin Dashboard</h1>
-        
-        {/* Navigation Buttons */}
-        <div className="nav-buttons">
-          <Link to="/HomeDashboard" className="nav-button">Manage Products</Link>
-          <Link to="/VideoDashboard" className="nav-button">Manage Videos</Link>
-        </div>
-
+        <h1>Manage Home Products</h1>
         {/* Product Management Section */}
         <div className="product-management">
           <h2>{isEditing ? 'Edit Product' : 'Add New Product(s)'}</h2>

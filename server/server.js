@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -33,7 +32,7 @@ const orderSchema = new mongoose.Schema({
       color: { type: String },
       category: { type: String },
       quantity: { type: Number, required: true },
-      image: { type: String },
+      image: { type: String }, // This requires a String
       price: { type: Number, required: true },
     },
   ],
@@ -111,7 +110,6 @@ app.get("/api/dashboard-metrics", async (req, res) => {
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
 
-    // Get Current Period (Last 30 days) and Previous Period (30-60 days ago) Data
     const [currentPeriodData, previousPeriodData] = await Promise.all([
       Order.aggregate([
         { $match: { createdAt: { $gte: thirtyDaysAgo } } },
@@ -140,7 +138,6 @@ app.get("/api/dashboard-metrics", async (req, res) => {
     const current = currentPeriodData[0] || { totalOrders: 0, totalRevenue: 0, uniqueCustomers: [] };
     const previous = previousPeriodData[0] || { totalOrders: 0, totalRevenue: 0, uniqueCustomers: [] };
 
-    // Calculate Percentage Changes
     const calculateTrend = (currentValue, previousValue) => {
       if (previousValue === 0) return currentValue > 0 ? 100 : 0;
       return ((currentValue - previousValue) / previousValue) * 100;
@@ -150,94 +147,40 @@ app.get("/api/dashboard-metrics", async (req, res) => {
     const revenueTrend = calculateTrend(current.totalRevenue, previous.totalRevenue);
     const newCustomersTrend = calculateTrend(current.uniqueCustomers.length, previous.uniqueCustomers.length);
 
-    // Monthly Sales Data
     const monthlySales = await Order.aggregate([
-      {
-        $group: {
-          _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
-          sales: { $sum: "$totalPrice" }
-        }
-      },
+      { $group: { _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } }, sales: { $sum: "$totalPrice" } } },
       { $sort: { _id: 1 } },
-      {
-        $project: {
-          _id: 0,
-          name: "$_id",
-          sales: "$sales"
-        }
-      }
+      { $project: { _id: 0, name: "$_id", sales: "$sales" } }
     ]);
 
-    // Top Products Data
     const topProducts = await Order.aggregate([
       { $unwind: "$products" },
-      {
-        $group: {
-          _id: "$products.name",
-          value: { $sum: "$products.quantity" }
-        }
-      },
+      { $group: { _id: "$products.name", value: { $sum: "$products.quantity" } } },
       { $sort: { value: -1 } },
       { $limit: 5 },
       { $project: { _id: 0, name: "$_id", value: "$value" } }
     ]);
 
-    // Daily Revenue Data (last 7 days)
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const dailyRevenue = await Order.aggregate([
       { $match: { createdAt: { $gte: sevenDaysAgo } } },
-      {
-        $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-          revenue: { $sum: "$totalPrice" }
-        }
-      },
+      { $group: { _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, revenue: { $sum: "$totalPrice" } } },
       { $sort: { _id: 1 } },
-      {
-        $project: {
-          _id: 0,
-          name: "$_id",
-          revenue: "$revenue"
-        }
-      }
+      { $project: { _id: 0, name: "$_id", revenue: "$revenue" } }
     ]);
   
-    // Order Funnel Data
     const orderFunnel = await Order.aggregate([
-      {
-        $group: {
-          _id: "$status",
-          value: { $sum: 1 }
-        }
-      },
+      { $group: { _id: "$status", value: { $sum: 1 } } },
       { $sort: { _id: 1 } },
-      {
-        $project: {
-          _id: 0,
-          name: "$_id",
-          value: "$value"
-        }
-      }
+      { $project: { _id: 0, name: "$_id", value: "$value" } }
     ]);
   
-    // Top Locations Data
     const topLocations = await Order.aggregate([
-      {
-        $group: {
-          _id: "$location",
-          value: { $sum: 1 }
-        }
-      },
+      { $group: { _id: "$location", value: { $sum: 1 } } },
       { $sort: { value: -1 } },
       { $limit: 5 },
-      {
-        $project: {
-          _id: 0,
-          name: "$_id",
-          value: "$value"
-        }
-      }
+      { $project: { _id: 0, name: "$_id", value: "$value" } }
     ]);
 
     const dashboardMetrics = {
@@ -266,20 +209,17 @@ app.get("/api/dashboard-metrics", async (req, res) => {
 // ======================
 const startServer = async () => {
   try {
-    // Connect to MongoDB only ONCE when the server starts
     await mongoose.connect(process.env.MONGODB_URI, {
       serverSelectionTimeoutMS: 30000,
     });
     console.log("✅ MongoDB connected");
 
-    // After a successful connection, start the Express server
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
     
   } catch (err) {
     console.error("❌ Failed to connect to MongoDB", err);
-    process.exit(1); // Exit the application if the database connection fails
+    process.exit(1);
   }
 };
 
-// Run the function to initialize the database connection and start the server
 startServer();

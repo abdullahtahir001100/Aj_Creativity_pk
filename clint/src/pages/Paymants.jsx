@@ -52,6 +52,9 @@ export default function PaymentPage() {
   const mapRef = useRef(null);
 
   const [checkoutCart, setCheckoutCart] = useState([]);
+  
+  // ✅ 1. ADD NEW STATE TO PREVENT DUPLICATE ORDERS
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Load cart from localStorage
   useEffect(() => {
@@ -119,7 +122,11 @@ export default function PaymentPage() {
 
   // Place order
   const handlePlaceOrder = async () => {
-    if (!acceptTerms) return setInputError("You must accept our terms and policies.");
+    // ✅ 3. MODIFY THIS FUNCTION
+    // --- Validation Checks ---
+    if (!acceptTerms) {
+      return setInputError("You must accept our terms and policies.");
+    }
     if (!userName.trim() || !primaryNumber.trim() || !address.trim() || !searchQuery.trim()) {
       return setInputError("Please fill in all required fields including location.");
     }
@@ -132,6 +139,9 @@ export default function PaymentPage() {
     if (primaryNumber.replace(/\D/g, "").length < 12) {
       return setInputError("Primary number is invalid.");
     }
+    
+    setInputError(""); // Clear previous errors before submitting
+    setIsSubmitting(true); // Disable button
 
     try {
       const response = await fetch("https://aj-creativity-pk.vercel.app/api/orders", {
@@ -150,7 +160,7 @@ export default function PaymentPage() {
             color: item.color || "",
             category: item.category || "",
             quantity: item.quantity,
-            image: item.img,
+            image: Array.isArray(item.img) ? item.img[0] : item.img,
             price: item.price,
           })),
           totalPrice,
@@ -160,7 +170,6 @@ export default function PaymentPage() {
 
       const data = await response.json();
       if (data.success) {
-        setInputError("");
         setShowPopup(true);
       } else {
         setInputError(data.message || "Failed to place order.");
@@ -168,6 +177,8 @@ export default function PaymentPage() {
     } catch (error) {
       console.error("Order Error:", error);
       setInputError("❌ Failed to connect to server.");
+    } finally {
+      setIsSubmitting(false); // Re-enable button when done (success or fail)
     }
   };
 
@@ -242,9 +253,10 @@ export default function PaymentPage() {
                 I accept your terms and policies.
               </label>
             </div>
-
-            <button className="pay-btn" onClick={handlePlaceOrder} disabled={!acceptTerms}>
-              Confirm & Pay
+            
+            {/* ✅ 2. UPDATE THE BUTTON'S DISABLED PROP AND TEXT */}
+            <button className="pay-btn" onClick={handlePlaceOrder} disabled={isSubmitting}>
+              {isSubmitting ? "Placing Order..." : "Confirm & Pay"}
             </button>
 
             {inputError && <div style={{ color: "red", marginTop: 10, fontSize: 15 }}>{inputError}</div>}

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Header from "../components/header1";
+import Header from "../components/header1"; 
 import Footer from "../components/Footer";
+import Loader from "../components/loader";
+
 
 export default function ProductDetail() {
   const location = useLocation();
@@ -24,9 +26,23 @@ export default function ProductDetail() {
     return Number(String(val).replace(/[^\d]/g, ''));
   }
 
+  // Helper to retrieve the main product from sessionStorage on page refresh
+  const getProductFromStorage = () => {
+    const savedProduct = sessionStorage.getItem('mainProduct');
+    if (savedProduct) {
+      try {
+        return JSON.parse(savedProduct);
+      } catch (e) {
+        console.error("Could not parse product from session storage", e);
+        return undefined;
+      }
+    }
+    return undefined;
+  };
+
   const initialProduct = location.state?.product
     ? { ...location.state.product, price: normalizePrice(location.state.product.price) }
-    : undefined;
+    : getProductFromStorage();
 
   const [mainProduct, setMainProduct] = useState(initialProduct);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -36,11 +52,13 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [cartMessage, setCartMessage] = useState("");
 
-  // Scroll to top and set main product when component loads or location state changes
+  // Scroll to top, set main product, and persist to sessionStorage
   useEffect(() => {
     window.scrollTo(0, 0);
     if (location.state?.product) {
-      setMainProduct({ ...location.state.product, price: normalizePrice(location.state.product.price) });
+      const newProduct = { ...location.state.product, price: normalizePrice(location.state.product.price) };
+      setMainProduct(newProduct);
+      sessionStorage.setItem('mainProduct', JSON.stringify(newProduct));
       // Reset options when product changes
       setSelectedSize("");
       setSelectedColor("");
@@ -92,12 +110,14 @@ export default function ProductDetail() {
             return []; // Return an empty array for this response to avoid errors
         });
 
+        // De-duplicate the combined list of products based on their _id
+        const uniqueProducts = Array.from(new Map(allProducts.map(item => [item._id, item])).values());
 
-        if (allProducts.length > 0) {
+        if (uniqueProducts.length > 0) {
           // Filter products:
           // 1. Match the category of the main product.
           // 2. Exclude the main product itself from the list.
-          const filtered = allProducts.filter(
+          const filtered = uniqueProducts.filter(
             (p) => p.category === mainProduct.category && p._id !== mainProduct._id
           );
           
@@ -144,8 +164,8 @@ export default function ProductDetail() {
               parties, and special occasions.
             </p>
 
-            {/* Size (not for earrings) */}
-            {mainProduct?.category !== 'earring' && (
+            {/* Size (not for earringss) */}
+            {mainProduct?.category !== 'earrings' && (
               <div className="option-group">
                 <label>Size:</label>
                 <div className="options">
@@ -195,18 +215,18 @@ export default function ProductDetail() {
             <button
               className="add-to-cart"
               disabled={
-                mainProduct?.category === 'earring'
+                mainProduct?.category === 'earrings'
                   ? !(selectedColor && quantity > 0)
                   : !(selectedSize && selectedColor && quantity > 0)
               }
               style={{
-                opacity: (mainProduct?.category === 'earring' ? (selectedColor && quantity > 0) : (selectedSize && selectedColor && quantity > 0)) ? 1 : 0.5,
-                cursor: (mainProduct?.category === 'earring' ? (selectedColor && quantity > 0) : (selectedSize && selectedColor && quantity > 0)) ? "pointer" : "not-allowed"
+                opacity: (mainProduct?.category === 'earrings' ? (selectedColor && quantity > 0) : (selectedSize && selectedColor && quantity > 0)) ? 1 : 0.5,
+                cursor: (mainProduct?.category === 'earrings' ? (selectedColor && quantity > 0) : (selectedSize && selectedColor && quantity > 0)) ? "pointer" : "not-allowed"
               }}
               onClick={() => {
                 if (!mainProduct) return;
-                const isEarring = mainProduct.category === 'earring';
-                const canAddToCart = isEarring ? (selectedColor && quantity > 0) : (selectedSize && selectedColor && quantity > 0);
+                const isearrings = mainProduct.category === 'earrings';
+                const canAddToCart = isearrings ? (selectedColor && quantity > 0) : (selectedSize && selectedColor && quantity > 0);
                 
                 if (!canAddToCart) return;
 
@@ -215,7 +235,7 @@ export default function ProductDetail() {
                   name: mainProduct.name,
                   category: mainProduct.category,
                   color: selectedColor,
-                  size: isEarring ? undefined : selectedSize,
+                  size: isearrings ? undefined : selectedSize,
                   price: normalizePrice(mainProduct.price),
                   quantity,
                   img: mainProduct.image
@@ -246,7 +266,7 @@ export default function ProductDetail() {
         </div>
         <div className={`products-grid points${relatedProducts.length <= 4 ? ' center-few' : ''}`}>
           {loadingRelated ? (
-            <p>Loading related products...</p>
+            <p><Loader /></p>
           ) : relatedProducts.length === 0 ? (
             <p>No related products found.</p>
           ) : (

@@ -18,6 +18,7 @@ import VideoDashboard from "./components/VideoDashboard";
 import Dashboard from "./components/DashboardProtectedWrapper";
 import HomeDashboard from "./components/Dashboard";
 import BackToTopButton from "./components/BackToTopButton";
+import BlogDashboard from "./components/BlogDashboard";
 import OrderManagement from "./components/OrderManagement";
 
 
@@ -40,6 +41,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/About" element={<About />} />
+            <Route path="/BlogDashboard" element={<BlogDashboard />} />
             <Route path="/Contact" element={<Contact />} />
             <Route path="/Product" element={<Product />} />
             <Route path="/Cart" element={<Cart />} />

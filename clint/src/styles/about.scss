@@ -124,3 +124,41 @@ strong{
     font-size: 15.5px;
     font-weight: bold;
 }
+.MuiButtonBase-root{
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: green !important;
+  &:hover{
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+    color: green !important;
+    background-color: transparent !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+}
+  &:active{
+    background: transparent !important;
+    background-color: transparent !important;
+     box-shadow: none !important;
+     color: green !important;
+  }
+   &:focus{
+    background: transparent !important;
+    background-color: transparent !important;
+     box-shadow: none !important;
+     color: green !important;
+  }
+     &:focus-visible{
+    background: transparent !important;
+    background-color: transparent !important;
+     box-shadow: none !important;
+     color: green !important;
+  }
+}
+.MuiToggleButtonGroup-root{
+  gap: 10px !important;
+}

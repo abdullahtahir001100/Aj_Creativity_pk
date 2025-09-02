@@ -214,14 +214,14 @@ body {
   align-items: center;
   button{
     margin: 0 10px;
-    background-color: #1da6ea !important;
+    background-color: #6F4E37 !important;
     font-family: light;
     &:hover{
-      background-color: #1da6ea !important;
+      background-color: #6F4E37 !important;
       box-shadow: none !important;
     }
     &.active{
-      background-color: #1da6ea !important;
+      background-color: #6F4E37 !important;
       box-shadow: none !important;
     }
   }
@@ -231,19 +231,19 @@ body {
     background: none !important;
     &:hover{
       background: none !important;
-      color: #1da6ea !important;
+      color: #6F4E37 !important;
       box-shadow: none !important;
     }
     &.active{
       background: none !important;
       box-shadow: none !important;
-      color: #1da6ea !important;
+      color: #6F4E37 !important;
       background-color: none !important;
     }
     &:focus{
       background: none !important;
       box-shadow: none !important;
-      color: #1da6ea !important;
+      color: #6F4E37 !important;
       background-color: none !important;
     }
   }
@@ -251,10 +251,10 @@ body {
 .modal-close-button{
   background-color: none !important;
   background: none !important;
-  color: #1da6ea !important;
+  color: #6F4E37 !important;
   &:hover{
     background: none !important;
-    color: #1da6ea !important;
+    color: #6F4E37 !important;
     box-shadow: none !important;
     transform: none !important;
     -webkit-transform: none !important;
@@ -265,13 +265,13 @@ body {
   &.active{
     background: none !important;
     box-shadow: none !important;
-    color: #1da6ea !important;
+    color: #6F4E37 !important;
     background-color: none !important;
   }
   &:focus{
     background: none !important;
     box-shadow: none !important;
-    color: #1da6ea !important;
+    color: #6F4E37 !important;
     background-color: none !important;
   }
 }

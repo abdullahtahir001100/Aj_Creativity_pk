@@ -33,9 +33,7 @@ function App() {
 
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
+      
         <>
           {/* <RightClickBlocker message="✨ For your best browsing experience, right-click is disabled on this website. Thank you for understanding 🙏" /> */}
           <ScrollToTop />
@@ -58,7 +56,7 @@ function App() {
           </Routes>
           <BackToTopButton />
         </>
-      )}
+      
     </>
   );
 }

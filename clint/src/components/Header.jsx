@@ -30,34 +30,36 @@ const Header = () => {
   return (
     <header>
         <div className="flexbox">
-          <div className="logo">
-            <div className="col-1">
-              <div className="image">
-                <Link to="/"><img src="./imgs/logo.png" alt="Logo" /></Link>
-              </div>
-            </div>
-          </div>
-          <div className="col-2">
             <nav className="flexbox">
               <ul>
                 <li><Link to="" className={location.pathname === '/' ? 'active' : ''}>Home</Link></li>
                 <li><Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>About</Link></li>
                 <li><Link to="/contact" className={location.pathname === '/contact' ? 'active' : ''}>Contact</Link></li>
+              </ul>
+                        <div className="logo">
+            <div className="col-1">
+              <div className="image">
+                <Link to="/"><img src="./imgs - Copy/logo.svg" alt="Logo" /></Link>
+              </div>
+            </div>
+          </div>
+              <ul>
                 <li><Link to="/blogs" className={location.pathname === '/blogs' ? 'active' : ''}>Blogs</Link></li>
                 {/* Cart icon: hide on Cart page */}
-                {location.pathname !== '/cart' && (
+                <li><Link to="/product" className={`button${location.pathname === '/product' ? ' active' : ''}`}>Explore now</Link></li>
+                 {location.pathname !== '/cart' && (
                   <li className='cart'>
+                    
                     <Link to="/Cart" className={location.pathname === '/cart' ? 'active' : ''}>
-                      <img src="./shopping.png" alt="" />
+                      <img src="./shopping1.png" alt="" />
                       {cartCount > 0 && <strong>{cartCount}</strong>}
                     </Link>
                   </li>
                 )}
-                <li><Link to="/product" className={`button${location.pathname === '/product' ? ' active' : ''}`}>Explore now</Link></li>
               </ul>
               <a className="burger" onClick={openBurger}><img src="./burger.png" alt="Burger" /></a>
             </nav>
-          </div>
+          
         </div>
        <div className="links" id="togal" style={{
          top: burgerOpen ? '82px' : '-382px',

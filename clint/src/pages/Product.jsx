@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/header1";
+import Loader from "../components/loader";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import Footer from "../components/Footer";
@@ -147,7 +148,7 @@ const Product = () => {
           </aside>
           <div className="products-grid" data-aos="fade-up" data-aos-delay="450" data-aos-once="true">
             {loading ? (
-              <p>Loading products...</p>
+              <p><Loader /></p>
             ) : filteredProducts.length === 0 ? (
               <p>No products found. Please add products from the dashboard.</p>
             ) : (
@@ -167,7 +168,7 @@ const Product = () => {
                       <h4>{product.name}</h4>
                       <p>{product.price} Rs</p>
                     </div>
-                    <img src="./cart.png" alt="Add to cart" className="carts" style={{ cursor: 'pointer' }} onClick={e => { e.stopPropagation(); handleAddToCart(product); }} />
+                    <img src=".\shopping.png" alt="Add to cart" className="carts" style={{ cursor: 'pointer' }} onClick={e => { e.stopPropagation(); handleAddToCart(product); }} />
                   </div>
                 </div>
               ))

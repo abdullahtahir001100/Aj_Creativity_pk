@@ -8,7 +8,7 @@ export default function Footer() {
         
         {/* Logo + About */}
         <div className="footer-brand">
-          <img src="./imgs/logo.png" alt="Jewellery Logo" className="footer-logo" />
+          <img src="./imgs - Copy/logof.svg" alt="Jewellery Logo" className="footer-logo" />
           <p className="footer-desc">
             Timeless elegance, crafted to perfection. Discover our exclusive
             collection of fine jewellery for every occasion.

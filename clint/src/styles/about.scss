@@ -1,7 +1,7 @@
 /* --- Theme --- */
 $bg: #ffffff;
 $text: #1f1f1f;
-$muted: #bcd0ca; // soft sage for bars
+$muted: #6f4e37d9; // soft sage for bars
 $headline: #ffffff;
 $shadow: 0 10px 30px rgba(0,0,0,0.08);
 
@@ -94,9 +94,8 @@ $shadow: 0 10px 30px rgba(0,0,0,0.08);
 
   &__cta {
     color: #fff; // warm blush like the sample
-    font-style: italic;
     font-weight: 600;
-    background-color: #1da6ea;
+    background-color: #6F4E37;
     width: fit-content;
     padding: 10px 15px;
     border-radius: 8px;

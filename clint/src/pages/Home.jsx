@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Loader from '../components/loader';
+import TestimonialSlider from '../components/testi'; // Make sure this is imported
 import '../styles/main.scss';
 import '../styles/animation.scss';
 
@@ -89,7 +91,7 @@ const Home = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div><Loader /></div>; // You might want a better loading spinner here
   }
 
   if (error) {
@@ -98,18 +100,7 @@ const Home = () => {
 
   return (
     <>
-      <section className='ban'>
-        <div
-          id="splash"
-          className={splashVisible ? 'visible' : 'hidden'}
-        >
-          <img
-            src="./imgs/logo.png"
-            alt="Logo"
-          />
-        </div>
-      </section>
-      <Header />
+     <Header />
       {/* Banner Section */}
       <section className="banner" data-aos="fade-up" data-aos-delay="380" data-aos-once="true">
         <div className="cointain">
@@ -126,9 +117,12 @@ const Home = () => {
       {/* Featured Products Section */}
       <section className="product" data-aos="fade-up" data-aos-delay="580" data-aos-once="true">
         <div className="cointain">
-          <div className="heading">
+          <div className="heading flexbox">
             <div className="h1">
               <h1>featured products</h1>
+            </div>
+            <div className="button">
+              <a href="/prodect">View More</a>
             </div>
           </div>
           <div className="line"></div>
@@ -136,8 +130,7 @@ const Home = () => {
             {featuredProducts.length > 0 ? (
               featuredProducts.map((product) => (
                 <div
-                  className="sec-1 sec-2 animate__animated animate__fadeInLeft"
-                  data-aos="fade-up"
+                  className="sec-1 animate__animated animate__fadeInLeft"
                   data-aos-delay="380"
                   data-aos-once="true"
                   key={product._id}
@@ -174,7 +167,7 @@ const Home = () => {
                           handleAddToCart(product);
                         }}
                       >
-                        <img src="./shopping.png" alt="" />
+                         <img src="./shopping.png" alt="" />
                       </button>
                     </div>
                   </div>
@@ -201,7 +194,6 @@ const Home = () => {
               latestProducts.map((product) => (
                 <div
                   className="sec-1 sec-2"
-                  data-aos="fade-up"
                   data-aos-delay="380"
                   data-aos-once="true"
                   key={product._id}
@@ -238,7 +230,7 @@ const Home = () => {
                           handleAddToCart(product);
                         }}
                       >
-                        <img src="/shopping.png" alt="" />
+                         <img src="./shopping.png" alt="" />
                       </button>
                     </div>
                   </div>
@@ -261,7 +253,7 @@ const Home = () => {
           </div>
           <div className="line"></div>
           <div className="backcolor">
-            <div className="shop-grid videos-grid" data-aos="fade-up" data-aos-delay="580" data-aos-once="true">
+            <div className="shop-grid videos-grid" data-aos-delay="580" data-aos-once="true">
               {videos.length > 0 ? (
                 videos.map((video, idx) => (
                   <div className="video-wrapper" key={video._id || idx}>
@@ -287,12 +279,21 @@ const Home = () => {
           </div>
         </div>
       </section>
-
+      <section className='padd1'> 
+       <div className="heading">
+            <div className="h1">
+              <h1>What Our Customers Say</h1>
+            </div>
+          </div>
+      {/* This is where you render the imported Testimonial Slider */}
+      <TestimonialSlider />
+      </section>
       {cartMessage && (
         <div style={{ position: 'fixed', top: 10, right: 30, background: '#4BB543', color: '#fff', padding: '12px 28px', borderRadius: 10, fontWeight: 600, zIndex: 9999, boxShadow: '0 4px 16px rgba(0,0,0,0.13)' }}>
           {cartMessage}
         </div>
       )}
+
       <Footer />
     </>
   );

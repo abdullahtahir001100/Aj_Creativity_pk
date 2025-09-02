@@ -1,132 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Header from "../components/header1";
+import Header from "../components/header1"; 
 import Footer from "../components/Footer";
+import Loader from "../components/loader";
+
 
 export default function ProductDetail() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ReviewsSlider component - No animations
-  const ReviewsSlider = () => {
-    const reviewsContainerRef = useRef(null);
-
-    const firstNames = ["Eman", "Hamna", "Ayesha", "Subhan", "Aliya", "Zain", "Sana", "Bilal", "Hira", "Osman", "Mahnoor", "Hamza", "Sarah", "Adil", "Faiza", "Shahbaz", "Iqra", "Rizwan", "Maria", "Tariq", "Noor", "Saim", "Hafsa", "Arsalan", "Zoya"];
-    const lastNames = ["Khan", "Ali", "Subhan", "Raza", "Mir", "Malik", "Shah", "Ahmed", "Qureshi", "Farooq", "Iqbal", "Tariq", "Javed", "Riaz", "Saleem", "Hussain", "Sheikh", "Zafar", "Aslam", "Saeed", "Nawaz", "Hashmi", "Aziz", "Anwar", "Sattar"];
-    const reviewTexts = [
-      "Absolutely love the craftsmanship! Each piece is unique and beautifully made. The attention to detail is outstanding and I receive compliments every time I wear it.",
-      "The handmade jewelry is gorgeous. The quality is top-notch and the designs are elegant. Fast delivery and very friendly service.",
-      "I ordered a customized necklace and it came exactly as I imagined. The finishing is perfect and it feels so premium. I highly recommend this store to everyone.",
-      "Wonderful shopping experience! The jewelry looks stunning and is comfortable to wear. I appreciate the care put into packaging each item.",
-      "Amazing designs with great quality. Every piece feels personal and unique. I am very happy with my purchase and will order again.",
-      "The earrings I bought are so delicate and beautifully crafted. They are perfect for gifting and I can tell they are made with love and care.",
-      "Exceptional service and excellent jewelry. Every piece tells a story and adds a touch of elegance to my outfits. I get asked about them all the time!",
-      "High-quality handmade jewelry that looks much more expensive than it is. Really happy with my purchase and will definitely buy more.",
-      "The bracelets are beautiful and sturdy. The craftsmanship is amazing and I love that each item is handmade. Excellent customer support too.",
-      "Truly impressed with the attention to detail. The jewelry feels luxurious and unique. I can tell these are made by skilled artisans."
-    ];
-
-    const reviews = Array.from({ length: 120 }, (_, i) => {
-      const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-      const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-      const stars = Math.floor(Math.random() * 3) + 3;
-      const text = reviewTexts[Math.floor(Math.random() * reviewTexts.length)];
-      const img = `https://i.pravatar.cc/50?img=${i % 70 + 1}`;
-      return { name: `${firstName} ${lastName}`, stars, text, img };
-    });
-
-    useEffect(() => {
-      const container = reviewsContainerRef.current;
-      if (container) {
-        reviews.forEach(review => {
-          const div = document.createElement('div');
-          div.className = 'review-card';
-          div.innerHTML = `
-            <div class="review-header">
-              <img src="${review.img}" alt="Customer avatar" loading="lazy">
-              <div class="user-name">${review.name}</div>
-            </div>
-            <div class="review-stars">${'★'.repeat(review.stars)}${'☆'.repeat(5 - review.stars)}</div>
-            <div class="review-text">${review.text}</div>
-          `;
-          container.appendChild(div);
-        });
-      }
-    }, [reviews]);
-
-    return (
-      <div className="reviews-section">
-        <h2>Customer Reviews - Handmade Jewelry</h2>
-        <div className="reviews-wrapper">
-          <div className="reviews-container" ref={reviewsContainerRef}></div>
-        </div>
-      </div>
-    );
-  };
-
-  function normalizePrice(val) {
-    if (typeof val === 'number') return val;
-    if (!val) return 0;
-    return Number(String(val).replace(/[^\d]/g, ''));
-  }
-
-  const initialProduct = location.state?.product
-    ? { ...location.state.product, price: normalizePrice(location.state.product.price) }
-    : undefined;
-
-  const [mainProduct, setMainProduct] = useState(initialProduct);
-  const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
-  const [quantity, setQuantity] = useState(1);
-  const [cartMessage, setCartMessage] = useState("");
-
-  // A helper function to fetch a product by its ID
-  const fetchProductById = async (id) => {
-    try {
-      const response = await fetch(`https://aj-creativity-pk-2dpo.vercel.app/api/products/${id}`);
-      const data = await response.json();
-      if (data.success && data.data) {
-        setMainProduct(data.data);
-      } else {
-        console.error("Failed to fetch product by ID:", data.message);
-      }
-    } catch (error) {
-      console.error("Error fetching product from API:", error);
-    }
-  };
-
-  // Hardcoded products for the related products section
-  // Note: These are not used for the main product display anymore
-  const products = [
-    { image: '/imgs/s1.jpg', name: 'Royal Radiance', price: '1,550', category: 'gold bangle' },
-    { image: '/imgs/s2.jpg', name: 'Timeless Spark', price: '500', category: 'bangle' },
-    { image: '/imgs/s3.jpg', name: 'Heritage Grace', price: '590', category: 'bangle' },
-    { image: '/imgs/s5.jpg', name: 'Elegant Loop', price: '1,350', category: 'bangle' },
-    { image: '/imgs/s6.jpg', name: 'Pearl Essence', price: '1,800', category: 'bangle' },
-    { image: '/imgs/s7.jpg', name: 'Golden Dream', price: '1,990', category: 'bangle' },
-    { image: '/imgs/s8.jpg', name: 'Textured Shine', price: '1,550', category: 'bangle' },
-    { image: '/imgs/s9.jpg', name: 'Floral Dream', price: '1,800', category: 'bangle' },
-    { image: '/imgs/s10.jpg', name: 'Artisan Touch', price: '1,350', category: 'bangle' },
-    { image: '/imgs/s11.jpg', name: 'Enamel Blossom', price: '1,550', category: 'bangle' },
-    { image: '/imgs/s12.jpg', name: 'Modern Chic', price: '550', category: 'earring' },
-    { image: '/imgs/s13.jpg', name: 'Vintage Aura', price: '490', category: 'earring' },
-    { image: '/imgs/s14.jpg', name: 'Pearl Drop', price: '500', category: 'earring' },
-    { image: '/imgs/s15.jpg', name: 'Signature Shine', price: '150', category: 'earring' },
-    { image: '/imgs/s16.jpg', name: 'Chic Hoops', price: '590', category: 'earring' },
-    { image: '/imgs/s17.jpg', name: 'Crystal Spark', price: '1,200', category: 'earring' },
-    { image: '/imgs/s18.jpg', name: 'Dazzle Drop', price: '1,350', category: 'earring' },
-    { image: '/imgs/s19.jpg', name: 'Petal Studs', price: '1,550', category: 'earring' },
-    { image: '/imgs/s20.jpg', name: 'Twist Loop', price: '1,800', category: 'earring' },
-  ];
-
-  let relatedProducts = mainProduct
-    ? products.filter(
-        (p) =>
-          p.category === mainProduct.category &&
-          p.name !== mainProduct.name
-      )
-    : products;
-
+  // Helper to shuffle an array for random product display
   function shuffle(array) {
     const arr = array.slice();
     for (let i = arr.length - 1; i > 0; i--) {
@@ -135,17 +18,126 @@ export default function ProductDetail() {
     }
     return arr;
   }
+  
+  // Helper to normalize price string to a number
+  function normalizePrice(val) {
+    if (typeof val === 'number') return val;
+    if (!val) return 0;
+    return Number(String(val).replace(/[^\d]/g, ''));
+  }
 
-  relatedProducts = shuffle(relatedProducts).slice(0, 4);
+  // Helper to retrieve the main product from sessionStorage on page refresh
+  const getProductFromStorage = () => {
+    const savedProduct = sessionStorage.getItem('mainProduct');
+    if (savedProduct) {
+      try {
+        return JSON.parse(savedProduct);
+      } catch (e) {
+        console.error("Could not parse product from session storage", e);
+        return undefined;
+      }
+    }
+    return undefined;
+  };
 
+  const initialProduct = location.state?.product
+    ? { ...location.state.product, price: normalizePrice(location.state.product.price) }
+    : getProductFromStorage();
+
+  const [mainProduct, setMainProduct] = useState(initialProduct);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [loadingRelated, setLoadingRelated] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [cartMessage, setCartMessage] = useState("");
+
+  // Scroll to top, set main product, and persist to sessionStorage
   useEffect(() => {
     window.scrollTo(0, 0);
-    // If the main product exists in the location state, use that.
     if (location.state?.product) {
-      setMainProduct({ ...location.state.product, price: normalizePrice(location.state.product.price) });
+      const newProduct = { ...location.state.product, price: normalizePrice(location.state.product.price) };
+      setMainProduct(newProduct);
+      sessionStorage.setItem('mainProduct', JSON.stringify(newProduct));
+      // Reset options when product changes
+      setSelectedSize("");
+      setSelectedColor("");
+      setQuantity(1);
     }
   }, [location.state?.product]);
 
+  // Fetch related products from the backend when the main product changes
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      // Return if there's no main product or it lacks a category
+      if (!mainProduct || !mainProduct.category) {
+        setRelatedProducts([]);
+        return;
+      }
+
+      setLoadingRelated(true);
+       // Define your two API endpoints in an array.
+       const apiEndpoints = [
+        'https://server-nine-kappa-75.vercel.app/api/data',
+        'https://server-nine-kappa-75.vercel.app/api/data' // This is the second API endpoint option
+      ];
+
+      try {
+         // Use Promise.all to fetch from both endpoints concurrently
+         const responses = await Promise.all(
+          apiEndpoints.map(url => fetch(url))
+        );
+
+        // Check if all responses are successful
+        responses.forEach(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        });
+
+        // Parse JSON from all responses
+        const jsonDataArray = await Promise.all(
+          responses.map(res => res.json())
+        );
+        
+        // Combine the data arrays from all successful API responses into one array
+        const allProducts = jsonDataArray.flatMap(data => {
+            if (data.success && Array.isArray(data.data)) {
+                return data.data;
+            }
+            // You can log a warning for any API that doesn't return the expected format
+            console.warn("An API response was not in the expected format:", data);
+            return []; // Return an empty array for this response to avoid errors
+        });
+
+        // De-duplicate the combined list of products based on their _id
+        const uniqueProducts = Array.from(new Map(allProducts.map(item => [item._id, item])).values());
+
+        if (uniqueProducts.length > 0) {
+          // Filter products:
+          // 1. Match the category of the main product.
+          // 2. Exclude the main product itself from the list.
+          const filtered = uniqueProducts.filter(
+            (p) => p.category === mainProduct.category && p._id !== mainProduct._id
+          );
+          
+          // Shuffle the filtered list and take the first 4 items
+          const finalRelatedProducts = shuffle(filtered).slice(0, 4);
+          setRelatedProducts(finalRelatedProducts);
+        } else {
+          console.error("Failed to fetch related products from all sources.");
+          setRelatedProducts([]);
+        }
+      } catch (error) {
+        console.error("Error fetching related products:", error);
+        setRelatedProducts([]);
+      } finally {
+        setLoadingRelated(false);
+      }
+    };
+
+    fetchRelatedProducts();
+  }, [mainProduct]); // This effect runs whenever mainProduct changes
 
   return (
     <>
@@ -154,7 +146,6 @@ export default function ProductDetail() {
         <div className="product-detail">
           {/* Image Section */}
           <div className="product-image">
-            {/* The fix is here: using 'image' instead of 'img' */}
             <img
               src={mainProduct?.image || "/imgs/s11.jpg"}
               alt={mainProduct?.name || "Product Image"}
@@ -173,8 +164,8 @@ export default function ProductDetail() {
               parties, and special occasions.
             </p>
 
-            {/* Size (not for earrings) */}
-            {mainProduct?.category !== 'earring' && (
+            {/* Size (not for earringss) */}
+            {mainProduct?.category !== 'earrings' && (
               <div className="option-group">
                 <label>Size:</label>
                 <div className="options">
@@ -224,40 +215,33 @@ export default function ProductDetail() {
             <button
               className="add-to-cart"
               disabled={
-                mainProduct?.category === 'earring'
+                mainProduct?.category === 'earrings'
                   ? !(selectedColor && quantity > 0)
                   : !(selectedSize && selectedColor && quantity > 0)
               }
               style={{
-                opacity:
-                  mainProduct?.category === 'earring'
-                    ? selectedColor && quantity > 0
-                    : selectedSize && selectedColor && quantity > 0
-                  ? 1 : 0.5,
-                cursor:
-                  mainProduct?.category === 'earring'
-                    ? selectedColor && quantity > 0
-                    : selectedSize && selectedColor && quantity > 0
-                  ? "pointer" : "not-allowed"
+                opacity: (mainProduct?.category === 'earrings' ? (selectedColor && quantity > 0) : (selectedSize && selectedColor && quantity > 0)) ? 1 : 0.5,
+                cursor: (mainProduct?.category === 'earrings' ? (selectedColor && quantity > 0) : (selectedSize && selectedColor && quantity > 0)) ? "pointer" : "not-allowed"
               }}
               onClick={() => {
                 if (!mainProduct) return;
-                if (
-                  (mainProduct.category === 'earring' && !(selectedColor && quantity > 0)) ||
-                  (mainProduct.category !== 'earring' && !(selectedSize && selectedColor && quantity > 0))
-                ) return;
+                const isearrings = mainProduct.category === 'earrings';
+                const canAddToCart = isearrings ? (selectedColor && quantity > 0) : (selectedSize && selectedColor && quantity > 0);
+                
+                if (!canAddToCart) return;
+
                 const cartItem = {
-                  id: Date.now(),
+                  id: mainProduct._id || Date.now(),
                   name: mainProduct.name,
                   category: mainProduct.category,
                   color: selectedColor,
-                  size: mainProduct.category === 'earring' ? undefined : selectedSize,
-                  price: Number(String(mainProduct.price).replace(/[^\d]/g, "")),
+                  size: isearrings ? undefined : selectedSize,
+                  price: normalizePrice(mainProduct.price),
                   quantity,
-                  img: mainProduct.image // Use 'image' property
+                  img: mainProduct.image
                 };
-                let cart = [];
-                try { cart = JSON.parse(localStorage.getItem("cart")) || []; } catch (e) {}
+                
+                let cart = JSON.parse(localStorage.getItem("cart")) || [];
                 cart.push(cartItem);
                 localStorage.setItem("cart", JSON.stringify(cart));
                 window.dispatchEvent(new Event('cartUpdated'));
@@ -267,54 +251,34 @@ export default function ProductDetail() {
             >
               Add to Cart
             </button>
-            {mainProduct?.category === 'earring'
-              ? !(selectedColor && quantity > 0) && (
-                <div style={{ color: 'red', marginTop: 8, fontSize: 14 }}>
-                  Please select color and quantity before adding to cart.
-                </div>
-              )
-              : !(selectedSize && selectedColor && quantity > 0) && (
-                <div style={{ color: 'red', marginTop: 8, fontSize: 14 }}>
-                  Please select size, color, and quantity before adding to cart.
-                </div>
-              )}
-            {cartMessage && (
-              <div style={{ color: 'green', marginTop: 8, fontSize: 14 }}>{cartMessage}</div>
-            )}
+            {/* Validation Messages */}
+            {cartMessage && <div style={{ color: 'green', marginTop: 8, fontSize: 14 }}>{cartMessage}</div>}
           </div>
         </div>
       </div>
 
-      {/* Reviews Slider */}
-      <div className="reviews-container-wrapper">
-        <ReviewsSlider />
-      </div>
-
-      {/* Related Products */}
+      {/* Related Products Section */}
       <div className="cointain">
         <div className="headings">
           <div className="h1">
-            <h1>related products</h1>
+            <h1>Related Products</h1>
           </div>
         </div>
-        <div className={`products-grid points${relatedProducts.length <= 4 ? ' center-few' : ''}`}> 
-          {relatedProducts.length === 0 ? (
+        <div className={`products-grid points${relatedProducts.length <= 4 ? ' center-few' : ''}`}>
+          {loadingRelated ? (
+            <p><Loader /></p>
+          ) : relatedProducts.length === 0 ? (
             <p>No related products found.</p>
           ) : (
-            relatedProducts.map((product, idx) => (
+            relatedProducts.map((product) => (
               <div
                 className="product-card"
-                key={idx}
+                key={product._id}
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  navigate('/details', { state: { product: { ...product, image: product.image, price: normalizePrice(product.price) } }});
-                  setMainProduct(product);
-                  setSelectedSize("");
-                  setSelectedColor("");
-                  setQuantity(1);
+                  navigate('/details', { state: { product } });
                 }}
               >
-                {/* Fix: Use 'image' instead of 'img' for related products */}
                 <img src={product.image} alt={product.name} />
                 <div className="flex-1">
                   <div className="detail">
@@ -322,7 +286,7 @@ export default function ProductDetail() {
                     <h4>{product.name}</h4>
                     <p>{product.price} Rs</p>
                   </div>
-                  <img src="./shopping.png" alt="" />
+                  <img src="/shopping.png" alt="Add to cart" />
                 </div>
               </div>
             ))
@@ -334,3 +298,4 @@ export default function ProductDetail() {
     </>
   );
 }
+

@@ -25,12 +25,9 @@ cloudinary.config({
 // Multer storage setup for Cloudinary
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: async (req, file) => {
-        return {
-            folder: 'products',
-            format: 'jpg',
-            public_id: `product-${Date.now()}-${file.originalname}`,
-        };
+    params: {
+        folder: 'products',
+        allowed_formats: ['jpeg', 'png', 'jpg'],
     },
 });
 
@@ -40,7 +37,7 @@ const upload = multer({ storage: storage });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Correctly mount the routes by passing the 'upload' middleware
+// ✅ CORRECTED: Ab yeh line sahi routes file ko istemal kar rahi hai
 app.use('/api/products', productRoutes(upload));
 
 // Connect to MongoDB

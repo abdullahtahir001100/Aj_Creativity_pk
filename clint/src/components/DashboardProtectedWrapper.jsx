@@ -6,6 +6,7 @@ import Home from "./Dashboard";
 import Video from "./VideoDashboard";// Added import for the Home component
 import AuthForm from "../components/AuthForm.jsx";
 import "../styles/dashboard-header.scss";
+import BlogDashboard from "../components/BlogDashboard";
 
 const DashboardProtectedWrapper = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,6 +55,12 @@ const DashboardProtectedWrapper = () => {
           >
             Video Dashboard
           </button>
+           <button style={{fontSize: '12px'}}
+            onClick={() => setCurrentPage("BlogDashboard")}
+            className={`nav-button ${currentPage === "BlogDashboard" ? "active" : ""}`}
+          >
+            BlogDashboard
+          </button>
         </nav>
       </header>
 
@@ -63,6 +70,7 @@ const DashboardProtectedWrapper = () => {
         {currentPage === "products" && <V1 />}
         {currentPage === "homeDashboard" && <Home />}
         {currentPage === "VideoDashboard" && <Video />}
+        {currentPage === "BlogDashboard" && <BlogDashboard />}
       </main>
     </div>
   );

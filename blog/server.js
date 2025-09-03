@@ -8,7 +8,6 @@ const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -88,7 +87,7 @@ app.post('/api/blogs', upload.single('image'), async (req, res) => {
   }
 });
 
-// ✅ PUT (Update) a blog by ID
+// PUT (Update) a blog by ID
 app.put('/api/blogs/:id', upload.single('image'), async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
@@ -144,7 +143,5 @@ app.delete('/api/blogs/:id', async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`🚀 Backend server is running on http://localhost:${PORT}`);
-});
+// ✅ Export the app for Vercel
+module.exports = app;

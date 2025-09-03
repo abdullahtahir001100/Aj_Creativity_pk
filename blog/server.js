@@ -1,3 +1,5 @@
+// index.js
+
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -8,6 +10,8 @@ const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
+// ❌ No need to define PORT for Vercel, it's handled automatically
+// const PORT = process.env.PORT || 5000; 
 
 // Middleware
 app.use(cors());
@@ -143,5 +147,11 @@ app.delete('/api/blogs/:id', async (req, res) => {
   }
 });
 
-// ✅ Export the app for Vercel
+
+// ❌ REMOVE THIS BLOCK
+// app.listen(PORT, () => {
+//   console.log(`🚀 Backend server is running on http://localhost:${PORT}`);
+// });
+
+// ✅ ADD THIS LINE TO EXPORT THE APP
 module.exports = app;

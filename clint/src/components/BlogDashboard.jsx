@@ -11,7 +11,7 @@ import {
 import { Edit as EditIcon, Delete as DeleteIcon, CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 
 // API Base URL
-const API_URL = 'http://localhost:5000/api/blogs';
+const API_URL = 'https://backend-two-henna-22.vercel.app/api/blogs';
 
 // --- BlogForm Component (for Add/Edit Modal) ---
 const BlogForm = ({ blog, onSave, onCancel }) => {

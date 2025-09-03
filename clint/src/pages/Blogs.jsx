@@ -6,7 +6,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import Footer from "../components/Footer";
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://backend-two-henna-22.vercel.app';
 
 export default function BlogPage() {
   const [blogPosts, setBlogPosts] = useState([]);

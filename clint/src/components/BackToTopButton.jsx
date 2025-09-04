@@ -28,7 +28,7 @@ function BackToTopButton() {
   return (
     <>
       {isVisible && (
-        <button
+        <button className="back-to-top"
           onClick={scrollToTop}
           style={{
             position: "fixed",
@@ -37,7 +37,7 @@ function BackToTopButton() {
             fontSize: "13px",
             height: "40px",
             cursor: "pointer",
-            boxShadow: "0px 0px 10px #2534ca !important",
+            // boxShadow: "0px 0px 10px #2534ca !important",
             transition: "transform 0.3s ease, opacity 0.3s ease",
             zIndex: 1000,
           }}

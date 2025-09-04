@@ -115,3 +115,23 @@
 @import './globle.scss';
 @import './responsive.scss';
 @import '@fortawesome/fontawesome-free/css/all.min.css';
+.back-to-top{
+	background: transparent !important;
+	color: #6f4e37 !important;
+	border: #6f4e37 solid 1px !important;
+	&:hover{
+		background: #6f4e37 !important;
+		color: #fff !important;
+		transform: translateY(-2px) scale(1.03) !important;
+	}
+	&.active{
+		background: #6f4e37 !important;
+		color: #fff !important;
+		transform: translateY(-2px) scale(1.03) !important;
+	}
+	&:focus{
+		background: #6f4e37 !important;
+		color: #fff !important;
+		transform: translateY(-2px) scale(1.03) !important;
+	}
+}

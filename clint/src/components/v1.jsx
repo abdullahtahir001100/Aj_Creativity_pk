@@ -1,43 +1,65 @@
 import React, { useState, useEffect } from 'react';
-
-// You will need a CSS file for styling. Let's call it Dashboard.css
+// Make sure you create and import the CSS file for styling
 // import './Dashboard.css'; 
 
 const Dashboard = () => {
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [uploading, setUploading] = useState(false);
-    const [editingProduct, setEditingProduct] = useState(null);
     const [productsToAdd, setProductsToAdd] = useState([]);
 
     const API_URL = 'https://aj-creativity-pk-2dpo.vercel.app/api';
 
-    // Naya state object jo file aur URL dono ko handle karega
     const initialProductState = {
         name: '',
         price: '',
         category: 'bangle',
-        imageFile: null,      // For file uploads
-        imageUrl: '',         // For URL inputs
-        imagePreviewUrl: null // For displaying the preview
+        imageFile: null,
+        imageUrl: '',
+        imagePreviewUrl: null
     };
 
-    const fetchProducts = async () => { /* ...Same as before... */ };
+    // Fetches the product list from the server
+    const fetchProducts = async () => {
+        setLoading(true);
+        setError(null); // Clear previous errors
+        try {
+            // Added { cache: 'no-cache' } to prevent the browser from showing old data
+            const response = await fetch(`${API_URL}/products`, { cache: 'no-cache' });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            
+            // Correctly sets state based on API response like: {"success":true, "data":[...]}
+            setProducts(data.data || []); 
+        } catch (err) {
+            setError('Failed to fetch products. Please try again later.');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    // Fetch products when the component first loads
     useEffect(() => {
         fetchProducts();
     }, []);
 
+    // Clean up temporary image preview URLs to prevent memory leaks
     useEffect(() => {
         return () => {
             productsToAdd.forEach(p => {
-                if (p.imagePreviewUrl && p.imageFile) URL.revokeObjectURL(p.imagePreviewUrl);
+                if (p.imagePreviewUrl && p.imageFile) {
+                    URL.revokeObjectURL(p.imagePreviewUrl);
+                }
             });
         };
     }, [productsToAdd]);
 
-    // Yeh function file select karne par form generate karega
+    // --- Form Handling Functions ---
+
     const handleFileChange = (e) => {
         const files = e.target.files;
         if (files && files.length > 0) {
@@ -46,17 +68,14 @@ const Dashboard = () => {
                 imageFile: file,
                 imagePreviewUrl: URL.createObjectURL(file)
             }));
-            // File select karne se purane manual entries clear ho jayengi
             setProductsToAdd(newProducts);
         }
     };
-    
-    // Naya function: Ek khaali form add karega URL ke liye
+
     const handleAddManually = () => {
         setProductsToAdd([...productsToAdd, { ...initialProductState }]);
     };
 
-    // Text inputs (name, price, category) ko handle karega
     const handleProductChange = (index, e) => {
         const { name, value } = e.target;
         const updatedProducts = [...productsToAdd];
@@ -64,12 +83,11 @@ const Dashboard = () => {
         setProductsToAdd(updatedProducts);
     };
 
-    // URL input ko handle karega
     const handleUrlChange = (index, e) => {
         const { value } = e.target;
         const updatedProducts = [...productsToAdd];
         updatedProducts[index].imageUrl = value;
-        updatedProducts[index].imagePreviewUrl = value; // URL ko hi preview ke liye istemal karein
+        updatedProducts[index].imagePreviewUrl = value;
         setProductsToAdd(updatedProducts);
     };
 
@@ -80,14 +98,15 @@ const Dashboard = () => {
         const updatedProducts = productsToAdd.filter((_, i) => i !== index);
         setProductsToAdd(updatedProducts);
     };
-
+    
     const resetForm = () => {
         setProductsToAdd([]);
         const fileInput = document.getElementById('image-upload');
         if (fileInput) fileInput.value = '';
     };
 
-    // Submit function ab file aur URL dono ko handle karega
+    // --- Submit Handler ---
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (productsToAdd.length === 0) {
@@ -104,18 +123,16 @@ const Dashboard = () => {
             data.append('price', product.price);
             data.append('category', product.category);
 
-            // Check karein ke image file hai ya URL
             if (product.imageFile) {
                 data.append('image', product.imageFile);
             } else if (product.imageUrl) {
-                data.append('image', product.imageUrl); // Aapka backend URL ko support karta hai
+                data.append('image', product.imageUrl);
             } else {
                 setError(`Please provide an image or URL for product: "${product.name || 'Untitled'}"`);
                 allSuccess = false;
                 break;
             }
 
-            // ... (baaqi submit logic waisi hi rahegi)
             try {
                 const response = await fetch(`${API_URL}/products/add`, {
                     method: 'POST',
@@ -125,7 +142,7 @@ const Dashboard = () => {
                 if (!result.success) {
                     setError(result.message || `Failed to save product: "${product.name}"`);
                     allSuccess = false;
-                    break; 
+                    break;
                 }
             } catch (err) {
                 setError(`Server error while saving product: "${product.name}"`);
@@ -138,40 +155,34 @@ const Dashboard = () => {
         if (allSuccess) {
             alert('All products added successfully!');
             resetForm();
-            fetchProducts();
+            // This is the most important step: Re-fetch the product list to show the new product.
+            fetchProducts(); 
         }
     };
+    
+    // --- JSX to Render ---
 
     return (
         <div className="dashboard-container">
             <h1>Product Management Dashboard</h1>
+            
             <div className="add-product-form">
                 <h2>Add New Product(s)</h2>
                 {error && <div className="error-message">{error}</div>}
-
                 <form onSubmit={handleSubmit}>
-                    {/* Dono Options Yahan Hain */}
                     <div className="add-options">
                         <div className="form-group">
-                            <label htmlFor="image-upload">Option 1: Select Multiple Images From Computer</label>
-                            <input
-                                type="file"
-                                id="image-upload"
-                                onChange={handleFileChange}
-                                accept="image/*"
-                                multiple
-                            />
+                            <label htmlFor="image-upload">Option 1: Select Images From Computer</label>
+                            <input type="file" id="image-upload" onChange={handleFileChange} accept="image/*" multiple />
                         </div>
                         <div className="form-group">
-                             <label>Option 2: Add Products One-by-One with URL</label>
-                             <button type="button" onClick={handleAddManually} className="add-manual-btn">
-                                Add a Product Manually
-                             </button>
+                            <label>Option 2: Add Manually with URL</label>
+                            <button type="button" onClick={handleAddManually} className="add-manual-btn">
+                                + Add a Product Manually
+                            </button>
                         </div>
                     </div>
                     <hr/>
-
-                    {/* Dynamic Form Fields */}
                     {productsToAdd.map((product, index) => (
                         <div key={index} className="product-form-entry">
                             <h4>Product {index + 1}</h4>
@@ -182,23 +193,21 @@ const Dashboard = () => {
                                     </div>
                                 )}
                                 <div className="product-fields">
-                                    {/* Image input: File ka naam ya URL input field */}
                                     {product.imageFile ? (
-                                        <p className="form-hint">File: <strong>{product.imageFile.name}</strong></p>
+                                        <p>File: <strong>{product.imageFile.name}</strong></p>
                                     ) : (
                                         <div className="form-group">
                                             <label>Product Image URL</label>
                                             <input type="url" placeholder="https://example.com/image.jpg" value={product.imageUrl} onChange={(e) => handleUrlChange(index, e)} required />
                                         </div>
                                     )}
-
                                     <div className="form-group">
                                         <label>Product Name</label>
                                         <input type="text" name="name" value={product.name} onChange={(e) => handleProductChange(index, e)} required />
                                     </div>
                                     <div className="form-group">
                                         <label>Price</label>
-                                        <input type="number" name="price" value={product.price} onChange={(e) => handleProductChange(index, e)} required min="0" step="0.01" />
+                                        <input type="number" name="price" value={product.price} onChange={(e) => handleProductChange(index, e)} required min="0" />
                                     </div>
                                     <div className="form-group">
                                         <label>Category</label>
@@ -210,11 +219,10 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" className="remove-btn" onClick={() => handleRemoveProduct(index)}>Remove This Product</button>
+                            <button type="button" className="remove-btn" onClick={() => handleRemoveProduct(index)}>Remove</button>
                             <hr />
                         </div>
                     ))}
-
                     {productsToAdd.length > 0 && (
                         <div className="form-actions">
                             <button type="submit" disabled={uploading}>
@@ -225,7 +233,32 @@ const Dashboard = () => {
                     )}
                 </form>
             </div>
-            {/* ... Product List Display ... */}
+            
+            <div className="product-list-section">
+                <h2>Existing Products ({products.length})</h2>
+                {loading && <p>Loading products...</p>}
+                
+                {!loading && !error && (
+                    <div className="product-grid">
+                        {products.map((product) => (
+                            <div key={product._id} className="product-card">
+                                <img src={product.image} alt={product.name} className="product-image"/>
+                                <div className="product-info">
+                                    <h3 className="product-name">{product.name}</h3>
+                                    <p className="product-price">Rs. {product.price}</p>
+                                    <p className="product-category">Category: {product.category}</p>
+                                </div>
+                                <div className="product-actions">
+                                    <button className="edit-btn">Edit</button>
+                                    <button className="delete-btn">Delete</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                
+                {!loading && products.length === 0 && <p>No products found. Add one to get started!</p>}
+            </div>
         </div>
     );
 };

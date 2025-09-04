@@ -1,139 +1,213 @@
-// =========================
-// VARIABLES
-// =========================
-$primary-color: #bbc7d0;
-$secondary-color: #606365;
-$text-light: #9c9fa1;
-$text-gray: #76797c;
-$text-muted: #787a7c;
-$heading-color: #222;
-$border-color: rgba(132, 129, 129, 0.518);
-$box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
-
-// =========================
-// COMPONENTS & NESTING
-// =========================
-.ali .form {
-    width: 100% !important;
-}
-.ali {
-    .jeadingss {
-        h6 {
-            color: $text-gray;
-            font-family: "QRegular";
-        }
-        h3 {
-            text-transform: uppercase;
-            font-family: "Light";
-            font-weight: bolder;
-        }
-    }
-
-    li {
-        list-style: none;
-        line-height: 40px;
-    }
-
-    samp {
-         text-transform: capitalize;
-    font-size: 19px;
-    }
-
-    .maps {
-        .flexbox {
-            margin-bottom: 30px;
-        }
-    }
-
-    .persons {
+body {
+    text-transform: capitalize;
+    .contact {
         position: relative;
-        top: 12px;
-
-        .image {
-            width: 54px;
-            height: 61px;
-            position: relative;
-            top: 19px;
-            left: -9px;
-        }
-    }
-
-    .form {
-        
-
-        .head {
-            text-align: justify;
-
-            p {
-                color: $text-light;
-            }
-
-            h1 {
-                font-size: 35px;
-                font-family: "QRegular";
+        &::before{
+            position: absolute;
+            content: "";
+            background-color: #a9a9a933;
+           width: 100%;
+           height: 50%;
+           top: 0;
+              left: 0;
+              z-index: -1;
                 
-            }
+
         }
-
-        form {
-            
-
-            input,
-            textarea {
-                width: 100%;
-                padding: 10px 20px;
-                border-radius: 5px;
-                border: 1px solid $border-color;
+        .headings {
+            h1 {
+                font-size: 40px;
+                // color: #030677;
                 margin-bottom: 10px;
-
-                &:focus {
-                    outline: 1px solid $secondary-color;
-                }
-            }
-
-            textarea {
-                resize: vertical;
-                height: 150px;
-            }
-
-            button {
-                width: fit-content;
-                padding: 10px 25px;
-                margin-top: 30px;
-                border: none;
-                background-color: $primary-color;
-                border-radius: 5px;
-                color: #fff;
-                font-family: "QRegular";
-                transition: 0.5s;
-                cursor: pointer;
-                -webkit-transition: 0.5s;
-                -moz-transition: 0.5s;
-                -ms-transition: 0.5s;
-                -o-transition: 0.5s;
-                &:hover {
-                    box-shadow: $box-shadow;
-                        transform: translateY(-2px) scale(1.03);
-                    background: none;
-                    color: black;
-                }
             }
         }
     }
-    .footer-botom{
-        padding-bottom: 2rem;
-        .flexbox{
-            justify-content: space-around;
-        }
-    }
-    .persons{
-        background-color: #fff;
-        box-shadow: $box-shadow;
-        padding: 2rem;
-        border-radius: 10px;
-        -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
-        -ms-border-radius: 10px;
-        -o-border-radius: 10px;
+    .main-contents {
+        // background-color: #fff;
+        padding: 30px;
+        margin-bottom: 3rem;
+        border-radius: 30px;
+        border-radius: 5px;
+        // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        -webkit-border-radius: 30px;
+        -moz-border-radius: 30px;
+        -ms-border-radius: 30px;
+        -o-border-radius: 30px;
 }
+    .heading-1 {
+        width: 65%;
+        h4 {
+            // color: #6F4E37 !important;
+            font-size: 25px;
+        }
+        p {
+            color: #4e4e4e;
+        }
+    }
+    form {
+        .flex {
+            gap: 20px 20px;
+            .input-box {
+                padding: 10px 0;
+            }
+        }
+    }
+    input {
+        padding: 22px 20px;
+        background: transparent;
+        width: 290px;
+        border-radius: 50px;
+        height: 40px;
+        -webkit-border-radius: 50px;
+        -moz-border-radius: 50px;
+        -ms-border-radius: 50px;
+        -o-border-radius: 50px;
+        border: 1px solid #e0dfdf;
+        &::placeholder {
+            text-transform: capitalize;
+        }
+        &:focus {
+            outline: none;
+            border: 1px solid #6f4e37;
+        }
+    }
+
+    textarea {
+        padding: 10px 20px;
+        background: transparent;
+        width: 600px;
+        height: 190px;
+        border-radius: 20px;
+        font-size: 18px;
+        -webkit-border-radius: 20px;
+        -moz-border-radius: 20px;
+        -ms-border-radius: 20px;
+        -o-border-radius: 20px;
+        border: 1px solid #e0dfdf;
+        resize: none;
+         &:focus {
+            outline: none;
+            border: 1px solid #6f4e37;
+        }
+    }
+    .lable {
+        padding: 5px 3px;
+        font-family: semibold;
+    }
+    .btn {
+        padding: 20px 0;
+        float: right;
+        button {
+            // background-color: transparent !important;
+            // color: #000;
+            font-size: 18px;
+            border: 1px solid #6f4e37;
+            cursor: pointer;
+            transition: all 0.5s ease;
+
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            &:hover {
+                background-color: #6f4e37 !important;
+                color: #fff !important;
+                transform: translateY(-2px) scale(1.03) !important;
+                -webkit-transform: translateY(-2px) scale(1.03) !important;
+                -moz-transform: translateY(-2px) scale(1.03) !important;
+                -ms-transform: translateY(-2px) scale(1.03) !important;
+                -o-transform: translateY(-2px) scale(1.03) !important;
+            }
+        }
+    }
+    .main-form {
+        padding-top: 1rem;
+    }
+    .blocks {
+        background-color: #6f4e37;
+        padding: 40px;
+        border-radius: 40px;
+        width: 33%;
+        -webkit-border-radius: 40px;
+        -moz-border-radius: 40px;
+        -ms-border-radius: 40px;
+        color: #fff;
+        -o-border-radius: 40px;
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: #fff;
+        }
+        h5 {
+            font-size: 21px;
+            font-family: "Medium";
+            padding: 10px 0;
+        }
+        .flex {
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 20px 20px;
+            background-color: #ffffff1e !important;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            -ms-border-radius: 10px;
+            -o-border-radius: 10px;
+
+            .icon {
+                width: 12%;
+                img {
+                    width: 100%;
+                }
+            }
+        }
+    }
+    .social-icons{
+        display: flex !important;
+        gap: 0 15px;
+        .ic-1{
+            width: 23px;
+            img{
+                width: 100%;
+            }
+        }
+    }
+    .ic{
+        width: calc(100%/5);
+    }
+    .head{
+        h5{
+            font-size: 20px;
+    font-family: "Medium";
+    padding: 10px 0;
+        }
+    }
+    .main-contents{
+        position: relative;
+        // padding-bottom: 2rem;
+        &::after{
+            position: absolute;
+            content: "";
+            // background-color: #000000;
+            width: 80%;
+            height: 100%;
+            box-shadow: 00px 0 50px rgba(0, 0, 0, 0.1);
+            right: 0;
+            left: 0;
+            top: 0;
+            background-color: #fff !important;
+            z-index: -1;
+            border-radius: 30px;
+            -webkit-border-radius: 30px;
+            -moz-border-radius: 30px;
+            -ms-border-radius: 30px;
+            -o-border-radius: 30px;
+
+        }
+    }
 }

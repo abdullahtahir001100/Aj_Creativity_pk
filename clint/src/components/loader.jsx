@@ -3,54 +3,53 @@ import React from "react";
 const Loader = () => {
   const styles = {
     wrapper: {
-      margin: 0,
-      padding: 0,
       height: "100vh",
       width: "100%",
       display: "flex",
+      // This is the key change to stack the logo and text vertically
+      flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
-      background: "#fffdf7", // Light luxury background
+      background: "#fffdf7",
     },
-    diamond: {
-      position: "relative",
-      width: "80px",
-      height: "80px",
-      transform: "rotate(45deg)",
-      animation: "spin 3s linear infinite",
+    logo: {
+      width: "150px",
+      height: "150px",
+      objectFit: "contain",
+    },
+    // Styles for the text
+    loadingText: {
+      marginTop: "20px", // Space between logo and text
+      color: "#6f4e37",   // A color that matches your theme
+      fontSize: "1rem",
+      fontWeight: "bold",
+      fontFamily: "sans-serif",
+      letterSpacing: "3px",
     },
   };
 
   return (
     <div style={styles.wrapper} className="loader">
-      <div style={styles.diamond} className="diamond"></div>
+      <img src="../imgs - Copy/logo.svg" alt="Loading Logo" style={styles.logo} />
 
-      {/* Internal CSS with keyframes & pseudo-elements */}
+      {/* The loading text with a className for the animation */}
+      <p style={styles.loadingText} className="loading-text">
+        LOADING
+      </p>
+
+      {/* Internal CSS for the blinking dots animation */}
       <style>
         {`
-          .diamond::before,
-          .diamond::after {
-            content: "";
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border: 3px solid gold;
-            border-radius: 8px;
-            top: 0;
-            left: 0;
-            box-shadow: 0 0 15px rgba(218,165,32,0.6),
-                        0 0 25px rgba(255,215,0,0.4);
+          .loading-text::after {
+            content: '.';
+            animation: blinkDots 1.4s linear infinite;
           }
 
-          .diamond::after {
-            transform: scale(0.7);
-            opacity: 0.8;
-          }
-
-          @keyframes spin {
-            0%   { transform: rotate(45deg) scale(1); }
-            50%  { transform: rotate(225deg) scale(1.1); }
-            100% { transform: rotate(405deg) scale(1); }
+          @keyframes blinkDots {
+            0%   { content: '.'; }
+            33%  { content: '..'; }
+            66%  { content: '...'; }
+            100% { content: '.'; }
           }
         `}
       </style>

@@ -1,5 +1,5 @@
 import react from "react";
-import Header from "../components/header";
+import Header from "../components/header1";
 import Footer from "../components/Footer";
 import { useEffect } from "react";
 export default function ProductDetail() {

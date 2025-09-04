@@ -112,6 +112,10 @@ button:focus-visible {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.testimonial-card{
+  background-color: transparent !important;
+  border: 1px solid #6f4e37 !important;
+}
 body{
     background-color: #242424 !important;
 }
@@ -133,7 +137,7 @@ body{
     
     .col-1{
       p{
-        color: #000;
+        color: #fff;
       }
     }
   }
@@ -171,6 +175,7 @@ a:hover {
 }
 .product-card{
   background: transparent !important;
+  border: 1px solid #6f4e37 !important;
 }
 .review-card{
   background: transparent !important;
@@ -202,5 +207,7 @@ a:hover {
   box-shadow: 0px 0px 10px #000000 !important;
 }
 }
-
+.main-contents{
+  background-color: #000;
+}
 }

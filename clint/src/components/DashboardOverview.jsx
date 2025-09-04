@@ -1,11 +1,13 @@
 // src/components/DashboardOverview.jsx
 import React, { useEffect, useState } from "react";
+// import Loader from "../components/loader";
 import {
   ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   LineChart, Line
 } from "recharts";
 import "../styles/dashboard-overview.scss";
+import Loader from "./loader";
 
 // Utility function to generate a color from a string for consistent chart colors
 const stringToColor = (str) => {
@@ -89,7 +91,7 @@ const DashboardOverview = () => {
     if (loading) {
         return (
             <div className="loading-state">
-                <p>Loading dashboard data...</p>
+               <Loader />
             </div>
         );
     }

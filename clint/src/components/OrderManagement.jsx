@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "../styles/order-management.scss";
+import Loader from "../components/loader";
 
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
@@ -93,7 +94,7 @@ const OrderManagement = () => {
   if (loading) {
     return (
       <div className="loader">
-        <p>Loading orders...</p>
+        <Loader />
       </div>
     );
   }

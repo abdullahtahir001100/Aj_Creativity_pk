@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import "../styles/main.scss";
 import Header from "../components/header1";
+import Loader from '../components/loader';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import Footer from "../components/Footer";
@@ -11,6 +12,8 @@ const API_URL = 'https://backend-two-henna-22.vercel.app';
 export default function BlogPage() {
   const [blogPosts, setBlogPosts] = useState([]);
   const [expanded, setExpanded] = useState({});
+  // ✅ STEP 1: Add a new state for loading
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -19,6 +22,9 @@ export default function BlogPage() {
         setBlogPosts(response.data);
       } catch (error) {
         console.error("Failed to fetch blogs:", error);
+      } finally {
+        // ✅ STEP 2: Set loading to false after the fetch is complete (whether it succeeds or fails)
+        setIsLoading(false);
       }
     };
     fetchBlogs();
@@ -32,17 +38,14 @@ export default function BlogPage() {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   }
-
-  // ✅ LOGIC YAHAN HAI: Yeh function text ko multi-line banayega
+  
   const renderMultiLineText = (text) => {
     if (!text) {
       return null;
     }
-    // Text ko newline character se split karke har tukray ke baad <br /> lagayein
     return text.split('\n').map((line, index) => (
       <React.Fragment key={index}>
         {line}
-        {/* Aakhri line ke baad <br /> na lagayein */}
         {index < text.split('\n').length - 1 && <br />}
       </React.Fragment>
     ));
@@ -61,33 +64,39 @@ export default function BlogPage() {
       </section>
       <div className="cointain container">
         <main className="blog-content">
-          {blogPosts.map((post) => (
-            <div key={post._id} className="blog-card">
-              <LazyLoadImage
-                alt={post.title}
-                src={post.image} 
-                effect="blur"
-                width="350px"
-                height="300px"
-              />
-              <div className="blog-info">
-                <h2>{post.title}</h2>
-                <p className="date">{formatDate(post.date)}</p>
-                <p className="desc">{post.description}</p>
-
-                <div
-                  className={`extra-content ${expanded[post._id] ? 'expanded' : ''}`}
-                >
-                  {/* ✅ YAHAN HUMNE FUNCTION ISTEMAL KIYA HAI */}
-                  <p>{renderMultiLineText(post.extraContent)}</p>
-                </div>
-
-                <button className="read-more" onClick={() => handleToggle(post._id)}>
-                  {expanded[post._id] ? 'Show Less' : 'Read More'}
-                </button>
-              </div>
+          {/* ✅ STEP 3: Check the loading state before mapping the blogs */}
+          {isLoading ? (
+            // If it's loading, show this message
+            <div className="loading-message">
+              <Loader />
             </div>
-          ))}
+          ) : (
+            // Otherwise, show the blogs
+            blogPosts.map((post) => (
+              <div key={post._id} className="blog-card">
+                <LazyLoadImage
+                  alt={post.title}
+                  src={post.image} 
+                  effect="blur"
+                  width="350px"
+                  height="300px"
+                />
+                <div className="blog-info">
+                  <h2>{post.title}</h2>
+                  <p className="date">{formatDate(post.date)}</p>
+                  <p className="desc">{post.description}</p>
+                  <div
+                    className={`extra-content ${expanded[post._id] ? 'expanded' : ''}`}
+                  >
+                    <p>{renderMultiLineText(post.extraContent)}</p>
+                  </div>
+                  <button className="read-more" onClick={() => handleToggle(post._id)}>
+                    {expanded[post._id] ? 'Show Less' : 'Read More'}
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </main>
       </div>
       <Footer />

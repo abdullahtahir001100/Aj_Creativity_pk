@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
+import Header from "../components/header1"; 
 import Footer from '../components/Footer';
 import Loader from '../components/loader';
-import TestimonialSlider from '../components/testi'; // Make sure this is imported
+import TestimonialSlider from '../components/testi'; 
 import '../styles/main.scss';
 import '../styles/animation.scss';
 

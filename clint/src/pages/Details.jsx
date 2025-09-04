@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/header1"; 
 import Footer from "../components/Footer";
 import Loader from "../components/loader";
+import TestimonialSlider from '../components/testi'; 
 
 
 export default function ProductDetail() {
@@ -256,7 +257,15 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
-
+      <section className='padd1'> 
+       <div className="heading">
+            <div className="h1">
+              <h1>What Our Customers Say</h1>
+            </div>
+          </div>
+      {/* This is where you render the imported Testimonial Slider */}
+      <TestimonialSlider />
+      </section>
       {/* Related Products Section */}
       <div className="cointain">
         <div className="headings">

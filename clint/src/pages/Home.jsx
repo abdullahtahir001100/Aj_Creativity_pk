@@ -163,7 +163,7 @@ const Home = () => {
                         className="add-to-cart"
                         style={{ width: "60px" }}
                         // onClick={(e) => {
-                        //   e.stopPropagation();
+                        //   e.stopPropagation();aa
                         //   handleAddToCart(product);
                         // }}
                       >

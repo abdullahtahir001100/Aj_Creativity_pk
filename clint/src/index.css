@@ -95,7 +95,7 @@ button:focus,
 button:focus-visible {
   outline: none;
 }
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
  
 @media (prefers-color-scheme: dark) {
 :root {
@@ -210,4 +210,4 @@ a:hover {
 .main-contents{
   background-color: #000;
 }
-}
+} */

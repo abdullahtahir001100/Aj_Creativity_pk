@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// Make sure you create and import the CSS file for styling
 // import './Dashboard.css'; 
 
 const Dashboard = () => {
@@ -8,6 +7,9 @@ const Dashboard = () => {
     const [error, setError] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [productsToAdd, setProductsToAdd] = useState([]);
+    
+    // NAYA STATE: Edit karne ke liye
+    const [editingProduct, setEditingProduct] = useState(null);
 
     const API_URL = 'https://aj-creativity-pk-2dpo.vercel.app/api';
 
@@ -20,20 +22,16 @@ const Dashboard = () => {
         imagePreviewUrl: null
     };
 
-    // Fetches the product list from the server
     const fetchProducts = async () => {
         setLoading(true);
-        setError(null); // Clear previous errors
+        setError(null);
         try {
-            // Added { cache: 'no-cache' } to prevent the browser from showing old data
             const response = await fetch(`${API_URL}/products`, { cache: 'no-cache' });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            
-            // Correctly sets state based on API response like: {"success":true, "data":[...]}
-            setProducts(data.data || []); 
+            setProducts(data.data || []);
         } catch (err) {
             setError('Failed to fetch products. Please try again later.');
             console.error(err);
@@ -42,12 +40,10 @@ const Dashboard = () => {
         }
     };
 
-    // Fetch products when the component first loads
     useEffect(() => {
         fetchProducts();
     }, []);
 
-    // Clean up temporary image preview URLs to prevent memory leaks
     useEffect(() => {
         return () => {
             productsToAdd.forEach(p => {
@@ -58,7 +54,7 @@ const Dashboard = () => {
         };
     }, [productsToAdd]);
 
-    // --- Form Handling Functions ---
+    // --- Form Handling Functions (Existing) ---
 
     const handleFileChange = (e) => {
         const files = e.target.files;
@@ -104,8 +100,6 @@ const Dashboard = () => {
         const fileInput = document.getElementById('image-upload');
         if (fileInput) fileInput.value = '';
     };
-
-    // --- Submit Handler ---
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -155,18 +149,167 @@ const Dashboard = () => {
         if (allSuccess) {
             alert('All products added successfully!');
             resetForm();
-            // This is the most important step: Re-fetch the product list to show the new product.
             fetchProducts(); 
         }
     };
     
-    // --- JSX to Render ---
+    // --- NAYA CODE: Edit aur Delete ke Functions ---
 
+    // EDIT FUNCTION: Jab user 'Edit' button par click karega
+    const handleEditClick = (product) => {
+        setEditingProduct({ ...product, imagePreviewUrl: product.image, imageFile: null });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // UPDATE FUNCTION: Form submit hone par
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        if (!editingProduct) return;
+
+        setUploading(true);
+        setError(null);
+
+        const data = new FormData();
+        data.append('name', editingProduct.name);
+        data.append('price', editingProduct.price);
+        data.append('category', editingProduct.category);
+        
+        // Agar nayi image upload ki gayi hai
+        if (editingProduct.imageFile) {
+            data.append('image', editingProduct.imageFile);
+        } else if (editingProduct.imageUrl) {
+            data.append('image', editingProduct.imageUrl);
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/products/edit/${editingProduct._id}`, {
+                method: 'PUT',
+                body: data,
+            });
+            const result = await response.json();
+            if (result.success) {
+                alert('Product successfully update ho gaya!');
+                setEditingProduct(null); // Form ko close karein
+                fetchProducts(); // List ko refresh karein
+            } else {
+                setError(result.message || 'Product update nahi ho saka.');
+            }
+        } catch (err) {
+            setError('Server se connect karne mein masla aaraha hai.');
+            console.error('Update karne mein error aagaya:', err);
+        } finally {
+            setUploading(false);
+        }
+    };
+    
+    // CANCEL EDIT
+    const handleCancelEdit = () => {
+        setEditingProduct(null);
+    };
+
+    // DELETE FUNCTION (Already existed, moved here for clarity)
+    const handleDelete = async (productId) => {
+        if (window.confirm('Kya aap waqai is product ko delete karna chahte hain?')) {
+            try {
+                const response = await fetch(`${API_URL}/products/${productId}`, {
+                    method: 'DELETE',
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Product successfully delete ho gaya!');
+                    fetchProducts(); // List ko refresh karein
+                } else {
+                    alert(`Error: ${result.message || 'Product delete nahi ho saka.'}`);
+                }
+            } catch (err) {
+                console.error('Delete karne mein error aagaya:', err);
+                alert('Server se connect karne mein masla aaraha hai.');
+            }
+        }
+    };
+
+    // --- JSX to Render ---
     return (
         <div className="dashboard-container">
             <h1>Product Management Dashboard</h1>
             
-            <div className="add-product-form">
+            {/* EDIT FORM: Sirf tab dikhega jab koi product edit ho raha ho */}
+            {editingProduct && (
+                <div className="edit-product-form">
+                    <h2>Edit Product: {editingProduct.name}</h2>
+                    {error && <div className="error-message">{error}</div>}
+                    <form onSubmit={handleUpdate}>
+                        <div className="product-form-entry">
+                            <div className="product-details-with-preview">
+                                {editingProduct.imagePreviewUrl && (
+                                    <div className="image-preview small">
+                                        <img src={editingProduct.imagePreviewUrl} alt="Preview" />
+                                    </div>
+                                )}
+                                <div className="product-fields">
+                                    <div className="form-group">
+                                        <label>Product Name</label>
+                                        <input 
+                                            type="text" 
+                                            name="name" 
+                                            value={editingProduct.name} 
+                                            onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })} 
+                                            required 
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Price</label>
+                                        <input 
+                                            type="number" 
+                                            name="price" 
+                                            value={editingProduct.price} 
+                                            onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })} 
+                                            required 
+                                            min="0" 
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Category</label>
+                                        <select 
+                                            name="category" 
+                                            value={editingProduct.category} 
+                                            onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })} 
+                                            required
+                                        >
+                                            <option value="bangle">Bangle</option>
+                                            <option value="gold bangle">Gold Bangle</option>
+                                            <option value="earring">Earring</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Change Image (Optional)</label>
+                                        <input 
+                                            type="file" 
+                                            onChange={(e) => {
+                                                const file = e.target.files[0];
+                                                if (file) {
+                                                    setEditingProduct({ ...editingProduct, imageFile: file, imagePreviewUrl: URL.createObjectURL(file) });
+                                                }
+                                            }}
+                                            accept="image/*"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="form-actions">
+                                <button type="submit" disabled={uploading}>
+                                    {uploading ? 'Updating...' : 'Update Product'}
+                                </button>
+                                <button type="button" className="cancel-btn" onClick={handleCancelEdit}>Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr />
+                </div>
+            )}
+            
+            {/* ADD FORM (as before) */}
+            <div className="add-product-form" style={{ display: editingProduct ? 'none' : 'block' }}>
                 <h2>Add New Product(s)</h2>
                 {error && <div className="error-message">{error}</div>}
                 <form onSubmit={handleSubmit}>
@@ -249,8 +392,9 @@ const Dashboard = () => {
                                     <p className="product-category">Category: {product.category}</p>
                                 </div>
                                 <div className="product-actions">
-                                    <button className="edit-btn">Edit</button>
-                                    <button className="delete-btn">Delete</button>
+                                    {/* `onClick` ko `handleEditClick` se replace kiya gaya hai */}
+                                    <button className="edit-btn" onClick={() => handleEditClick(product)}>Edit</button>
+                                    <button className="delete-btn" onClick={() => handleDelete(product._id)}>Delete</button>
                                 </div>
                             </div>
                         ))}

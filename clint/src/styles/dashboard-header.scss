@@ -742,3 +742,54 @@ h1 {
   gap: 10px;
   display: flex;
 }
+.form-group{
+  label{
+    font-size: 15px !important;
+    display: block;
+    font-weight: 600 !important;
+  }
+   input{
+      width: 100% !important;
+      border-radius: 10px !important;
+      -webkit-border-radius: 10px !important;
+      -moz-border-radius: 10px !important;
+      -ms-border-radius: 10px !important;
+      -o-border-radius: 10px !important;
+}
+  select{
+    background: transparent !important;
+    // box-shadow: 0 0 0 0px #000000 !important;
+    
+    border-radius: 8px !important;
+    -webkit-border-radius: 8px !important;
+    -moz-border-radius: 8px !important;
+    -ms-border-radius: 8px !important;
+    -o-border-radius: 8px !important;
+  
+    color: #2c3e50 !important;
+    overflow: hidden !important;
+    font-size: 1rem !important;
+    padding: 10px 15px !important;
+    width: 100% !important;
+    outline: none !important;
+    transition: all 0.3s ease !important;
+    &:focus {
+      outline: none !important;
+      // border: 1px solid #6F4E37 !important;
+    }
+    &::placeholder {
+      color: #95a5a6 !important;
+    }
+    &:-ms-input-placeholder {
+      color: #95a5a6 !important;
+    }
+    &::-ms-input-placeholder {
+      color: #95a5a6 !important;
+    }
+   
+}
+}
+.form-actions{
+  justify-content: space-around !important;
+  display: flex !important;
+}

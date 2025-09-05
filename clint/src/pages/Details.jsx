@@ -80,7 +80,7 @@ export default function ProductDetail() {
        // Define your two API endpoints in an array.
        const apiEndpoints = [
         'https://server-nine-kappa-75.vercel.app/api/data',
-        'https://server-nine-kappa-75.vercel.app/api/data' // This is the second API endpoint option
+        'https://aj-creativity-pk-2dpo.vercel.app/api/products' // This is the second API endpoint option
       ];
 
       try {

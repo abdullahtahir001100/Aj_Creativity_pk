@@ -225,10 +225,10 @@ const Home = () => {
                       <button
                         className="add-to-cart"
                         style={{ width: "60px" }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleAddToCart(product);
-                        }}
+                        // onClick={(e) => {
+                        //   e.stopPropagation();
+                        //   handleAddToCart(product);
+                        // }}
                       >
                          <img src="./shopping.png" alt="" />
                       </button>

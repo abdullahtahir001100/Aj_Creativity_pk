@@ -52,9 +52,11 @@ export default function PaymentPage() {
   const mapRef = useRef(null);
 
   const [checkoutCart, setCheckoutCart] = useState([]);
-
+  
+  // ✅ 1. ADD NEW STATE TO PREVENT DUPLICATE ORDERS
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Load cart from localStorage
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("checkoutCart")) || [];
@@ -84,6 +86,7 @@ export default function PaymentPage() {
     };
   }, [showPopup]);
 
+  // Location search
   const handleSearch = async (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -106,6 +109,7 @@ export default function PaymentPage() {
     }
   };
 
+  // Map click to select location
   const LocationPicker = () => {
     useMapEvents({
       click(e) {
@@ -116,7 +120,10 @@ export default function PaymentPage() {
     return markerPos ? <Marker position={markerPos} /> : null;
   };
 
+  // Place order
   const handlePlaceOrder = async () => {
+    // ✅ 3. MODIFY THIS FUNCTION
+    // --- Validation Checks ---
     if (!acceptTerms) {
       return setInputError("You must accept our terms and policies.");
     }
@@ -132,9 +139,9 @@ export default function PaymentPage() {
     if (primaryNumber.replace(/\D/g, "").length < 12) {
       return setInputError("Primary number is invalid.");
     }
-
-    setInputError("");
-    setIsSubmitting(true);
+    
+    setInputError(""); // Clear previous errors before submitting
+    setIsSubmitting(true); // Disable button
 
     try {
       const response = await fetch("https://aj-creativity-pk.vercel.app/api/orders", {
@@ -153,7 +160,7 @@ export default function PaymentPage() {
             color: item.color || "",
             category: item.category || "",
             quantity: item.quantity,
-            image: item.image,
+            image: Array.isArray(item.img) ? item.img[0] : item.img,
             price: item.price,
           })),
           totalPrice,
@@ -171,7 +178,7 @@ export default function PaymentPage() {
       console.error("Order Error:", error);
       setInputError("❌ Failed to connect to server.");
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Re-enable button when done (success or fail)
     }
   };
 
@@ -181,6 +188,7 @@ export default function PaymentPage() {
       <div className="payment-container fade-in-page">
         <h1>Payment Details</h1>
         <div className="checkout-row">
+          {/* Left Column */}
           <div className="left-col">
             <section>
               <h2>User Information</h2>
@@ -208,12 +216,11 @@ export default function PaymentPage() {
             </section>
           </div>
 
+          {/* Right Column */}
           <div className="right-col">
             <section>
               <h2>Payment Method</h2>
-              <select>
-                <option value="cod">Cash on Delivery</option>
-              </select>
+              <select><option value="cod">Cash on Delivery</option></select>
             </section>
 
             <section className="product-card">
@@ -223,43 +230,21 @@ export default function PaymentPage() {
                   <div>No products in checkout.</div>
                 ) : (
                   checkoutCart.map((item, idx) => (
-                    <div
-                      key={item.id || idx} // Use a unique key.
-                      className="product-info"
-                      style={{ display: "flex", alignItems: "center", marginBottom: 12, borderBottom: "1px solid #eee", paddingBottom: 8 }}
-                    >
-                      <img src={item.image} alt={item.name} style={{ width: 110, height: 110, objectFit: "cover", marginRight: 12, borderRadius: 4 }} />
+                    <div key={item.id || idx} className="product-info" style={{ display: "flex", alignItems: "center", marginBottom: 12, borderBottom: "1px solid #eee", paddingBottom: 8 }}>
+                      <img src={item.img} alt={item.name} style={{ width: 110, height: 110, objectFit: "cover", marginRight: 12, borderRadius: 4 }} />
                       <div>
-                        <p>
-                          <strong>Name:</strong> {item.name}
-                        </p>
-                        {item.color && (
-                          <p>
-                            <strong>Color:</strong> {item.color}
-                          </p>
-                        )}
-                        {item.category && (
-                          <p>
-                            <strong>Category:</strong> {item.category}
-                          </p>
-                        )}
-                        <p>
-                          <strong>Size:</strong> {item.size}
-                        </p>
-                        <p>
-                          <strong>Quantity:</strong> {item.quantity}
-                        </p>
-                        <p>
-                          <strong>Price:</strong> Rs {(item.price + 100) * item.quantity}
-                        </p>
+                        <p><strong>Name:</strong> {item.name}</p>
+                        {item.color && <p><strong>Color:</strong> {item.color}</p>}
+                        {item.category && <p><strong>Category:</strong> {item.category}</p>}
+                        <p><strong>Size:</strong> {item.size}</p>
+                        <p><strong>Quantity:</strong> {item.quantity}</p>
+                        <p><strong>Price:</strong> Rs {(item.price + 100) * item.quantity}</p>
                       </div>
                     </div>
                   ))
                 )}
               </div>
-              {checkoutCart.length > 0 && (
-                <p style={{ marginTop: 10, fontWeight: "bold" }}>Total: Rs {totalPrice + 100}</p>
-              )}
+              {checkoutCart.length > 0 && <p style={{ marginTop: 10, fontWeight: "bold" }}>Total: Rs {totalPrice + 100}</p>}
             </section>
 
             <div style={{ margin: "16px 0 8px 0" }}>
@@ -268,17 +253,17 @@ export default function PaymentPage() {
                 I accept your terms and policies.
               </label>
             </div>
-
+            
+            {/* ✅ 2. UPDATE THE BUTTON'S DISABLED PROP AND TEXT */}
             <button className="pay-btn" onClick={handlePlaceOrder} disabled={isSubmitting}>
               {isSubmitting ? "Placing Order..." : "Confirm & Pay"}
             </button>
 
-            {inputError && (
-              <div style={{ color: "red", marginTop: 10, fontSize: 15 }}>{inputError}</div>
-            )}
+            {inputError && <div style={{ color: "red", marginTop: 10, fontSize: 15 }}>{inputError}</div>}
           </div>
         </div>
       </div>
+
       {showPopup && (
         <div className="order-confirm-popup">
           <div className="order-confirm-popup-content">
@@ -289,14 +274,8 @@ export default function PaymentPage() {
               </svg>
             </div>
             <h2>Order Confirmed!</h2>
-            <p>
-              Thank you for your purchase.
-              <br />
-              Your order has been placed successfully.
-            </p>
-            <Link to="/" onClick={clearCart}>
-              Back to Home
-            </Link>
+            <p>Thank you for your purchase.<br />Your order has been placed successfully.</p>
+            <Link to="/" onClick={clearCart}>Back to Home</Link>
             <p>Our support team will contact you within 30 minutes.</p>
           </div>
         </div>

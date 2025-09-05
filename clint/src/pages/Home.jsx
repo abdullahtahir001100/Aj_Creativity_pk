@@ -63,7 +63,6 @@ const Home = () => {
   const normalizePrice = (price) => Number(String(price).replace(/[^\d]/g, ''));
 
   const handleAddToCart = (product) => {
-    // Check if the product has a valid image array and take the first image
     const cartItem = {
       id: product._id,
       name: product.name,
@@ -72,9 +71,8 @@ const Home = () => {
       size: product.category === 'earring' ? undefined : 'Medium',
       price: normalizePrice(product.price),
       quantity: 1,
-      image: product.image && product.image.length > 0 ? product.image[0] : null // 👈 This is the fix
+      image: product.image[0]
     };
-
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     cart.push(cartItem);
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -93,7 +91,7 @@ const Home = () => {
   };
 
   if (loading) {
-    return <div><Loader /></div>;
+    return <div><Loader /></div>; // You might want a better loading spinner here
   }
 
   if (error) {
@@ -164,10 +162,10 @@ const Home = () => {
                       <button
                         className="add-to-cart"
                         style={{ width: "60px" }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleAddToCart(product);
-                        }}
+                        // onClick={(e) => {
+                        //   e.stopPropagation();
+                        //   handleAddToCart(product);
+                        // }}
                       >
                          <img src="./shopping.png" alt="" />
                       </button>
@@ -203,7 +201,7 @@ const Home = () => {
                   style={{ cursor: 'pointer' }}
                 >
                   <div className="image">
-                    <img src={product.image[0]} alt={product.name} loading="lazy"/>
+                    <img src={product.image[0]} alt={product.name} />
                   </div>
                   <div className="flexbox1">
                     <div className="flexitem">

@@ -149,10 +149,11 @@ const Home = () => {
                         )}
                       </div>
                       <div className="fonts">
-                        <i className="fa fa-star" aria-hidden="true"></i>
-                        <i className="fa fa-star" aria-hidden="true"></i>
-                        <i className="fa fa-star" aria-hidden="true"></i>
-                        <i className="fa fa-star" aria-hidden="true"></i>
+                       <img src="./star.png" alt="" />
+                       <img src="./star.png" alt="" />
+                       <img src="./star.png" alt="" />
+                       <img src="./star.png" alt="" />
+                       <img src="./star-half-empty.png" alt="" />
                       </div>
                       <div className="price">
                         <h6>{product.price} Rs</h6>
@@ -211,11 +212,12 @@ const Home = () => {
                           <small style={{ color: '#888', fontSize: 13 }}>Category: {product.category}</small>
                         )}
                       </div>
-                      <div className="fonts">
-                        <i className="fa fa-star" aria-hidden="true"></i>
-                        <i className="fa fa-star" aria-hidden="true"></i>
-                        <i className="fa fa-star" aria-hidden="true"></i>
-                        <i className="fa fa-star" aria-hidden="true"></i>
+                       <div className="fonts">
+                       <img src="./star.png" alt="" />
+                       <img src="./star.png" alt="" />
+                       <img src="./star.png" alt="" />
+                       <img src="./star.png" alt="" />
+                       <img src="./star-half-empty.png" alt="" />
                       </div>
                       <div className="price">
                         <h6>{product.price} Rs</h6>

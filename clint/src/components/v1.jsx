@@ -10,6 +10,9 @@ const Dashboard = () => {
     
     // NAYA STATE: Edit karne ke liye
     const [editingProduct, setEditingProduct] = useState(null);
+    // NAYA STATE: Messages dikhane ke liye
+    const [message, setMessage] = useState('');
+    const [isError, setIsError] = useState(false);
 
     const API_URL = 'https://aj-creativity-pk-2dpo.vercel.app/api';
 
@@ -147,7 +150,9 @@ const Dashboard = () => {
 
         setUploading(false);
         if (allSuccess) {
-            alert('All products added successfully!');
+            // alert('All products added successfully!');
+            setMessage('All products added successfully!');
+            setIsError(false);
             resetForm();
             fetchProducts(); 
         }
@@ -167,7 +172,9 @@ const Dashboard = () => {
         if (!editingProduct) return;
 
         setUploading(true);
-        setError(null);
+        // setError(null);
+        setMessage('Product update ho raha hai...');
+        setIsError(false);
 
         const data = new FormData();
         data.append('name', editingProduct.name);
@@ -188,14 +195,20 @@ const Dashboard = () => {
             });
             const result = await response.json();
             if (result.success) {
-                alert('Product successfully update ho gaya!');
+                // alert('Product successfully update ho gaya!');
+                setMessage('Product successfully update ho gaya!');
+                setIsError(false);
                 setEditingProduct(null); // Form ko close karein
                 fetchProducts(); // List ko refresh karein
             } else {
-                setError(result.message || 'Product update nahi ho saka.');
+                // setError(result.message || 'Product update nahi ho saka.');
+                setMessage(result.message || 'Product update nahi ho saka.');
+                setIsError(true);
             }
         } catch (err) {
-            setError('Server se connect karne mein masla aaraha hai.');
+            // setError('Server se connect karne mein masla aaraha hai.');
+            setMessage('Server se connect karne mein masla aaraha hai.');
+            setIsError(true);
             console.error('Update karne mein error aagaya:', err);
         } finally {
             setUploading(false);
@@ -209,22 +222,32 @@ const Dashboard = () => {
 
     // DELETE FUNCTION (Already existed, moved here for clarity)
     const handleDelete = async (productId) => {
-        if (window.confirm('Kya aap waqai is product ko delete karna chahte hain?')) {
-            try {
-                const response = await fetch(`${API_URL}/products/${productId}`, {
-                    method: 'DELETE',
-                });
-                const result = await response.json();
-                if (result.success) {
-                    alert('Product successfully delete ho gaya!');
-                    fetchProducts(); // List ko refresh karein
-                } else {
-                    alert(`Error: ${result.message || 'Product delete nahi ho saka.'}`);
-                }
-            } catch (err) {
-                console.error('Delete karne mein error aagaya:', err);
-                alert('Server se connect karne mein masla aaraha hai.');
+        // if (window.confirm('Kya aap waqai is product ko delete karna chahte hain?')) {
+        const confirmed = window.confirm('Kya aap waqai is product ko delete karna chahte hain?');
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/products/${productId}`, {
+                method: 'DELETE',
+            });
+            const result = await response.json();
+            if (result.success) {
+                // alert('Product successfully delete ho gaya!');
+                setMessage('Product successfully delete ho gaya!');
+                setIsError(false);
+                fetchProducts(); // List ko refresh karein
+            } else {
+                // alert(`Error: ${result.message || 'Product delete nahi ho saka.'}`);
+                setMessage(`Error: ${result.message || 'Product delete nahi ho saka.'}`);
+                setIsError(true);
             }
+        } catch (err) {
+            console.error('Delete karne mein error aagaya:', err);
+            // alert('Server se connect karne mein masla aaraha hai.');
+            setMessage('Server se connect karne mein masla aaraha hai.');
+            setIsError(true);
         }
     };
 
@@ -232,6 +255,21 @@ const Dashboard = () => {
     return (
         <div className="dashboard-container">
             <h1>Product Management Dashboard</h1>
+            
+            {/* Messages dikhane ke liye naya div */}
+            {(message || error) && (
+                <div style={{
+                    padding: '1rem',
+                    borderRadius: '8px',
+                    marginBottom: '1rem',
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    backgroundColor: isError || error ? '#f8d7da' : '#d4edda',
+                    color: isError || error ? '#721c24' : '#155724'
+                }}>
+                    {message || error}
+                </div>
+            )}
             
             {/* EDIT FORM: Sirf tab dikhega jab koi product edit ho raha ho */}
             {editingProduct && (

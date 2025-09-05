@@ -1,69 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page Not Found - Aj_Creativity.pk</title>
+  <title>Super Smooth Inertia Scroll</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #fff !important; 
-      color: #333;
-      text-align: center;
-      padding: 50px 20px;
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #0f172a;
+      color: white;
+      font-family: sans-serif;
+      overflow: hidden; /* stop native scroll */
+    }
+    section {
+      height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
+      font-size: 3rem;
     }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    h1 {
-      font-size: 72px;
-      margin: 0;
-      color: #761111;
-    }
-    h2 {
-      font-size: 32px;
-      margin: 10px 0 30px;
-    }
-    p {
-      font-size: 18px;
-      line-height: 1.6;
-      margin-bottom: 30px;
-    }
-    .btn {
-      display: inline-block;
-      background-color: #3f0202;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    .btn:hover {
-      background-color: #ff5252;
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-    .logo {
-      margin-bottom: 30px;
-      max-width: 150px;
-    }
+    section:nth-child(odd) { background: #1e293b; }
+    section:nth-child(even) { background: #334155; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="/clint/public/imgs - Copy/logo.svg" alt="Aj Creativity Logo" class="logo">
-    <h1>404</h1>
-    <h2>Page Not Found</h2>
-    <p>The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
-    <a href="./" class="btn">Go to Homepage</a>
+  <div id="container">
+    <section>Page 1</section>
+    <section>Page 2</section>
+    <section>Page 3</section>
+    <section>Page 4</section>
   </div>
+
+  <script>
+    const container = document.getElementById("container");
+    let current = 0;      // current scroll position
+    let target = 0;       // target scroll position
+    let ease = 0.1;      // smaller = smoother, slower
+    let speed = 0;        // inertia speed
+
+    function animate() {
+      current += (target - current) * ease;
+      container.style.transform = `translateY(${-current}px)`;
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener("wheel", (e) => {
+      target += e.deltaY;
+      target = Math.max(0, Math.min(target, container.scrollHeight - window.innerHeight));
+    }, { passive: true });
+  </script>
 </body>
 </html>

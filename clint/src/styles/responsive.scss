@@ -82,7 +82,9 @@
 }
 
 @media (max-width: 450px) {
-
+  .order-confirm-popup{
+    width: 97% !important;
+  }
   header{
   nav{
     padding: 16px 11px 19px 49px;

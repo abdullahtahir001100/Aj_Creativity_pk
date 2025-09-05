@@ -1,0 +1,22 @@
+/* styles.css */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #0f172a;
+  color: white;
+  font-family: sans-serif;
+  overflow: hidden; /* disable native scroll */
+}
+.scroll-container {
+  /* No specific styles needed here, it's just a wrapper */
+}
+section {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+section:nth-child(odd) { background: #1e293b; }
+section:nth-child(even) { background: #334155; }

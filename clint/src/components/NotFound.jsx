@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import logo from "/public/imgs/logo.png"; // update the path to your logo
+import { Link } from "react-router-dom"; // update the path to your logo
 
 const NotFound = () => {
   const [fadeIn, setFadeIn] = useState(false);
@@ -12,7 +11,7 @@ const NotFound = () => {
 
   return (
     <div style={{ ...styles.container, opacity: fadeIn ? 1 : 0, transition: "opacity 1s ease-in-out" }}>
-      <img src={logo} alt="Aj Creativity Logo" style={styles.logo} />
+      <img src="../imgs - Copy/logo.svg" alt="Jave's HandMade" style={styles.logo} />
       <h1 style={styles.h1}>404</h1>
       <h2 style={styles.h2}>Page Not Found</h2>
       <p style={styles.p}>
@@ -35,7 +34,6 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     padding: "20px",
-    background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
     color: "#333",
   },
   logo: {
@@ -46,7 +44,7 @@ const styles = {
   h1: {
     fontSize: "96px",
     margin: 0,
-    color: "#ff6b6b",
+    color: "#6e0000ff",
   },
   h2: {
     fontSize: "36px",
@@ -60,7 +58,7 @@ const styles = {
   },
   btn: {
     display: "inline-block",
-    backgroundColor: "#ff6b6b",
+    backgroundColor: "#6e0000ff",
     color: "white",
     padding: "14px 28px",
     borderRadius: "50px",

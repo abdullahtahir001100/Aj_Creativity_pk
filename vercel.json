@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "clint/package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "backend/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "server/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "blog/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "main/server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    { "src": "/api/backend/(.*)", "dest": "backend/index.js" },
+    { "src": "/api/server/(.*)", "dest": "server/server.js" },
+    { "src": "/api/blog/(.*)", "dest": "blogserver/server.js" },
+    { "src": "/api/main/(.*)", "dest": "mainserver/server.js" },
+    { "src": "/(.*)", "dest": "clint/$1" }
+  ]
+}

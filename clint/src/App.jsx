@@ -36,7 +36,7 @@ function App() {
     <>
       
         <>
-          <RightClickBlocker message="✨ For your best browsing experience, right-click is disabled on this website. Thank you for understanding 🙏" />
+          {/* <RightClickBlocker message="✨ For your best browsing experience, right-click is disabled on this website. Thank you for understanding 🙏" /> */}
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Home />} />

@@ -1,6 +1,5 @@
 /* src/components/order-management-v4.scss */
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 :root {
   --primary-color: #6F4E37 !important;
@@ -15,7 +14,7 @@
 }
 
 .order-management-container {
-  font-family: 'Roboto', sans-serif;
+  font-family: light;
   background-color: var(--bg-color);
   padding: 2.5rem;
   color: var(--text-color);

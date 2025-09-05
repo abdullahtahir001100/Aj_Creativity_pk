@@ -1,7 +1,5 @@
 /* src/styles/dashboard-overview-v2.scss */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root {
   --primary-color: #3b82f6; // Blue
   --secondary-color: #10b981; // Green
@@ -17,7 +15,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: light;
 
   margin: 0;
   padding: 0;

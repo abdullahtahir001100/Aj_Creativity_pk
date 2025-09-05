@@ -158,6 +158,7 @@ const Product = () => {
                     alt={product.name}
                     src={product.image}
                     effect="blur"
+                    loading="lazy"
                     width="100%"
                     height="300px"
                     style={{ objectFit: 'cover', borderRadius: '5px', marginBottom: '10px' }}

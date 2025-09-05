@@ -138,7 +138,7 @@ const Home = () => {
                   style={{ cursor: 'pointer' }}
                 >
                   <div className="image">
-                    <img src={product.image[0]} alt={product.name} />
+                    <img src={product.image[0]} alt={product.name} loading="lazy" />
                   </div>
                   <div className="flexbox1">
                     <div className="flexitem">
@@ -201,7 +201,7 @@ const Home = () => {
                   style={{ cursor: 'pointer' }}
                 >
                   <div className="image">
-                    <img src={product.image[0]} alt={product.name} />
+                    <img src={product.image[0]} alt={product.name} loading="lazy"/>
                   </div>
                   <div className="flexbox1">
                     <div className="flexitem">

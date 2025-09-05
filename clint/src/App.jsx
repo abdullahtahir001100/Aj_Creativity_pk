@@ -41,11 +41,11 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/About" element={<About />} />
-            <Route path="/BlogDashboard" element={<BlogDashboard />} />
+            {/* <Route path="/BlogDashboard" element={<BlogDashboard />} /> */}
             <Route path="/Contact" element={<Contact />} />
             <Route path="/Product" element={<Product />} />
             <Route path="/Cart" element={<Cart />} />
-            <Route path="/Blogs" element={<Blogs />} />
+            {/* <Route path="/Blogs" element={<Blogs />} /> */}
             <Route path="/Paymants" element={<Paymants />} />
             <Route path="/Details" element={<Details />} />
            <Route path="/HomeDashboard" element={<HomeDashboard />} />

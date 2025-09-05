@@ -44,7 +44,7 @@ const Header = () => {
             </div>
           </div>
               <ul>
-                <li><Link to="/blogs" className={location.pathname === '/blogs' ? 'active' : ''}>Blogs</Link></li>
+                {/* <li><Link to="/blogs" className={location.pathname === '/blogs' ? 'active' : ''}>Blogs</Link></li> */}
                 {/* Cart icon: hide on Cart page */}
                 <li><Link to="/product" className={`button${location.pathname === '/product' ? ' active' : ''}`}>Explore now</Link></li>
                  {location.pathname !== '/cart' && (
@@ -69,7 +69,7 @@ const Header = () => {
                  <li><Link to="/"><h6>Home</h6></Link></li>
                  <li><Link to="/about"><h6>About</h6></Link></li>
                  <li><Link to="/contact"><h6>Contact</h6></Link></li>
-                 <li><Link to="/Blogs"><h6>Blogs</h6></Link></li>
+                 {/* <li><Link to="/Blogs"><h6>Blogs</h6></Link></li> */}
                  {/* Cart icon in burger menu, always show, but visually hide on Cart page */}
                  <li className='cart' style={{ display: location.pathname === '/cart' ? 'none' : undefined }}>
                    <Link to="/Cart" className={location.pathname === '/cart' ? 'active' : ''}>

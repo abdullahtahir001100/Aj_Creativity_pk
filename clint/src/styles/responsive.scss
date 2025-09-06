@@ -241,6 +241,9 @@
 }
 
 @media (max-width: 450px) {
+  .cart-checkout-btn,.pay-btn{
+    font-size: 12px !important;
+  }
   .order-confirm-popup {
     width: 97% !important;
   }

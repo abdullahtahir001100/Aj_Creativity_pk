@@ -32,9 +32,9 @@ export default function Footer() {
         {/* Contact Info */}
         <div className="footer-contact">
           <h4>Contact</h4>
-          <p>Email: info@jewellery.com</p>
-          <p>Phone: +92 300 1234567</p>
-          <p>Location: Lahore, Pakistan</p>
+          <p>Email: Javehandmade.com</p>
+          <p>Phone: +92 347 8708641</p>
+          <p>Location: Sargodha, Pakistan</p>
         </div>
 
         {/* Social Media */}
@@ -42,13 +42,13 @@ export default function Footer() {
           <h4>Follow Us</h4>
           <div className="social-icons">
             {/* 3. Added descriptive alt text for better accessibility. */}
-            <a href="https://instagram.com" target="_blank" rel="noreferrer">
+            <a href="https://www.instagram.com/handmade_by_javeria/" target="_blank" rel="noreferrer">
               <img src="./instagram.png" alt="Instagram" />
             </a>
             <a href="https://facebook.com" target="_blank" rel="noreferrer">
               <img src="./facebook.png" alt="Facebook" />
             </a>
-            <a href="https://wa.me/+923001234567" target="_blank" rel="noreferrer">
+            <a href="https://wa.link/9v8dty" target="_blank" rel="noreferrer">
               <img src="./whatsapp.png" alt="WhatsApp" />
             </a>
             {/* 4. Corrected the link for Google Play. */}

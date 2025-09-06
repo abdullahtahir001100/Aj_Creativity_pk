@@ -316,7 +316,7 @@ const Dashboard = () => {
                                         >
                                             <option value="bangle">Bangle</option>
                                             <option value="gold bangle">Gold Bangle</option>
-                                            <option value="earring">Earring</option>
+                                            <option value="earrings">Earrings</option>
                                         </select>
                                     </div>
                                     <div className="form-group">
@@ -395,7 +395,7 @@ const Dashboard = () => {
                                         <select name="category" value={product.category} onChange={(e) => handleProductChange(index, e)} required>
                                             <option value="bangle">Bangle</option>
                                             <option value="gold bangle">Gold Bangle</option>
-                                            <option value="earring">Earring</option>
+                                            <option value="earrings">Earrings</option>
                                         </select>
                                     </div>
                                 </div>

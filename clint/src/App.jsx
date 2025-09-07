@@ -37,7 +37,7 @@ function App() {
         <Route path="/paymants" element={<Paymants />} />
         
         {/* --- Protected Dashboard Routes --- */}
-        <Route path="/dashboard" element={<Dashboard />}>
+        <Route path="/dashboard" element={<DashboardProtectedWrapper />}>
           <Route index element={<HomeDashboard />} />
           <Route path="products" element={<ProductDashboard />} />
           <Route path="videos" element={<VideoDashboard />} />

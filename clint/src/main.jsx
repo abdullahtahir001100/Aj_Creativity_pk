@@ -1,17 +1,17 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { HashRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom"; // 1. Import BrowserRouter
 import "./index.css";
 import App from "./App.jsx";
 import AOS from 'aos';
-import 'aos/dist/aos.css'; // You can also use <link> for styles
+import 'aos/dist/aos.css';
 
 AOS.init();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <HashRouter>
+    <BrowserRouter> {/* 2. Use BrowserRouter here */}
       <App />
-    </HashRouter>
+    </BrowserRouter>
   </StrictMode>
 );

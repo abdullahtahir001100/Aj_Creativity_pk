@@ -14,7 +14,32 @@ const authRoutes = require('./routes/auth');
 // Initialize express app
 const app = express();
 
-app.use(cors());
+
+// ==================== START: CORRECT CORS CONFIGURATION ====================
+
+// List of domains that are allowed to make requests to your API
+const allowedOrigins = [
+  'https://www.javehandmade.store', // Your live frontend domain
+  'http://localhost:5173'           // Your local development domain
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests if the origin is in our allowed list, or if there is no origin (e.g. server-to-server)
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('This request was blocked by the CORS policy.'));
+    }
+  }
+};
+
+// Use the cors middleware with your new, specific options.
+// This MUST come before your routes.
+app.use(cors(corsOptions));
+
+// ===================== END: CORRECT CORS CONFIGURATION =====================
+
 
 // Cloudinary configuration
 cloudinary.config({

@@ -4,7 +4,7 @@ import ScrollToTop from "./ScrollToTop";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Blogs from "./pages/Blogs"; 
+import Blogs from "./pages/Blogs";
 import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import Details from "./pages/Details";
@@ -20,7 +20,7 @@ import HomeDashboard from "./components/Dashboard";
 import BackToTopButton from "./components/BackToTopButton";
 import BlogDashboard from "./components/BlogDashboard";
 import OrderManagement from "./components/OrderManagement";
-
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
   const location = useLocation();
@@ -33,9 +33,9 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <>
-      
-        <>
+
+      <>
+        <HelmetProvider>
           {/* <RightClickBlocker message="✨ For your best browsing experience, right-click is disabled on this website. Thank you for understanding 🙏" /> */}
           <ScrollToTop />
           <Routes>
@@ -48,7 +48,7 @@ function App() {
             {/* <Route path="/Blogs" element={<Blogs />} /> */}
             <Route path="/Paymants" element={<Paymants />} />
             <Route path="/Details" element={<Details />} />
-           <Route path="/HomeDashboard" element={<HomeDashboard />} />
+            <Route path="/HomeDashboard" element={<HomeDashboard />} />
             <Route path="/VideoDashboard" element={<VideoDashboard />} />
             <Route path="/DashboardOverview" element={<DashboardOverview />} />
             <Route path="/OrderManagement" element={<OrderManagement />} />
@@ -57,9 +57,8 @@ function App() {
             <Route path="/ProductDashboard" element={<ProductDashboard />} />
           </Routes>
           <BackToTopButton />
-        </>
-      
-    </>
+        </HelmetProvider>
+      </>
   );
 }
 

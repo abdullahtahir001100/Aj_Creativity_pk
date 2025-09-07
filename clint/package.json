@@ -7,8 +7,19 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "postbuild": "react-snap",
     "preview": "vite preview",
     "lint": "eslint ."
+  },
+  "reactSnap": {
+    "source": "dist",
+    "waitFor": "window.prerenderReady",
+    "include": [
+      "/",
+      "/product",
+      "/about",
+      "/contact"
+    ]
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -23,13 +34,10 @@
     "aos": "^2.3.4",
     "axios": "^1.11.0",
     "bootstrap": "^5.3.8",
-    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "emailjs-com": "^3.2.0",
-    "express": "^5.1.0",
     "framer-motion": "^12.23.12",
     "leaflet": "^1.9.4",
-    "mongoose": "^8.18.0",
     "react": "^18.3.1",
     "react-countup": "^6.5.3",
     "react-dom": "^18.3.1",
@@ -51,8 +59,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "postcss": "^8.5.6",
+    "react-snap": "^1.23.0",
     "tailwindcss": "^4.1.12",
-    "vite": "^7.1.2",
-    "vite-plugin-ssr": "^0.4.142"
+    "vite": "^7.1.2"
   }
 }

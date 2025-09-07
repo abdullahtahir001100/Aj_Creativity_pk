@@ -13,7 +13,7 @@ import Paymants from "./pages/Paymants";
 import NotFound from "./components/NotFound";
 
 // Import Dashboard & Admin Pages
-import DashboardProtectedWrapper from "./components/DashboardProtectedWrapper";
+import Dashboard from "./components/DashboardProtectedWrapper";
 import HomeDashboard from "./components/Dashboard";
 import ProductDashboard from "./components/v1";
 import VideoDashboard from "./components/VideoDashboard";
@@ -37,7 +37,7 @@ function App() {
         <Route path="/paymants" element={<Paymants />} />
         
         {/* --- Protected Dashboard Routes --- */}
-        <Route path="/dashboard" element={<DashboardProtectedWrapper />}>
+        <Route path="/dashboard" element={<Dashboard />}>
           <Route index element={<HomeDashboard />} />
           <Route path="products" element={<ProductDashboard />} />
           <Route path="videos" element={<VideoDashboard />} />

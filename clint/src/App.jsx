@@ -14,10 +14,6 @@ import NotFound from "./components/NotFound";
 
 // Import Dashboard & Admin Pages
 import Dashboard from "./components/DashboardProtectedWrapper";
-import HomeDashboard from "./components/Dashboard";
-import ProductDashboard from "./components/v1";
-import VideoDashboard from "./components/VideoDashboard";
-import OrderManagement from "./components/OrderManagement";
 
 function App() {
   return (
@@ -38,10 +34,6 @@ function App() {
         
         {/* --- Protected Dashboard Routes --- */}
         <Route path="/dashboard" element={<Dashboard />}>
-          <Route index element={<HomeDashboard />} />
-          <Route path="products" element={<ProductDashboard />} />
-          <Route path="videos" element={<VideoDashboard />} />
-          <Route path="orders" element={<OrderManagement />} />
         </Route>
 
         {/* --- Not Found Route --- */}

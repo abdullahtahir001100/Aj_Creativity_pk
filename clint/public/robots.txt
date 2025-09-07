@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Main sitemap location
-Sitemap: https://javehandmade.store/sitemap.xml
+Sitemap: https://www.javehandmade.store/sitemap.xml
 
 # Optional: block sensitive or unnecessary folders (uncomment if needed)
 # Disallow: /admin/

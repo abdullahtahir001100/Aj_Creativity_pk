@@ -67,7 +67,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-        <div className="burgerbtn">  <a className="burger" onClick={openBurger}><img src="./burger.png" alt="Burger" /></a></div>
+        <div className="burgerbtn">  <strong className="burger" onClick={openBurger}><img src="./burger.png" alt="Burger" /></strong></div>
       </nav>
       <div className="links" id="togal" style={{
         top: burgerOpen ? '157px' : '-382px',

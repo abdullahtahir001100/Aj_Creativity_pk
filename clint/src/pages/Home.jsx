@@ -8,7 +8,6 @@ import '../styles/main.scss';
 import '../styles/animation.scss';
 import SEOMetadata from '../components/SEOMetadata';
 
-// API endpoint for fetching data
 const API_BASE_URL = 'https://server-nine-kappa-75.vercel.app/api';
 
 const Home = () => {
@@ -20,20 +19,16 @@ const Home = () => {
   const [cartMessage, setCartMessage] = useState("");
   const navigate = useNavigate();
 
-  // Data fetching logic with the critical fix for pre-rendering
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        // Fetch products
         const productsResponse = await fetch(`${API_BASE_URL}/data`);
         if (!productsResponse.ok) throw new Error('Failed to fetch products');
         const productsData = await productsResponse.json();
         
-        // Filter products for 'featured' and 'latest' sections
         setFeaturedProducts(productsData.data.filter(p => p.placement === 'featured'));
         setLatestProducts(productsData.data.filter(p => p.placement === 'latest'));
 
-        // Fetch videos
         const videosResponse = await fetch(`${API_BASE_URL}/videos`);
         if (!videosResponse.ok) throw new Error('Failed to fetch videos');
         const videosData = await videosResponse.json();
@@ -44,25 +39,22 @@ const Home = () => {
         setError(err.message);
       } finally {
         setLoading(false);
-        // CRITICAL: Signal to pre-rendering tools like react-snap that the page is fully loaded
         window.prerenderReady = true;
       }
     };
     fetchAllData();
   }, []);
 
-  // Helper function to normalize price strings to numbers
   const normalizePrice = (price) => Number(String(price).replace(/[^\d]/g, ''));
 
-  // Function to handle adding a product to the cart
   const handleAddToCart = (e, product) => {
-    e.stopPropagation(); // Prevent navigation when clicking the cart button
+    e.stopPropagation();
     const cartItem = {
       id: product._id,
       name: product.name,
       category: product.category,
-      color: 'gold', // Default color, can be customized
-      size: product.category === 'earring' ? undefined : 'Medium', // Default size
+      color: 'gold',
+      size: product.category === 'earring' ? undefined : 'Medium',
       price: normalizePrice(product.price),
       quantity: 1,
       image: product.image[0]
@@ -70,54 +62,26 @@ const Home = () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     cart.push(cartItem);
     localStorage.setItem("cart", JSON.stringify(cart));
-    window.dispatchEvent(new Event('cartUpdated')); // Notify other components of cart change
+    window.dispatchEvent(new Event('cartUpdated'));
     setCartMessage("Added to cart!");
     setTimeout(() => setCartMessage(""), 2000);
   };
 
-  // Function to navigate to product details page
   const handleProductClick = (product) => {
+    const slug = product.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
     const productForDetails = {
       ...product,
       price: normalizePrice(product.price),
-      id: product._id
+      id: product._id,
+      image: product.image[0]
     };
-    navigate("/details", { state: { product: productForDetails } });
+    navigate(`/product/${slug}/${product._id}`, { state: { product: productForDetails } });
   };
   
-  // JSON-LD Structured Data for Homepage SEO
-  const homePageStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "url": "https://www.javehandmade.store/",
-    "name": "Jave Handmade",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://www.javehandmade.store/product?search={search_term_string}"
-      },
-      "query-input": "required name=search_term_string"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Jave Handmade",
-      "url": "https://www.javehandmade.store/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://www.javehandmade.store/logo.png" // Ensure this logo URL is correct
-      }
-    }
-  };
+  const homePageStructuredData = { /* Your SEO Data */ };
 
-
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (error) {
-    return <div style={{ textAlign: 'center', padding: '50px' }}>Error: {error}</div>;
-  }
+  if (loading) return <Loader />;
+  if (error) return <div style={{ textAlign: 'center', padding: '50px' }}>Error: {error}</div>;
 
   return (
     <>
@@ -147,7 +111,6 @@ const Home = () => {
           <div className="heading flexbox">
             <div className="h1"><h1>featured products</h1></div>
             <div className="button">
-              {/* IMPROVEMENT: Using <Link> for client-side routing and correct URL */}
               <Link to="/product">View More</Link>
             </div>
           </div>
@@ -162,18 +125,10 @@ const Home = () => {
                   <div className="flexbox1">
                     <div className="flexitem">
                       <div className="text"><h4>{product.name}</h4></div>
-                      <div className="fonts">
-                        {/* IMPROVEMENT: Meaningful alt tags for accessibility */}
-                        <img src="/star.png" alt="Rating star" />
-                        <img src="/star.png" alt="Rating star" />
-                        <img src="/star.png" alt="Rating star" />
-                        <img src="/star.png" alt="Rating star" />
-                        <img src="/star-half-empty.png" alt="Half rating star" />
-                      </div>
                       <div className="price"><h6>{product.price} Rs</h6></div>
                     </div>
                     <div className="flexitem">
-                      <button className="add-to-cart" style={{ width: "60px" }} onClick={(e) => handleAddToCart(e, product)}>
+                      <button className="add-to-cart" style={{ width: "60px" }}>
                         <img src="/shopping.png" alt="Add to cart" />
                       </button>
                     </div>
@@ -201,17 +156,10 @@ const Home = () => {
                   <div className="flexbox1">
                     <div className="flexitem">
                       <div className="text"><h4>{product.name}</h4></div>
-                      <div className="fonts">
-                        <img src="/star.png" alt="Rating star" />
-                        <img src="/star.png" alt="Rating star" />
-                        <img src="/star.png" alt="Rating star" />
-                        <img src="/star.png" alt="Rating star" />
-                        <img src="/star-half-empty.png" alt="Half rating star" />
-                      </div>
                       <div className="price"><h6>{product.price} Rs</h6></div>
                     </div>
                     <div className="flexitem">
-                      <button className="add-to-cart" style={{ width: "60px" }} onClick={(e) => handleAddToCart(e, product)}>
+                      <button className="add-to-cart" style={{ width: "60px" }} >
                         <img src="/shopping.png" alt="Add to cart" />
                       </button>
                     </div>

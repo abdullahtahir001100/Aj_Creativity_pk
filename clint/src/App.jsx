@@ -30,7 +30,10 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/product" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/details" element={<Details />} />
+        
+        {/* === UPDATED LINE === */}
+        <Route path="/product/:slug/:id" element={<Details />} />
+
         <Route path="/paymants" element={<Paymants />} />
         
         {/* --- Protected Dashboard Routes --- */}

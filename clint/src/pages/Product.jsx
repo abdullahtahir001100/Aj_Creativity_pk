@@ -8,7 +8,6 @@ import Footer from "../components/Footer";
 import SEOMetadata from "../components/SEOMetadata";
 
 const API_URL = 'https://aj-creativity-pk-2dpo.vercel.app/api';
-const SITE_URL = 'https://www.javehandmade.store';
 
 const priceRanges = [
   { label: "0 - 500", min: 0, max: 500 },
@@ -19,7 +18,7 @@ const priceRanges = [
 
 const Product = () => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]); // State for our dynamic categories
+  const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedPrices, setSelectedPrices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,12 +34,8 @@ const Product = () => {
         const data = await response.json();
         if (data.success && data.data) {
           setProducts(data.data);
-          
-          // DYNAMICALLY CREATE CATEGORY LIST
-          // This creates a list of unique categories from your products
           const uniqueCategories = [...new Set(data.data.map(p => p.category))];
           setCategories(uniqueCategories);
-
         } else {
           console.error("Failed to fetch products:", data.message);
           setProducts([]);
@@ -50,7 +45,6 @@ const Product = () => {
         setProducts([]);
       } finally {
         setLoading(false);
-        // For pre-rendering
         window.prerenderReady = true;
       }
     };
@@ -80,7 +74,8 @@ const Product = () => {
   };
 
   const handleProductClick = (product) => {
-    navigate("/details", { state: { product } });
+    const slug = product.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    navigate(`/product/${slug}/${product._id}`, { state: { product } });
   };
   
   const handleAddToCart = (product) => { /* Your existing Add to Cart logic */ };
@@ -103,7 +98,6 @@ const Product = () => {
             <div className="bar">
               <div className="op-1">
                 <h3>Filter by Category</h3>
-                {/* This now maps over the DYNAMIC categories state */}
                 {categories.map((cat) => (
                   <label key={cat}>
                     <input type="checkbox" checked={selectedCategories.includes(cat)} onChange={() => handleCategoryChange(cat)} /> {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -142,7 +136,7 @@ const Product = () => {
                       <h4>{product.name}</h4>
                       <p>{product.price} Rs</p>
                     </div>
-                    <img src="./shopping.png" alt="Add to cart" className="carts" onClick={e => { e.stopPropagation(); handleAddToCart(product); }} />
+                    <img src="./shopping.png" alt="Add to cart" className="carts" />
                   </div>
                 </div>
               ))

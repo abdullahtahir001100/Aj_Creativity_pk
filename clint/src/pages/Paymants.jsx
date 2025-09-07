@@ -52,29 +52,35 @@ export default function PaymentPage() {
   const mapRef = useRef(null);
 
   const [checkoutCart, setCheckoutCart] = useState([]);
-  
-  // ✅ 1. ADD NEW STATE TO PREVENT DUPLICATE ORDERS
+  const [couponDiscount, setCouponDiscount] = useState(0);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load cart from localStorage
   useEffect(() => {
     try {
-      const stored = JSON.parse(localStorage.getItem("checkoutCart")) || [];
-      setCheckoutCart(stored);
+      const storedCart = JSON.parse(localStorage.getItem("checkoutCart")) || [];
+      const storedDiscount = JSON.parse(localStorage.getItem("couponDiscount")) || 0;
+      setCheckoutCart(storedCart);
+      setCouponDiscount(storedDiscount);
     } catch {
       setCheckoutCart([]);
+      setCouponDiscount(0);
     }
   }, []);
 
-  const totalPrice = checkoutCart.reduce(
+  const subtotal = checkoutCart.reduce(
     (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
     0
   );
+
+  const shipping = 100;
+  const totalPrice = subtotal + shipping - couponDiscount;
 
   const clearCart = () => {
     setCheckoutCart([]);
     localStorage.setItem("checkoutCart", JSON.stringify([]));
     localStorage.setItem("cart", JSON.stringify([]));
+    localStorage.removeItem("couponDiscount");
     window.dispatchEvent(new Event("cartUpdated"));
   };
 
@@ -85,31 +91,39 @@ export default function PaymentPage() {
       document.body.style.overflow = prevOverflow;
     };
   }, [showPopup]);
-
-  // Location search
-  const handleSearch = async (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`
-        );
-        const data = await response.json();
-        if (data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lon = parseFloat(data[0].lon);
-          setSearchQuery(`${lat.toFixed(6)}, ${lon.toFixed(6)}`);
-          setMarkerPos({ lat, lng: lon });
-          setMapZoom(15);
-          if (mapRef.current) mapRef.current.setView([lat, lon], 15);
-        }
-      } catch {
-        setInputError("Location search failed. Try again.");
+  
+  // ✅ CHANGE 1: Search logic ko ek naye function mein move kar dia hai
+  const performSearch = async () => {
+    if (!searchQuery.trim()) return; // Prevent empty search
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`
+      );
+      const data = await response.json();
+      if (data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+        setSearchQuery(`${lat.toFixed(6)}, ${lon.toFixed(6)}`);
+        setMarkerPos({ lat, lng: lon });
+        setMapZoom(15);
+        if (mapRef.current) mapRef.current.setView([lat, lon], 15);
+        setInputError(""); // Clear any previous errors
+      } else {
+        setInputError("Location not found.");
       }
+    } catch {
+      setInputError("Location search failed. Try again.");
     }
   };
 
-  // Map click to select location
+  // ✅ CHANGE 2: Ab 'Enter' key dabane par naya function call hoga
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      performSearch();
+    }
+  };
+
   const LocationPicker = () => {
     useMapEvents({
       click(e) {
@@ -120,10 +134,8 @@ export default function PaymentPage() {
     return markerPos ? <Marker position={markerPos} /> : null;
   };
 
-  // Place order
   const handlePlaceOrder = async () => {
-    // ✅ 3. MODIFY THIS FUNCTION
-    // --- Validation Checks ---
+    // ... baqi code same rahega ...
     if (!acceptTerms) {
       return setInputError("You must accept our terms and policies.");
     }
@@ -139,9 +151,9 @@ export default function PaymentPage() {
     if (primaryNumber.replace(/\D/g, "").length < 12) {
       return setInputError("Primary number is invalid.");
     }
-    
-    setInputError(""); // Clear previous errors before submitting
-    setIsSubmitting(true); // Disable button
+
+    setInputError("");
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("https://aj-creativity-pk.vercel.app/api/orders", {
@@ -163,6 +175,9 @@ export default function PaymentPage() {
             image: Array.isArray(item.img) ? item.img[0] : item.img,
             price: item.price,
           })),
+          subtotal,
+          shipping,
+          couponDiscount,
           totalPrice,
           paymentMethod: "Cash on Delivery",
         }),
@@ -178,7 +193,7 @@ export default function PaymentPage() {
       console.error("Order Error:", error);
       setInputError("❌ Failed to connect to server.");
     } finally {
-      setIsSubmitting(false); // Re-enable button when done (success or fail)
+      setIsSubmitting(false);
     }
   };
 
@@ -188,7 +203,6 @@ export default function PaymentPage() {
       <div className="payment-container fade-in-page">
         <h1>Payment Details</h1>
         <div className="checkout-row">
-          {/* Left Column */}
           <div className="left-col">
             <section>
               <h2>User Information</h2>
@@ -201,8 +215,24 @@ export default function PaymentPage() {
               <input type="tel" value={altNumber} onChange={(e) => setAltNumber(formatPhone(e.target.value))} maxLength={16} />
               <label>Address</label>
               <textarea rows="3" placeholder="Enter your full address" value={address} onChange={(e) => setAddress(e.target.value)} />
+              
               <label>Search Location or Select on Map</label>
-              <input type="text" value={searchQuery} placeholder="Type a location or select on map" onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleSearch} />
+              {/* ✅ CHANGE 3: Input field aur button ko ek div mein wrap kar dia hai */}
+              <div className="search-container">
+                <input 
+                  type="text" 
+                  value={searchQuery} 
+                  placeholder="Type a location to search" 
+                  onChange={(e) => setSearchQuery(e.target.value)} 
+                  onKeyDown={handleSearch} 
+                />
+                <button onClick={performSearch} className="search-btn" aria-label="Search location">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                  </svg>
+                </button>
+              </div>
+
               <MapContainer
                 center={markerPos ? [markerPos.lat, markerPos.lng] : [33.6844, 73.0479]}
                 zoom={markerPos ? mapZoom : 12}
@@ -216,8 +246,8 @@ export default function PaymentPage() {
             </section>
           </div>
 
-          {/* Right Column */}
           <div className="right-col">
+          {/* ... baqi code same rahega ... */}
             <section>
               <h2>Payment Method</h2>
               <select><option value="cod">Cash on Delivery</option></select>
@@ -238,13 +268,20 @@ export default function PaymentPage() {
                         {item.category && <p><strong>Category:</strong> {item.category}</p>}
                         <p><strong>Size:</strong> {item.size}</p>
                         <p><strong>Quantity:</strong> {item.quantity}</p>
-                        <p><strong>Price:</strong> Rs {(item.price + 100) * item.quantity}</p>
+                        <p><strong>Price:</strong> Rs {(item.price || 0) * (item.quantity || 1)}</p>
                       </div>
                     </div>
                   ))
                 )}
               </div>
-              {checkoutCart.length > 0 && <p style={{ marginTop: 10, fontWeight: "bold" }}>Total: Rs {totalPrice + 100}</p>}
+              {checkoutCart.length > 0 && (
+                <>
+                  <p style={{ marginTop: 10 }}><strong>Subtotal:</strong> Rs {subtotal}</p>
+                  <p><strong>Shipping:</strong> Rs {shipping}</p>
+                  <p><strong>Discount:</strong> - Rs {couponDiscount}</p>
+                  <p style={{ fontWeight: "bold" }}>Total: Rs {totalPrice}</p>
+                </>
+              )}
             </section>
 
             <div style={{ margin: "16px 0 8px 0" }}>
@@ -254,7 +291,6 @@ export default function PaymentPage() {
               </label>
             </div>
             
-            {/* ✅ 2. UPDATE THE BUTTON'S DISABLED PROP AND TEXT */}
             <button className="pay-btn" onClick={handlePlaceOrder} disabled={isSubmitting}>
               {isSubmitting ? "Placing Order..." : "Confirm & Pay"}
             </button>

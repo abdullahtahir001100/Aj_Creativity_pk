@@ -39,8 +39,9 @@ export default function Details() {
   ); 
   const [quantity, setQuantity] = useState(1);
 
-  // नई states
-  const [cartMessage, setCartMessage] = useState("");
+  // States for messages and button
+  const [popupMessage, setPopupMessage] = useState("");
+  const [isErrorPopup, setIsErrorPopup] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [showGoToCart, setShowGoToCart] = useState(false);
 
@@ -73,7 +74,7 @@ export default function Details() {
       };
       fetchProductById();
     }
-  }, [id, location.state?.product, navigate]);
+  }, [id, location.state, navigate]);
 
   useEffect(() => {
     if (!mainProduct) return;
@@ -95,7 +96,7 @@ export default function Details() {
     };
     fetchRelatedProducts();
   }, [mainProduct]);
-
+  
   if (loading || !mainProduct) {
     return <Loader />;
   }
@@ -106,14 +107,21 @@ export default function Details() {
     setSelectedColor(newColor);
   };
   
+  // *** BUTTON LOGIC UPDATE ***
+  const isearrings = mainProduct.category === 'earrings';
+  const isSelectionValid = isearrings ? !!selectedColor : (!!selectedSize && !!selectedColor);
+
   const handleAddToCart = () => {
-    const isearrings = mainProduct.category === 'earrings';
-    const canAddToCart = isearrings ? (selectedColor && quantity > 0) : (selectedSize && selectedColor && quantity > 0);
+    // Step 1: Check if size and color are selected
+    if (!isSelectionValid) {
+        setPopupMessage("⚠️ Please select size and color first!");
+        setIsErrorPopup(true);
+        setTimeout(() => setPopupMessage(""), 3000); // Hide message after 3 seconds
+        return;
+    }
     
-    if (!canAddToCart) return;
-
+    // Step 2: If valid, proceed to add to cart
     setIsPlacingOrder(true);
-
     setTimeout(() => {
       const cartItem = {
         id: mainProduct._id,
@@ -129,29 +137,32 @@ export default function Details() {
       let cart = JSON.parse(localStorage.getItem("cart")) || [];
       cart.push(cartItem);
       localStorage.setItem("cart", JSON.stringify(cart));
-      window.dispatchEvent(new Event('cartUpdated'));
+      
+      // This event tells other parts of the app (like Cart.js) that the cart has changed
+      window.dispatchEvent(new Event('cartUpdated')); 
       
       setIsPlacingOrder(false);
-      setCartMessage("✅ Added to cart!");
+      setPopupMessage("✅ Added to cart!");
+      setIsErrorPopup(false);
       setShowGoToCart(true);
 
       setTimeout(() => {
-        setCartMessage("");
+        setPopupMessage("");
         setShowGoToCart(false);
       }, 4000);
-    }, 1500); // 1.5 second fake delay
+    }, 1500);
   };
   
   return (
     <>
       <Header />
       {/* Popup Message */}
-      {cartMessage && (
+      {popupMessage && (
         <div style={{
           position: "fixed",
           top: "15px",
           right: "15px",
-          background: "#4caf50",
+          background: isErrorPopup ? "#f44336" : "#4caf50", // Red for error, Green for success
           color: "white",
           padding: "10px 20px",
           borderRadius: "8px",
@@ -162,7 +173,7 @@ export default function Details() {
           alignItems: "center",
           gap: "10px"
         }}>
-          <span>{cartMessage}</span>
+          <span>{popupMessage}</span>
           {showGoToCart && (
             <button
               onClick={() => navigate("/cart")}
@@ -182,42 +193,19 @@ export default function Details() {
         </div>
       )}
 
-      <style>
-        {`
-          @keyframes dots {
-            0% { content: ""; }
-            33% { content: "."; }
-            66% { content: ".."; }
-            100% { content: "..."; }
-          }
-          .dots::after {
-            content: "";
-            animation: dots 1.5s steps(3, end) infinite;
-          }
-          @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateY(-20px); }
-            10% { opacity: 1; transform: translateY(0); }
-            90% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(-20px); }
-          }
-        `}
-      </style>
+      {/* Styles (unchanged) */}
+      <style>{`@keyframes dots{0%{content:"";}33%{content:".";}66%{content:"..";}100%{content:"...";}} .dots::after{content:"";animation:dots 1.5s steps(3, end) infinite;} @keyframes fadeInOut{0%{opacity:0;transform:translateY(-20px);}10%{opacity:1;transform:translateY(0);}90%{opacity:1;}100%{opacity:0;transform:translateY(-20px);}}`}</style>
 
       <div className="flexbox fade-in-page">
         <div className="product-detail">
-          {/* Image Section */}
           <div className="product-image">
             <img src={mainProduct.image} alt={mainProduct.name} />
           </div>
-
-          {/* Details Section */}
           <div className="product-info">
             <h1>{mainProduct.name}</h1>
             <p className="price">{mainProduct.price} Rs</p>
             {mainProduct.category && (<p className="category">Category: {mainProduct.category}</p>)}
-            <p className="desc">
-              A timeless piece crafted with precision. Perfect for weddings, parties, and special occasions.
-            </p>
+            <p className="desc">A timeless piece crafted with precision. Perfect for weddings, parties, and special occasions.</p>
 
             {/* Size (not for earrings) */}
             {mainProduct.category !== 'earrings' && (
@@ -232,72 +220,40 @@ export default function Details() {
                 </div>
               </div>
             )}
-
-            {/* Color and Quantity */}
+            
+            {/* Color and Quantity (unchanged) */}
             <div className="flex">
-              <div className="option-group">
-                <label>Color:</label>
-                <div className="color-options">
-                  {(mainProduct.category === 'gold bangle' ? ["gold"] : ["gold", "silver", "rose", "black", "green", "yellow", "Red"])
-                  .map((color) => (
-                    <span key={color} className={`color-dot ${color} ${selectedColor === color ? "active" : ""}`} onClick={() => setSelectedColor(color)}></span>
-                  ))}
-                  
-                  {/* Custom Color Picker */}
-                  <label
-                    className="multi-color-picker"
-                    style={{
-                      position: "relative",
-                      display: "inline-block",
-                      width: "25px",
-                      height: "27px",
-                      borderRadius: "50%",
-                      overflow: "hidden",
-                      cursor: "pointer",
-                      marginLeft: "8px"
-                    }}
-                  >
-                    <span
-                      className="preview"
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        borderRadius: "50%",
-                        background: customColor,
-                      }}
-                    ></span>
-                    <input
-                      type="color"
-                      value={selectedColor.startsWith("#") ? selectedColor : "#e66465"}
-                      onChange={handleCustomColorChange}
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        opacity: 0,
-                        cursor: "pointer",
-                      }}
-                    />
-                  </label>
+                <div className="option-group">
+                  <label>Color:</label>
+                  <div className="color-options">
+                    {(mainProduct.category === 'gold bangle' ? ["gold"] : ["gold", "silver", "rose", "black", "green", "yellow", "Red"])
+                    .map((color) => (
+                      <span key={color} className={`color-dot ${color} ${selectedColor === color ? "active" : ""}`} onClick={() => setSelectedColor(color)}></span>
+                    ))}
+                    <label className="multi-color-picker" style={{position:"relative",display:"inline-block",width:"25px",height:"27px",borderRadius:"50%",overflow:"hidden",cursor:"pointer",marginLeft:"8px"}}>
+                      <span className="preview" style={{position:"absolute",inset:0,borderRadius:"50%",background:customColor}}></span>
+                      <input type="color" value={selectedColor.startsWith("#") ? selectedColor : "#e66465"} onChange={handleCustomColorChange} style={{position:"absolute",inset:0,opacity:0,cursor:"pointer"}}/>
+                    </label>
+                  </div>
                 </div>
-              </div>
-              <div className="option-group">
-                <label>Quantity:</label>
-                <div className="quantity">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>−</button>
-                  <span>{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)}>+</button>
+                <div className="option-group">
+                  <label>Quantity:</label>
+                  <div className="quantity">
+                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>−</button>
+                    <span>{quantity}</span>
+                    <button onClick={() => setQuantity(quantity + 1)}>+</button>
+                  </div>
                 </div>
-              </div>
             </div>
 
-            {/* Add to Cart Button */}
+            {/* *** ADD TO CART BUTTON UPDATED *** */}
             <button
               className="add-to-cart"
               onClick={handleAddToCart}
               disabled={isPlacingOrder}
               style={{
-                opacity: isPlacingOrder ? 0.7 : 1,
-                cursor: isPlacingOrder ? "wait" : "pointer"
+                opacity: !isSelectionValid || isPlacingOrder ? 0.6 : 1,
+                cursor: !isSelectionValid || isPlacingOrder ? "not-allowed" : "pointer",
               }}
             >
               {isPlacingOrder ? (
@@ -315,11 +271,8 @@ export default function Details() {
         <TestimonialSlider />
       </section>
       
-      {/* Related Products Section */}
       <div className="cointain">
-        <div className="headings">
-          <div className="h1"><h1>Related Products</h1></div>
-        </div>
+        <div className="headings"><div className="h1"><h1>Related Products</h1></div></div>
         <div className={`products-grid points${relatedProducts.length <= 4 ? ' center-few' : ''}`}>
           {loadingRelated ? (
             <Loader />
@@ -351,7 +304,6 @@ export default function Details() {
           )}
         </div>
       </div>
-
       <Footer />
     </>
   );

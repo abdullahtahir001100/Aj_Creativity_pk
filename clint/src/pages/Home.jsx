@@ -86,7 +86,7 @@ const Home = () => {
   return (
     <>
       <SEOMetadata 
-        title="Jave Handmade Store - Unique Handcrafted Jewelry"
+        title="Jave Handmade"
         description="Discover beautiful, handcrafted jewelry and accessories at Jave Handmade. Quality items made with passion, perfect for any occasion."
         canonicalUrl="/"
         structuredData={homePageStructuredData}

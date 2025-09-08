@@ -29,7 +29,7 @@ const Header = () => {
 
   return (
     <header>
-      <div className="flexbox">
+      <div className="mobilehide">
         <nav className="flexbox">
           <ul>
             <li><Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link></li>
@@ -59,7 +59,7 @@ const Header = () => {
           </ul>
         </nav>
       </div>
-      <nav>
+      <nav className='flexbox mobile'>
         <div className="logo">
           <div className="col-1">
             <div className="image">
@@ -67,10 +67,10 @@ const Header = () => {
             </div>
           </div>
         </div>
-        <div className="burgerbtn">  <a className="burger" onClick={openBurger}><img src="./burger.png" alt="Burger" /></a></div>
+        <div className="burgerbtn">  <strong className="burger" onClick={openBurger}><img src="./burger.png" alt="Burger" /></strong></div>
       </nav>
       <div className="links" id="togal" style={{
-        top: burgerOpen ? '82px' : '-382px',
+        top: burgerOpen ? '157px' : '-382px',
         display: burgerOpen ? 'block' : 'none'
        }}>
         <li><Link to="/"><h6>Home</h6></Link></li>

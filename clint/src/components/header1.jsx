@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 const Header = () => {
   const [burgerOpen, setBurgerOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [hidden, setHidden] = useState(false);
   const location = useLocation();
   const openBurger = () => setBurgerOpen((prev) => !prev);
 
@@ -19,7 +20,6 @@ const Header = () => {
     }
     updateCartCount();
     window.addEventListener('storage', updateCartCount);
-    // Listen for custom event from Details/Cart page
     window.addEventListener('cartUpdated', updateCartCount);
     return () => {
       window.removeEventListener('storage', updateCartCount);
@@ -27,8 +27,27 @@ const Header = () => {
     };
   }, []);
 
+  // Hide/show header on scroll
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      if (window.scrollY > lastScrollY) {
+        // scrolling down → hide header
+        setHidden(true);
+      } else {
+        // scrolling up → show header
+        setHidden(false);
+      }
+      lastScrollY = window.scrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header>
+    <header className={`site-header ${hidden ? 'hide' : ''}`}>
       <div className="mobilehide">
         <nav className="flexbox">
           <ul>
@@ -44,12 +63,9 @@ const Header = () => {
             </div>
           </div>
           <ul>
-            {/* <li><Link to="/blogs" className={location.pathname === '/blogs' ? 'active' : ''}>Blogs</Link></li> */}
-            {/* Cart icon: hide on Cart page */}
             <li><Link to="/product" className={`button${location.pathname === '/product' ? ' active' : ''}`}>Explore now</Link></li>
             {location.pathname !== '/cart' && (
               <li className='cart'>
-
                 <Link to="/Cart" className={location.pathname === '/cart' ? 'active' : ''}>
                   <img src="./shopping1.png" alt="" />
                   {cartCount > 0 && <strong>{cartCount}</strong>}
@@ -59,6 +75,8 @@ const Header = () => {
           </ul>
         </nav>
       </div>
+
+      {/* Mobile Nav */}
       <nav className='flexbox mobile'>
         <div className="logo">
           <div className="col-1">
@@ -67,12 +85,22 @@ const Header = () => {
             </div>
           </div>
         </div>
-        <div className="burgerbtn">  <strong className="burger" onClick={openBurger}><img src="./burger.png" alt="Burger" /></strong></div>
+        <div className="burgerbtn">
+          <strong className="burger" onClick={openBurger}>
+            {burgerOpen ? (
+              <img src="../cross.png" alt="Close" />   // Cross icon
+            ) : (
+              <img src="./burger.png" alt="Burger" /> // Burger icon
+            )}
+          </strong>
+        </div>
       </nav>
+
+      {/* Burger Menu */}
       <div className="links" id="togal" style={{
         top: burgerOpen ? '157px' : '-382px',
         display: burgerOpen ? 'block' : 'none'
-       }}>
+      }}>
         <li><Link to="/"><h6>Home</h6></Link></li>
         <li><Link to="/about"><h6>About</h6></Link></li>
         <li><Link to="/contact"><h6>Contact</h6></Link></li>
@@ -83,7 +111,6 @@ const Header = () => {
         </li>
         <li><Link to="/product" className="buttn"><h4>Explore now</h4></Link></li>
       </div>
-
     </header>
   );
 };

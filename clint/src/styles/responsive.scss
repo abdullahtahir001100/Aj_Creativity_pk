@@ -126,11 +126,15 @@
 }
 
 @media (max-width: 768px) {
+  .site-header{
+    height: 10rem !important;
+  }
   .hero5__content {
     .hero5__headline {
       position: static;
     }
   }
+
   .ali {
     .baner {
       padding: 10rem 0;
@@ -503,4 +507,17 @@
 /* Ye code apni main.scss file mein add/replace karein */
 .cart-checkout-btn{
   margin: 0 !important;
+}
+.site-header {
+  position: fixed;
+  top: 0;
+  height: 10rem;
+  width: 100%;
+  z-index: 999;
+  background: #fff; /* change as needed */
+  transition: transform 0.4s ease-in-out;
+}
+
+.site-header.hide {
+  transform: translateY(-100%);
 }

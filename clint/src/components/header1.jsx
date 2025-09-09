@@ -67,7 +67,7 @@ const Header = () => {
             {location.pathname !== '/cart' && (
               <li className='cart'>
                 <Link to="/Cart" className={location.pathname === '/cart' ? 'active' : ''}>
-                  <img src="./shopping1.png" alt="" />
+                  <img src="./shopping1.png" alt="Cart" />
                   {cartCount > 0 && <strong>{cartCount}</strong>}
                 </Link>
               </li>
@@ -85,14 +85,29 @@ const Header = () => {
             </div>
           </div>
         </div>
-        <div className="burgerbtn">
-          <strong className="burger" onClick={openBurger}>
-            {burgerOpen ? (
-              <img src="../cross.png" alt="Close" />   // Cross icon
-            ) : (
-              <img src="./burger.png" alt="Burger" /> // Burger icon
-            )}
-          </strong>
+
+        {/* Right side: Cart + Burger */}
+        <div className="flexbox" style={{ gap: "15px", alignItems: "center" }}>
+          {/* Cart icon for mobile */}
+          {location.pathname !== '/cart' && (
+            <div className="cart">
+              <Link to="/Cart" className={location.pathname === '/cart' ? 'active' : ''}>
+                <img src="./shopping1.png" alt="Cart" />
+                {cartCount > 0 && <strong>{cartCount}</strong>}
+              </Link>
+            </div>
+          )}
+
+          {/* Burger button */}
+          <div className="burgerbtn">
+            <strong className="burger" onClick={openBurger}>
+              {burgerOpen ? (
+                <img src="../cross.png" alt="Close" />   // Cross icon
+              ) : (
+                <img src="./burger.png" alt="Burger" /> // Burger icon
+              )}
+            </strong>
+          </div>
         </div>
       </nav>
 

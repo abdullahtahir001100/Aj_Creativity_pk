@@ -3,6 +3,10 @@
   display: none !important;
 }
 @media (max-width: 868px) {
+  .cart{
+        position: relative !important;
+    top: -4px !important;
+  }
   .sidebar {
     label {
       font-size: 10px;

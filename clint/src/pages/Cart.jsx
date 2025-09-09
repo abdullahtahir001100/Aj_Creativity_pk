@@ -101,6 +101,7 @@ const Cart = () => {
   return (
     <>
       <Header />
+      <div className="item"></div>
       <div
         className="cart-container fade-in-page"
         data-aos="fade-up"

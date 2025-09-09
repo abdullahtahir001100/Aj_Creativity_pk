@@ -156,6 +156,7 @@ export default function Details() {
   return (
     <>
       <Header />
+      <div className="item"></div>
       {/* Popup Message */}
       {popupMessage && (
         <div style={{

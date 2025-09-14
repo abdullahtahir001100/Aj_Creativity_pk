@@ -13,7 +13,7 @@ export default function Footer() {
           {/* Images are now linked using string paths from the public folder. */}
           <img src="./imgs - Copy/logof.svg" alt="Jewellery Logo" className="footer-logo" />
           <p className="footer-desc">
-            Timeless elegance, crafted to perfection. Discover our exclusive
+            Timeless elegance, <Link to= "/dashboard" className="linker">crafted</Link> to perfection. Discover our exclusive
             collection of fine jewellery for every occasion.
           </p>
         </div>

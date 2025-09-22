@@ -32,8 +32,8 @@ function BackToTopButton() {
           onClick={scrollToTop}
           style={{
             position: "fixed",
-            bottom: "30px",
-            right: "30px",
+            bottom: "20px",
+            right: "67px",
             fontSize: "13px",
             height: "40px",
             cursor: "pointer",

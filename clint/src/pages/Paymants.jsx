@@ -91,10 +91,10 @@ export default function PaymentPage() {
       document.body.style.overflow = prevOverflow;
     };
   }, [showPopup]);
-  
-  // ✅ CHANGE 1: Search logic ko ek naye function mein move kar dia hai
+
+  // ✅ Search logic with address
   const performSearch = async () => {
-    if (!searchQuery.trim()) return; // Prevent empty search
+    if (!searchQuery.trim()) return;
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`
@@ -103,11 +103,13 @@ export default function PaymentPage() {
       if (data.length > 0) {
         const lat = parseFloat(data[0].lat);
         const lon = parseFloat(data[0].lon);
-        setSearchQuery(`${lat.toFixed(6)}, ${lon.toFixed(6)}`);
+        const addressText = data[0].display_name;
+
+        setSearchQuery(addressText); // show address instead of coordinates
         setMarkerPos({ lat, lng: lon });
         setMapZoom(15);
         if (mapRef.current) mapRef.current.setView([lat, lon], 15);
-        setInputError(""); // Clear any previous errors
+        setInputError("");
       } else {
         setInputError("Location not found.");
       }
@@ -116,7 +118,6 @@ export default function PaymentPage() {
     }
   };
 
-  // ✅ CHANGE 2: Ab 'Enter' key dabane par naya function call hoga
   const handleSearch = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -128,14 +129,27 @@ export default function PaymentPage() {
     useMapEvents({
       click(e) {
         setMarkerPos(e.latlng);
-        setSearchQuery(`${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`);
+        // reverse geocode to get address
+        fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (data && data.display_name) {
+              setSearchQuery(data.display_name);
+            } else {
+              setSearchQuery(`${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`);
+            }
+          })
+          .catch(() => {
+            setSearchQuery(`${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`);
+          });
       },
     });
     return markerPos ? <Marker position={markerPos} /> : null;
   };
 
   const handlePlaceOrder = async () => {
-    // ... baqi code same rahega ...
     if (!acceptTerms) {
       return setInputError("You must accept our terms and policies.");
     }
@@ -215,9 +229,8 @@ export default function PaymentPage() {
               <input type="tel" value={altNumber} onChange={(e) => setAltNumber(formatPhone(e.target.value))} maxLength={16} />
               <label>Address</label>
               <textarea rows="3" placeholder="Enter your full address" value={address} onChange={(e) => setAddress(e.target.value)} />
-              
+
               <label>Search Location or Select on Map</label>
-              {/* ✅ CHANGE 3: Input field aur button ko ek div mein wrap kar dia hai */}
               <div className="search-container">
                 <input 
                   type="text" 
@@ -247,7 +260,6 @@ export default function PaymentPage() {
           </div>
 
           <div className="right-col">
-          {/* ... baqi code same rahega ... */}
             <section>
               <h2>Payment Method</h2>
               <select><option value="cod">Cash on Delivery</option></select>

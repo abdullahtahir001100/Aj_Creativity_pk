@@ -11,9 +11,11 @@ import Cart from "./pages/Cart";
 import Details from "./pages/Details";
 import Paymants from "./pages/Paymants";
 import NotFound from "./components/NotFound";
-
+import ChatWidget from './components/ChatWidget';
 // Import Dashboard & Admin Pages
 import Dashboard from "./components/DashboardProtectedWrapper";
+
+import BackToTopButton from "./components/BackToTopButton";
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
         {/* --- Not Found Route --- */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <BackToTopButton/>
+      <ChatWidget />
     </HelmetProvider>
   );
 }

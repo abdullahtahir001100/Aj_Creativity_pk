@@ -8,9 +8,9 @@
   ],
   "routes": [
     {
-      "src": "/",
+      "src": "/chat",
       "dest": "index.js",
-      "methods": ["POST"]
+      "methods": ["POST", "OPTIONS"]
     }
   ]
 }

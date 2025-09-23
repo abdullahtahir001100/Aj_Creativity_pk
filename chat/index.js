@@ -1,5 +1,5 @@
+// index.js
 import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { randomUUID } from "crypto";
@@ -9,18 +9,10 @@ dotenv.config();
 
 const app = express();
 
-// --- Explicit CORS Configuration to handle preflight requests ---
-const corsOptions = {
-    origin: ['http://localhost:5173', 'https://chat-rosy-zeta-84.vercel.app'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type'],
-    credentials: true
-};
-app.use(cors(corsOptions));
-app.use(express.json());
+// Remove all app.use(cors) and app.options('/chat', ...)
+// Vercel will handle CORS via vercel.json
 
-// Add an explicit OPTIONS handler for the /chat route to ensure preflight requests work.
-app.options('/chat', cors(corsOptions));
+app.use(express.json());
 
 const conversations = {};
 
@@ -29,16 +21,13 @@ const PRODUCTS_API_URL = "https://aj-creativity-pk-2dpo.vercel.app/api/products"
 let productDatabase = [];
 
 // --- API 2: REVIEWS (EXAMPLE) ---
-const REVIEWS_API_URL = "https://your-second-api-endpoint.com/api/reviews"; // Replace if you have a real one
+const REVIEWS_API_URL = "https://your-second-api-endpoint.com/api/reviews";
 let reviewsDatabase = [];
 
 // --- API 3: ADDITIONAL PRODUCT DATA ---
 const ADDITIONAL_DATA_API_URL = "https://server-nine-kappa-75.vercel.app/api/data";
 let additionalInfoDatabase = [];
 
-/**
- * Fetches product data from the products API.
- */
 async function fetchProductData() {
     try {
         const response = await fetch(PRODUCTS_API_URL);
@@ -52,9 +41,6 @@ async function fetchProductData() {
     }
 }
 
-/**
- * Fetches review data from the reviews API.
- */
 async function fetchReviewsData() {
     try {
         const response = await fetch(REVIEWS_API_URL);
@@ -67,9 +53,6 @@ async function fetchReviewsData() {
     }
 }
 
-/**
- * Fetches additional info from the third API.
- */
 async function fetchAdditionalData() {
     try {
         const response = await fetch(ADDITIONAL_DATA_API_URL);

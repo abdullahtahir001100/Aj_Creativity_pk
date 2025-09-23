@@ -12,21 +12,16 @@ app.use(express.json());
 
 const conversations = {};
 
-// --- API 1: PRODUCTS ---
+// --- API URLs ---
 const PRODUCTS_API_URL = "https://aj-creativity-pk-2dpo.vercel.app/api/products";
-let productDatabase = [];
-
-// --- API 2: REVIEWS (EXAMPLE) ---
-const REVIEWS_API_URL = "https://your-second-api-endpoint.com/api/reviews"; // Replace if you have a real one
-let reviewsDatabase = [];
-
-// --- API 3: ADDITIONAL PRODUCT DATA ---
+const REVIEWS_API_URL = "https://your-second-api-endpoint.com/api/reviews"; // Placeholder
 const ADDITIONAL_DATA_API_URL = "https://server-nine-kappa-75.vercel.app/api/data";
+
+let productDatabase = [];
+let reviewsDatabase = [];
 let additionalInfoDatabase = [];
 
-/**
- * Fetches product data from the products API.
- */
+// --- Data Fetching Functions ---
 async function fetchProductData() {
     try {
         console.log("Fetching product data...");
@@ -37,15 +32,10 @@ async function fetchProductData() {
         console.log(`✅ Successfully fetched ${productDatabase.length} products.`);
     } catch (error) {
         console.error("❌ Failed to fetch product data:", error.message);
-        productDatabase = [];
     }
 }
 
-/**
- * Fetches review data from the reviews API.
- */
 async function fetchReviewsData() {
-    // This is still a placeholder. If you don't have a reviews API, it will just fail gracefully.
     try {
         console.log("Fetching reviews data...");
         const response = await fetch(REVIEWS_API_URL);
@@ -54,27 +44,20 @@ async function fetchReviewsData() {
         console.log(`✅ Successfully fetched ${reviewsDatabase.length} reviews.`);
     } catch (error) {
         console.error("❌ Failed to fetch reviews data:", error.message);
-        reviewsDatabase = [];
     }
 }
 
-/**
- * Fetches additional info from the third API.
- */
 async function fetchAdditionalData() {
     try {
         console.log("Fetching additional product info...");
         const response = await fetch(ADDITIONAL_DATA_API_URL);
         if (!response.ok) throw new Error(`Additional data API request failed: ${response.status}`);
-        const jsonResponse = await response.json();
-        additionalInfoDatabase = jsonResponse.data;
+        additionalInfoDatabase = (await response.json()).data;
         console.log(`✅ Successfully fetched ${additionalInfoDatabase.length} additional data points.`);
     } catch (error) {
         console.error("❌ Failed to fetch additional data:", error.message);
-        additionalInfoDatabase = [];
     }
 }
-
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -90,33 +73,27 @@ app.post("/chat", async (req, res) => {
     const history = conversations[currentSessionId];
 
     try {
-        // --- UPDATED --- System instruction now includes contact and customization logic with HTML links
-        const systemInstruction = `You are an expert customer support assistant for "AJ Creativity," an online jewelry store. Answer questions based ONLY on the three data sources provided below: the Product Catalog, Customer Reviews, and Additional Product Information.
+        // --- NEW & IMPROVED SYSTEM INSTRUCTION ---
+        const systemInstruction = `You are a professional and efficient customer support assistant for "AJ Creativity". Your answers must be accurate and concise.
 
---- IMPORTANT INSTRUCTIONS ---
-1.  Use the **Product Catalog** for general information like price, category, and images.
-2.  Use the **Additional Product Information** for specifics like stock, color, material, and detailed descriptions.
-3.  Use the **Customer Reviews** data to answer what other customers think of a product.
-4.  When asked a question, combine information from all sources if needed. For example, to describe a product fully, use its name and price from the catalog and its material and stock from the additional info.
-5.  If you provide an image, provide only the URL.
-6.  If asked for multiple images, state that you can only show one at a time.
-7.  If the user asks for store details, owner information, contact number, or how to customize an item, you MUST provide the following information formatted exactly like this: "For any inquiries or custom orders, you can reach the owner of Jave Handmade directly:<br/>- <strong>WhatsApp:</strong> <a href='https://wa.me/923478708641' target='_blank'>+92 3478708641</a><br/>- <strong>Phone:</strong> <a href='tel:+923478708641'>+92 3478708641</a><br/>- <strong>Email:</strong> <a href='mailto:at4105168@gmail.com'>at4105168@gmail.com</a><br/>We'd be happy to help you create a custom piece!" Do not use the product data for this specific type of question.
+--- IMAGE REQUEST RULES ---
+1.  **Single Image Request:** If the user asks for an image of a SPECIFIC product (e.g., "image of Eterna Bangles"), find the exact product in the 'Product Catalog' and respond ONLY with the image URL. Example response: "Here is the image for Eterna Bangles: [URL]"
+2.  **Multiple Image Request:** If the user asks for images of a CATEGORY or MULTIPLE products (e.g., "show me all gold bangles"), find all matching products. Respond with a list, where each item is the product name followed by its image URL. Example response: "Here are the images for gold bangles:\nGleamCraft: [URL]\nLustre Loom: [URL]"
+3.  **Vague Image Request:** If the user asks for "an image" or "a picture" without specifying a product, you MUST pick one random product from the catalog. Respond with a message like: "Certainly! Here is a random product from our collection: The [Product Name]. It costs [Price].\n[Image URL]"
 
---- START OF PRODUCT CATALOG ---
-${JSON.stringify(productDatabase, null, 2)}
---- END OF PRODUCT CATALOG ---
+--- OTHER INSTRUCTIONS ---
+-   **Accuracy is Key:** Always find the exact product by name before giving any information. If not found, say so.
+-   **Contact Info:** If asked for store details, contact, or custom orders, provide the clickable HTML links as previously instructed.
+-   **Combine Data:** Use all three data sources (Product Catalog, Reviews, Additional Info) to answer detailed questions.
 
---- START OF CUSTOMER REVIEWS ---
-${JSON.stringify(reviewsDatabase, null, 2)}
---- END OF CUSTOMER REVIEWS ---
-
---- START OF ADDITIONAL PRODUCT INFORMATION ---
-${JSON.stringify(additionalInfoDatabase, null, 2)}
---- END OF ADDITIONAL PRODUCT INFORMATION ---
+--- DATA SOURCES ---
+Product Catalog: ${JSON.stringify(productDatabase, null, 2)}
+Customer Reviews: ${JSON.stringify(reviewsDatabase, null, 2)}
+Additional Product Information: ${JSON.stringify(additionalInfoDatabase, null, 2)}
 `;
 
         const chat = model.startChat({
-            history: [{ role: "user", parts: [{ text: systemInstruction }] }, { role: "model", parts: [{ text: "Okay, I am ready to help using the product catalog, customer reviews, and additional product information." }] }, ...history]
+            history: [{ role: "user", parts: [{ text: systemInstruction }] }, { role: "model", parts: [{ text: "Okay, I am ready to assist AJ Creativity customers efficiently and accurately." }] }, ...history]
         });
 
         const result = await chat.sendMessage(userMessage);
@@ -128,15 +105,18 @@ ${JSON.stringify(additionalInfoDatabase, null, 2)}
         res.json({ reply, sessionId: currentSessionId });
 
     } catch (err) {
-        console.error("❌ Gemini error:", err);
-        res.status(500).json({ error: "Gemini response error", details: err.message });
+        console.error("❌ Gemini API Error:", err.message);
+        if (err.message && (err.message.includes('429') || err.message.toLowerCase().includes('quota'))) {
+            res.status(429).json({ error: "API rate limit exceeded.", details: err.message });
+        } else {
+            res.status(500).json({ error: "An error occurred with the AI service.", details: err.message });
+        }
     }
 });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🤖 Chatbot (Gemini) running on http://localhost:${PORT}`);
-    // --- UPDATED --- Fetch from all three APIs when the server starts
     Promise.all([
         fetchProductData(),
         fetchReviewsData(),

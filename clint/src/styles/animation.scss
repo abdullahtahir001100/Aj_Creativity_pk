@@ -77,3 +77,47 @@
   -ms-transition: filter 0.7s;
   -o-transition: filter 0.7s;
 }
+/* src/styles/main.scss */
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.payment-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.payment-options input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #000;
+}
+
+.card-details-form,
+.mobile-payment-form {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.card-details-form h3,
+.mobile-payment-form h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.card-input-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}

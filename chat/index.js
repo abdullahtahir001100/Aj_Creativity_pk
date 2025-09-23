@@ -3,11 +3,20 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { randomUUID } from "crypto";
+import fetch from "node-fetch"; // Vercel environment already has fetch, but good for local
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// --- CORS Configuration ---
+const corsOptions = {
+    origin: ['http://localhost:5173', 'https://chat-rosy-zeta-84.vercel.app'], // Specify allowed origins
+    methods: ['GET', 'POST', 'OPTIONS'], // Allowed methods
+    allowedHeaders: ['Content-Type'], // Allowed headers
+    credentials: true // Allow cookies to be sent
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const conversations = {};
@@ -17,7 +26,7 @@ const PRODUCTS_API_URL = "https://aj-creativity-pk-2dpo.vercel.app/api/products"
 let productDatabase = [];
 
 // --- API 2: REVIEWS (EXAMPLE) ---
-const REVIEWS_API_URL = "https://your-second-api-endpoint.com/api/reviews"; // Replace if you have a real one
+const REVIEWS_API_URL = "https://your-second-api-endpoint.com/api/reviews";
 let reviewsDatabase = [];
 
 // --- API 3: ADDITIONAL PRODUCT DATA ---
@@ -29,7 +38,6 @@ let additionalInfoDatabase = [];
  */
 async function fetchProductData() {
     try {
-        console.log("Fetching product data...");
         const response = await fetch(PRODUCTS_API_URL);
         if (!response.ok) throw new Error(`Products API request failed: ${response.status}`);
         const jsonResponse = await response.json();
@@ -45,9 +53,7 @@ async function fetchProductData() {
  * Fetches review data from the reviews API.
  */
 async function fetchReviewsData() {
-    // This is still a placeholder. If you don't have a reviews API, it will just fail gracefully.
     try {
-        console.log("Fetching reviews data...");
         const response = await fetch(REVIEWS_API_URL);
         if (!response.ok) throw new Error(`Reviews API request failed: ${response.status}`);
         reviewsDatabase = (await response.json()).data;
@@ -63,7 +69,6 @@ async function fetchReviewsData() {
  */
 async function fetchAdditionalData() {
     try {
-        console.log("Fetching additional product info...");
         const response = await fetch(ADDITIONAL_DATA_API_URL);
         if (!response.ok) throw new Error(`Additional data API request failed: ${response.status}`);
         const jsonResponse = await response.json();
@@ -74,7 +79,6 @@ async function fetchAdditionalData() {
         additionalInfoDatabase = [];
     }
 }
-
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -90,14 +94,13 @@ app.post("/chat", async (req, res) => {
     const history = conversations[currentSessionId];
 
     try {
-        // --- UPDATED --- System instruction now includes contact and customization logic with HTML links
         const systemInstruction = `You are an expert customer support assistant for "AJ Creativity," an online jewelry store. Answer questions based ONLY on the three data sources provided below: the Product Catalog, Customer Reviews, and Additional Product Information.
 
 --- IMPORTANT INSTRUCTIONS ---
 1.  Use the **Product Catalog** for general information like price, category, and images.
 2.  Use the **Additional Product Information** for specifics like stock, color, material, and detailed descriptions.
 3.  Use the **Customer Reviews** data to answer what other customers think of a product.
-4.  When asked a question, combine information from all sources if needed. For example, to describe a product fully, use its name and price from the catalog and its material and stock from the additional info.
+4.  When asked a question, combine information from all sources if needed.
 5.  If you provide an image, provide only the URL.
 6.  If asked for multiple images, state that you can only show one at a time.
 7.  If the user asks for store details, owner information, contact number, or how to customize an item, you MUST provide the following information formatted exactly like this: "For any inquiries or custom orders, you can reach the owner of Jave Handmade directly:<br/>- <strong>WhatsApp:</strong> <a href='https://wa.me/923478708641' target='_blank'>+92 3478708641</a><br/>- <strong>Phone:</strong> <a href='tel:+923478708641'>+92 3478708641</a><br/>- <strong>Email:</strong> <a href='mailto:at4105168@gmail.com'>at4105168@gmail.com</a><br/>We'd be happy to help you create a custom piece!" Do not use the product data for this specific type of question.
@@ -136,11 +139,9 @@ ${JSON.stringify(additionalInfoDatabase, null, 2)}
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🤖 Chatbot (Gemini) running on http://localhost:${PORT}`);
-    // --- UPDATED --- Fetch from all three APIs when the server starts
     Promise.all([
         fetchProductData(),
         fetchReviewsData(),
         fetchAdditionalData()
     ]);
 });
-

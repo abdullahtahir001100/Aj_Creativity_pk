@@ -53,7 +53,7 @@ const ChatWidget = () => {
         
         try {
             // --- UPDATED --- Using your live Vercel server URL
-            const serverUrl = "http://localhost:5000/chat";
+            const serverUrl = "https://chat-rosy-zeta-84.vercel.app/chat";
             const res = await fetch(serverUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

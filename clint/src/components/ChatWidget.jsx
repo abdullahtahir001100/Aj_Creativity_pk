@@ -52,7 +52,6 @@ const ChatWidget = () => {
         const sessionId = sessionStorage.getItem('chatSessionId');
         
         try {
-            // --- UPDATED --- Using your live Vercel server URL
             const serverUrl = "https://chat-rosy-zeta-84.vercel.app/chat";
             const res = await fetch(serverUrl, {
                 method: "POST",
@@ -81,7 +80,6 @@ const ChatWidget = () => {
         }
     };
 
-    // --- UPDATED --- This function now safely renders HTML content
     const renderMessageContent = (text) => {
         const imageUrlRegex = /(https?:\/\/[^\s]*\.(?:jpg|jpeg|png|gif|webp|svg))/gi;
         const imageUrl = text.match(imageUrlRegex);
@@ -96,7 +94,6 @@ const ChatWidget = () => {
             );
         }
         
-        // For messages that contain HTML links but no images
         return <span dangerouslySetInnerHTML={{ __html: text }} />;
     };
 
@@ -118,21 +115,19 @@ const ChatWidget = () => {
                 <div className="messages-list">
                     {messages.map((msg, index) => (
                         <div key={index} className={`message ${msg.role}-message`}>
-                            {/* --- UPDATED --- Replaced broken image with an emoji */}
-                             <div className="avatar">{msg.role === 'bot' ? '🤖' : '👤'}</div>
-                             <div className="message-content">
+                            <div className="avatar">{msg.role === 'bot' ? '🤖' : '👤'}</div>
+                            <div className="message-content">
                                 {renderMessageContent(msg.text)}
                             </div>
                         </div>
                     ))}
                     {isLoading && (
-                         <div className="message bot-message">
-                             {/* --- UPDATED --- Replaced broken image with an emoji */}
-                             <div className="avatar">🤖</div>
-                             <div className="typing-indicator">
-                                <span></span><span></span><span></span>
+                            <div className="message bot-message">
+                                <div className="avatar">🤖</div>
+                                <div className="typing-indicator">
+                                    <span></span><span></span><span></span>
+                                </div>
                             </div>
-                         </div>
                     )}
                     <div ref={messagesEndRef} />
                 </div>

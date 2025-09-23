@@ -11,8 +11,6 @@ const app = express();
 
 // --- Explicit CORS Configuration to handle preflight requests ---
 const corsOptions = {
-    // Add all allowed origins. Vercel will handle this automatically for production
-    // but specifying localhost is crucial for local testing.
     origin: ['http://localhost:5173', 'https://chat-rosy-zeta-84.vercel.app'],
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
@@ -20,6 +18,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// Add an explicit OPTIONS handler for the /chat route to ensure preflight requests work.
+app.options('/chat', cors(corsOptions));
 
 const conversations = {};
 
@@ -81,7 +82,6 @@ async function fetchAdditionalData() {
         additionalInfoDatabase = [];
     }
 }
-
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });

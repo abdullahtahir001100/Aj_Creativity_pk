@@ -148,7 +148,7 @@ const Cart = () => {
                 >
                   <td className="cart-product-img">
                     <img
-                      src={item.img || "/imgs/logo.png"}
+                      src={item.img || "/imgs/logo.svg"}
                       alt={item.name || "Product"}
                     />
                   </td>

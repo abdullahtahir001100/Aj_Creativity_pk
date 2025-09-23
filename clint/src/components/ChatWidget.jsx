@@ -6,7 +6,10 @@ const SendIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
 );
 const ChatIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 21 1.65-3.8a9 9 0 1 1 3.4 2.9l-5.05.9_z_M9 10h.01M15 10h.01M12 10h.01"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m3 21 1.65-3.8a9 9 0 1 1 3.4 2.9l-5.05.9Z"/>
+        <path d="M9 10h.01M15 10h.01M12 10h.01"/>
+    </svg>
 );
 const CloseIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -50,9 +53,9 @@ const ChatWidget = () => {
         setIsLoading(true);
 
         const sessionId = sessionStorage.getItem('chatSessionId');
-        //lol
+        
         try {
-            const serverUrl = "https://aj-creativity-pk-8j7b.vercel.app/chat";     //uuu
+            const serverUrl = "https://aj-creativity-pk-8j7b.vercel.app/chat";
             const res = await fetch(serverUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

@@ -1,17 +1,28 @@
-// index.js
 import express from "express";
 import dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { randomUUID } from "crypto";
 import fetch from "node-fetch";
+import cors from "cors"; // <--- ADD THIS LINE
 
 dotenv.config();
 
 const app = express();
 
-// Remove all app.use(cors) and app.options('/chat', ...)
-// Vercel will handle CORS via vercel.json
+// --- CORS CONFIGURATION (FIX FOR THE ERROR) ---
+const whitelist = ['http://localhost:5173', 'https://chat-rosy-zeta-84.vercel.app']; // Add your production origin here
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+};
 
+app.use(cors(corsOptions)); // <--- APPLY CORS MIDDLEWARE
 app.use(express.json());
 
 const conversations = {};

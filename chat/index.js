@@ -10,7 +10,9 @@ dotenv.config();
 const app = express();
 
 // --- CORS CONFIGURATION (FIX FOR THE ERROR) ---
-const whitelist = ['http://localhost:5173', 'https://chat-rosy-zeta-84.vercel.app']; // Add your production origin here
+// This configuration allows requests from both your local development
+// and your deployed Vercel front-end.
+const whitelist = ['http://localhost:5173', 'https://chat-rosy-zeta-84.vercel.app'];
 const corsOptions = {
     origin: function (origin, callback) {
         if (whitelist.indexOf(origin) !== -1 || !origin) {

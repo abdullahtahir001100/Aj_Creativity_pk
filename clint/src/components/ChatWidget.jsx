@@ -52,7 +52,7 @@ const ChatWidget = () => {
         const sessionId = sessionStorage.getItem('chatSessionId');
         //lol
         try {
-            const serverUrl = "https://aj-creativity-pk-8j7b.vercel.app/chat";
+            const serverUrl = "https://aj-creativity-pk-8j7b.vercel.app/chat";     //uuu
             const res = await fetch(serverUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

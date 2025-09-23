@@ -50,7 +50,7 @@ const ChatWidget = () => {
         setIsLoading(true);
 
         const sessionId = sessionStorage.getItem('chatSessionId');
-        
+        //lol
         try {
             const serverUrl = "https://chat-rosy-zeta-84.vercel.app/chat";
             const res = await fetch(serverUrl, {

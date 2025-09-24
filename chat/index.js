@@ -145,7 +145,7 @@ async function startServer() {
         fetchAdditionalData()
     ]);
     
-    // Start the server only after all data is ready
+    // Start the server only after all data is ready ho gaya ha 
     app.listen(PORT, () => {
         console.log(`✅ Chatbot (Gemini) running on http://localhost:${PORT}`);
     });

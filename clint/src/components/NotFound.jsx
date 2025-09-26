@@ -11,7 +11,7 @@ const NotFound = () => {
 
   return (
     <div style={{ ...styles.container, opacity: fadeIn ? 1 : 0, transition: "opacity 1s ease-in-out" }}>
-      <img src="/imgs - Copy/logo.svg" alt="Jave's HandMade" style={styles.logo} />
+      <img src="./imgs - Copy/logo.svg" alt="Jave's HandMade" style={styles.logo} />
       <h1 style={styles.h1}>404</h1>
       <h2 style={styles.h2}>Page Not Found</h2>
       <p style={styles.p}>

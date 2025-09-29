@@ -87,6 +87,14 @@ export default function PaymentPage() {
         window.dispatchEvent(new Event("cartUpdated"));
     };
 
+    useEffect(() => {
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = showPopup ? "hidden" : prevOverflow;
+        return () => {
+            document.body.style.overflow = prevOverflow;
+        };
+    }, [showPopup]);
+
     // Map functions (unchanged)
     const performSearch = async () => {
         if (!searchQuery.trim()) return;
@@ -166,6 +174,7 @@ export default function PaymentPage() {
         const orderDetails = {
             userName,
             email,
+            // Number cleaning is important for backend filtering
             primaryNumber: primaryNumber.replace(/\s/g, ''), 
             altNumber: altNumber.replace(/\s/g, ''),
             address,
@@ -198,15 +207,20 @@ export default function PaymentPage() {
                 const newOrderId = data.orderId;
                 clearCart(); 
 
-                // 🌟 FIX: Order ID ko LOCALSTORAGE mein store karna
-                localStorage.setItem('lastPlacedOrderId', newOrderId);
+                // ✅ FIX: Order ID ko existing array mein add karna
+                const storedIds = JSON.parse(localStorage.getItem('myOrderIds')) || [];
+                storedIds.push(newOrderId);
+                localStorage.setItem('myOrderIds', JSON.stringify(storedIds));
+                
+                // Hum last placed order ID ko bhi store karte hain, taki naya order top par dikhe
+                localStorage.setItem('lastViewedOrderId', newOrderId);
 
                 if (selectedPaymentMethod === 'cod') {
                     setPaymentStatus("cod");
                     setShowPopup(true);
                     
                     setTimeout(() => {
-                        navigate(`/my-orders`); 
+                        navigate(`/blogs`); 
                     }, 3000); 
 
                 } else {
@@ -217,7 +231,7 @@ export default function PaymentPage() {
                         setShowPopup(true);
                         
                         setTimeout(() => {
-                            navigate(`/my-orders`); 
+                            navigate(`/blogs`); 
                         }, 3000);
                     }
                 }
@@ -237,7 +251,7 @@ export default function PaymentPage() {
     };
     
     const getPopupContent = () => {
-        const redirectToOrders = () => navigate(`/my-orders`);
+        const redirectToOrders = () => navigate(`/blogs`);
         
         if (paymentStatus === 'cod') {
             return (

@@ -189,10 +189,6 @@ const handleStatusUpdate = (orderId, targetStatus, message) => {
                     <button onClick={() => handleViewDetails(order)} className="action-button view-button">
                       View
                     </button>
-                      <div className="dynamic-actions">{getActionButtons(order)}</div>
-                      <button onClick={() => handleRemove(order._id)} className="action-button remove-button remove-icon">
-                          &times;
-                      </button>
                   </td>
                 </tr>
               ))

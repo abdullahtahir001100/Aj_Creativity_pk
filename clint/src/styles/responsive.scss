@@ -999,10 +999,9 @@ position: relative !important;
 
 /* --- Grid Layout for Details --- */
 .ajc-order-detail-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 30px !important;
-    margin-bottom: 40px !important;
+   p{
+    line-height: 40px;
+   }
 
     @media (min-width: 768px) {
         grid-template-columns: 2fr 1fr !important; /* Side-by-side on desktop */
@@ -1010,12 +1009,23 @@ position: relative !important;
 }
 
 /* --- Card Styles --- */
+.back{
+  .flexer{
+    display: flex;
+    justify-content: space-around;
+  }
+   
+  
+  justify-content: space-around;
+  background: #fff !important;
+  box-shadow: 1px 1px 11px #00000069;
+
+}
 .ajc-detail-card {
-    background-color: #fff !important;
-    border: 1px solid #e0e0e0 !important;
-    border-radius: 12px !important;
+   
     padding: 25px !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+    width: 40% !important;
+   
 
     h2 {
         font-size: 1.5em !important;
@@ -1130,4 +1140,175 @@ position: relative !important;
     &:hover {
         background-color: #0056b3 !important;
     }
+}
+.ajc-col-action{
+  button{
+ background-color: rgb(211 44 44 / 64%) !important;
+ font-size: 15px;
+  padding: 1px 8px !important;
+  }
+}
+/* --- Responsive Fixes --- */
+
+/* Fix: 1. Flexer Block (Summary & Address) */
+@media (max-width: 768px) {
+    .flexer {
+        flex-direction: column !important; /* Blocks ko stack karein */
+        gap: 20px !important;
+        
+        /* Inner cards ko puri width dein */
+        .ajc-detail-card {
+            width: 100% !important; 
+            padding: 20px !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+        
+        /* Mobile par background color ko card mein shift karein */
+        .ajc-order-summary, .ajc-delivery-address {
+             border: 1px solid #e0e0e0 !important;
+             border-radius: 12px !important;
+             background-color: #fff !important;
+        }
+        /* Mobile par main container ka background dikhana */
+        .flexer {
+             background: none !important; 
+             box-shadow: none !important;
+        }
+    }
+}
+
+
+/* Fix: 2. Product Row Responsiveness (ajc-product-item-row) */
+@media (max-width: 600px) {
+    .ajc-product-row-mobile {
+        /* Rows ko Flex-wrap karein taki items stack ho saken */
+        flex-wrap: wrap !important; 
+        padding: 10px 0 !important;
+        
+        /* Image and Details ko top row mein rakhein */
+        .ajc-col-img { order: 1; margin-right: 10px; }
+        .ajc-product-details-col { order: 2; flex-basis: calc(100% - 70px); }
+        
+        /* Qty, Price, aur Action ko neeche ki row mein poori width dein */
+        .ajc-product-info-wrap {
+            order: 3;
+            display: flex;
+            justify-content: space-between;
+            width: 100%; 
+            padding-top: 10px;
+            border-top: 1px dashed #f0f0f0;
+        }
+
+        /* Action button ko right side par rakhein */
+        .ajc-col-action {
+            order: 4;
+            width: 100% !important; /* Full width button in new row */
+            margin-top: 10px;
+            margin-left: 0 !important;
+            justify-content: center !important;
+        }
+        
+        /* Qty aur Price ko wrap ke andar manage karein */
+        .ajc-product-qty, .ajc-product-price-col {
+            font-size: 1.1em !important;
+        }
+    }
+}
+/* --- CANCEL/REMOVE BUTTON STYLES (UPDATED FOR RED BACKGROUND) --- */
+
+.ajc-cancel-btn {
+    padding: 10px 20px;
+    border: 1px solid #dc3545; /* Red border */
+    background-color: #fff;
+    color: #dc3545; /* Red text */
+    border-radius: 5px;
+    font-weight: 500;
+    
+    &:disabled { opacity: 0.7; cursor: not-allowed; }
+    &:hover:not(:disabled) { background-color: #f8d7da; /* Light red hover */ }
+}
+
+/* Jab status 'Requested' ho, yaani user ne abhi click kiya hai */
+.ajc-cancel-btn.requested {
+    /* Background red ho jayega */
+    background-color: #f8d7da !important; 
+    border-color: #dc3545 !important;
+    color: #dc3545 !important; 
+    font-weight: 600;
+     &:disabled { opacity: 0.7; cursor: not-allowed; }
+}
+
+/* Jab status 'Cancelled' ho chuka ho (final status from server) */
+.ajc-cancel-btn.cancelled {
+    background-color: #dc3545 !important; /* Solid Red background */
+    color: white !important;
+    border: none !important;
+    font-weight: bold;
+}
+.ajc-cancel-btn.delivered {
+    /* Delivered/Completed ke liye green background (jaisa pehle tha) */
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border: none !important;
+    font-weight: bold;
+}
+/* --- CANCEL/REMOVE BUTTON STYLES (Final Colors) --- */
+
+.ajc-cancel-btn {
+    padding: 6px 10px;
+    border: 1px solid #dc3545;
+    /*Normalstateborder:;
+    Red*/background-color: transparent !important;
+    /*✅FIX:;
+    Defaultbackgroundtransparent/normal*/color: #dc3545;
+    /*Normalstatetext:;
+    Red*/border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.2s;
+    /*Smoothtransition*/
+    &:disabled 
+{ opacity: 0.7; cursor: not-allowed; }
+    
+    /* Hover state for the normal 'Cancel Order' button */
+    &:hover:not(:disabled) { 
+        /* Very light red hover */
+    }
+}
+
+/* ✅ Requested Status (Jab user click kare ya server 'requested' bheje) */
+.ajc-cancel-btn.requested {
+    background-color: #fffbe6 !important; /* Light Yellow/Amber background */
+    border-color: #f59e0b !important; /* Amber border */
+    color: #b45309 !important; /* Dark Amber text */
+    font-weight: 600;
+}
+
+/* ✅ Final Cancelled Status */
+.ajc-cancel-btn.cancelled {
+    background-color: #dc2626 !important; /* Solid Red */
+    color: white !important;
+    border: none !important;
+    font-weight: bold;
+}
+
+/* Final Delivered/Completed Status */
+.ajc-cancel-btn.delivered {
+    background-color: #d1fae5 !important; /* Light Green */
+    color: #065f46 !important;
+    border: none !important;
+    font-weight: bold;
+}
+.ajc-cancel-btn{
+  &:hover,&:focus,&:focus-visible{
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    box-shadow: none !important;
+}
+}
+.requested{
+   
 }

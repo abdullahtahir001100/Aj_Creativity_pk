@@ -181,6 +181,9 @@
   }
 }
 @media (max-width: 600px) {
+  .video-wrapper{
+    width: 70% !important;
+  }
   .heading,
   .headings {
     align-items: center;

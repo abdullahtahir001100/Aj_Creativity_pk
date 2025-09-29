@@ -192,6 +192,9 @@
   }
 }
 @media (max-width: 600px){
+  #dashboard-nav{
+  width: 100% !important;
+}
   .error-message{
     margin: 123px 0 0 0px !important; 
   }
@@ -961,9 +964,6 @@ body {
     border: none !important;
   }
 }
-header{
-position: relative !important;
-}
 /* ========================================================= */
 /* --- MyOrderDetailsPage Styles (ajc- prefix for uniqueness) --- */
 /* ========================================================= */
@@ -1312,3 +1312,19 @@ position: relative !important;
 .requested{
    
 }
+.dashboard-header {
+  button:hover{
+background-color: transparent !important;
+  }}
+  .options {
+    button,.desc{
+      font-family: light !important;
+    }
+  }
+  .product-detail .product-info h1{
+    font-family: $font-regular;
+    font-weight: bolder;
+  }
+  body{
+    font-family: light;
+  }

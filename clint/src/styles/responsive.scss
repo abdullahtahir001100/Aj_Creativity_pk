@@ -127,6 +127,9 @@
     display: inline-block; /* Keep button-like appearance */
     margin-top: 10px;
   }
+   .video-wrapper{
+    width: 35% !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -171,8 +174,12 @@
       padding: 1rem 0 0 0 !important;
     }
   }
+
 }
 @media (max-width: 768px) {
+  .video-wrapper{
+    width: 50% !important;
+  }
   .product-detail .product-info .option-group {
     margin: 0 !important;
   }
@@ -182,7 +189,7 @@
 }
 @media (max-width: 600px) {
   .video-wrapper{
-    width: 70% !important;
+    width: 100% !important;
   }
   .heading,
   .headings {

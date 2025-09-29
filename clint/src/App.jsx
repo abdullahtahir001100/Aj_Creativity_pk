@@ -8,6 +8,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Product from "./pages/Product";
 import Cart from "./pages/Cart";
+import Blogs from "./pages/Blogs";
 import Details from "./pages/Details";
 import Paymants from "./pages/Paymants";
 import NotFound from "./components/NotFound";
@@ -25,6 +26,7 @@ function App() {
         {/* --- Public Routes --- */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/blogs" element={<Blogs />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/product" element={<Product />} />
         <Route path="/cart" element={<Cart />} />

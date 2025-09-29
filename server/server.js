@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 
-// Environment variables ko load karne ke liye zaroori imports (agar aap .env file use kar rahe hain)
+// Environment variables load karne ke liye zaroori (agar aap .env file use kar rahe hain)
 // import dotenv from 'dotenv';
 // dotenv.config();
 
@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cors());
 
 // ======================
-// Order Schema & Model (UPDATED)
+// Order Schema & Model (UPDATED for Cancel Statuses)
 // ======================
 const orderSchema = new mongoose.Schema({
   userName: { type: String, required: true },
@@ -31,7 +31,7 @@ const orderSchema = new mongoose.Schema({
   totalPrice: { type: Number, required: true },
   status: { 
         type: String, 
-        // Schema mein 'requested' aur 'cancelled' values add ki gayi
+        // 'requested' aur 'cancelled' values shamil ki gayi hain
         enum: ["pending", "completed", "requested", "cancelled"], 
         default: "pending" 
     },
@@ -52,10 +52,10 @@ const orderSchema = new mongoose.Schema({
 const Order = mongoose.model("Order", orderSchema);
 
 // =========================================================
-// ROUTES (UPDATED FOR CANCEL REQUEST & SINGLE FETCH)
+// ROUTES (MAIN LOGIC)
 // =========================================================
 
-// 1. Create New Order (Returns orderId for front-end redirect)
+// 1. POST /api/orders: Create New Order
 app.post("/api/orders", async (req, res) => {
   try {
     const { userName, primaryNumber, address, location, products, totalPrice, paymentMethod } = req.body;
@@ -67,7 +67,7 @@ app.post("/api/orders", async (req, res) => {
     const newOrder = new Order(req.body);
     await newOrder.save();
 
-    // SUCCESS RESPONSE: orderId bhejna zaroori hai
+    // SUCCESS: orderId wapas bhejein
     res.status(201).json({ success: true, message: "✅ Order saved successfully", orderId: newOrder._id });
   } catch (error) {
     console.error("❌ Error saving order:", error);
@@ -75,7 +75,7 @@ app.post("/api/orders", async (req, res) => {
   }
 });
 
-// 2. GET Single Order by ID (Required by front-end after redirect)
+// 2. GET /api/orders/:id: Get Single Order by ID (Required for MyOrdersPage)
 app.get("/api/orders/:id", async (req, res) => {
     try {
         const order = await Order.findById(req.params.id);
@@ -87,7 +87,6 @@ app.get("/api/orders/:id", async (req, res) => {
         res.json({ success: true, order: order });
     } catch (error) {
         console.error("❌ Error fetching single order:", error);
-        // Invalid ID format handle karna
         if (error.kind === 'ObjectId') {
             return res.status(400).json({ success: false, message: "⚠️ Invalid Order ID format." });
         }
@@ -95,18 +94,17 @@ app.get("/api/orders/:id", async (req, res) => {
     }
 });
 
-// 3. GET All Orders (Admin use ke liye)
+// 3. GET /api/orders: Get All Orders (Dashboard/Admin use)
 app.get("/api/orders", async (req, res) => {
   try {
     const { primaryNumber, userName } = req.query;
     const filter = {};
     
-    // Safety check: Agar number aur naam dono diye hain, toh AND logic use karein
     if (primaryNumber && userName) {
         filter.primaryNumber = primaryNumber;
         filter.userName = userName;
     } else if (primaryNumber) {
-        filter.primaryNumber = primaryNumber; // Agar sirf number diya hai
+        filter.primaryNumber = primaryNumber;
     }
 
     const orders = await Order.find(filter).sort({ createdAt: -1 });
@@ -121,55 +119,81 @@ app.get("/api/orders", async (req, res) => {
   }
 });
 
-// 4. NEW ROUTE: Request Order Cancellation
+// 4. PATCH /api/orders/:id/cancel-request: FRONT-END se cancel request aane par status badalna
 app.patch("/api/orders/:id/cancel-request", async (req, res) => {
     try {
         const orderId = req.params.id;
-        
         const order = await Order.findById(orderId);
 
         if (!order) {
             return res.status(404).json({ success: false, message: "Order not found." });
         }
 
-        // Agar order pehle hi non-cancellable state mein hai
         if (order.status !== 'pending') {
-             return res.status(400).json({ success: false, message: `Order status is already ${order.status}. Cannot process cancellation request.` });
+             return res.status(400).json({ success: false, message: `Order status is already ${order.status}. Cannot submit new cancellation request.` });
         }
 
         // Status ko 'requested' mein update karein
         order.status = 'requested';
         await order.save();
 
-        // Front-end ko updated order object wapas bhejein
         res.json({ success: true, message: "Cancel request submitted.", order: order });
         
     } catch (error) {
         console.error("❌ Error processing cancel request:", error);
-        if (error.kind === 'ObjectId') {
-            return res.status(400).json({ success: false, message: "⚠️ Invalid Order ID format." });
-        }
         res.status(500).json({ success: false, message: "❌ Failed to process request.", error: error.message });
     }
 });
 
-
-// 5. Update Order Status (Admin use ke liye)
+// 5. PATCH /api/orders/:id/complete: Admin completes the order
 app.patch("/api/orders/:id/complete", async (req, res) => {
   try {
-    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, { status: "completed" }, { new: true });
+    const updatedOrder = await Order.findByIdAndUpdate(
+        req.params.id, 
+        { status: "completed" }, 
+        { new: true, runValidators: true }
+    );
     if (!updatedOrder) {
       return res.status(404).json({ success: false, message: "⚠️ Order not found." });
     }
 
-    res.json({ success: true, message: "✅ Order status updated", order: updatedOrder });
+    res.json({ success: true, message: "✅ Order status updated to COMPLETED", order: updatedOrder });
   } catch (error) {
     res.status(500).json({ success: false, message: "❌ Failed to update order", error: error.message });
   }
 });
 
+// 6. PATCH /api/orders/:id/cancel: Admin approves/forces CANCELLED status
+app.patch("/api/orders/:id/cancel", async (req, res) => {
+    try {
+        const updatedOrder = await Order.findByIdAndUpdate(
+            req.params.id, 
+            { status: "cancelled" }, 
+            { new: true, runValidators: true }
+        );
+        if (!updatedOrder) return res.status(404).json({ success: false, message: "⚠️ Order not found." });
+        res.json({ success: true, message: "✅ Order marked as CANCELLED", order: updatedOrder });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "❌ Failed to cancel order", error: error.message });
+    }
+});
 
-// 6. Delete Order (Admin use ke liye)
+// 7. PATCH /api/orders/:id/revert-to-pending: Admin rejects cancellation request
+app.patch("/api/orders/:id/revert-to-pending", async (req, res) => {
+    try {
+        const updatedOrder = await Order.findByIdAndUpdate(
+            req.params.id, 
+            { status: "pending" }, 
+            { new: true, runValidators: true }
+        );
+        if (!updatedOrder) return res.status(404).json({ success: false, message: "⚠️ Order not found." });
+        res.json({ success: true, message: "✅ Cancel request rejected and status set to pending", order: updatedOrder });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "❌ Failed to reject request", error: error.message });
+    }
+});
+
+// 8. DELETE /api/orders/:id: Admin deletes order
 app.delete("/api/orders/:id", async (req, res) => {
   try {
     const deletedOrder = await Order.findByIdAndDelete(req.params.id);
@@ -184,17 +208,15 @@ app.delete("/api/orders/:id", async (req, res) => {
   }
 });
 
-// Dashboard Metrics API (unchanged)
+
+// 9. GET /api/dashboard-metrics: Dashboard Metrics API (Isse aap apne pehle wale code se replace kar sakte hain)
 app.get("/api/dashboard-metrics", async (req, res) => {
-    // ... (Your existing dashboard logic remains here) ...
-    // Note: I am omitting the dashboard logic here to keep the response focused, 
-    // but assume your existing logic is included below this comment in your actual file.
     try {
          // Placeholder for the long dashboard aggregation logic
          res.json({
-             totalOrders: 100,
-             revenue: 50000,
-             orderFunnel: [{name: 'pending', value: 30}, {name: 'completed', value: 70}]
+             totalOrders: await Order.countDocuments(),
+             recentPending: await Order.countDocuments({status: 'pending'}),
+             recentRequested: await Order.countDocuments({status: 'requested'}),
          });
     } catch (error) {
          res.status(500).json({ message: "❌ Failed to fetch dashboard metrics", error: error.message });

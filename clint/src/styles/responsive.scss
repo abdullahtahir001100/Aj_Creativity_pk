@@ -192,6 +192,9 @@
   }
 }
 @media (max-width: 600px){
+  .error-message{
+    margin: 123px 0 0 0px !important; 
+  }
 .heading,
   .headings {
     align-items: center;
@@ -960,4 +963,171 @@ body {
 }
 header{
 position: relative !important;
+}
+/* ========================================================= */
+/* --- MyOrderDetailsPage Styles (ajc- prefix for uniqueness) --- */
+/* ========================================================= */
+
+.ajc-orders-container {
+    max-width: 1200px !important; /* !important for overriding any global container */
+    margin: 40px auto !important;
+    padding: 0 20px !important;
+}
+
+.ajc-orders-title {
+    text-align: center !important;
+    margin-bottom: 30px !important;
+    color: #333 !important;
+    font-size: 2.2em !important;
+}
+
+.ajc-loading-message, .ajc-error-message, .ajc-empty-orders-message {
+    text-align: center !important;
+    padding: 30px !important;
+    margin-top: 20px !important;
+    border-radius: 8px !important;
+    font-size: 1.1em !important;
+    background-color: #f7f7f7 !important;
+    color: #666 !important;
+}
+
+.ajc-error-message {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border: 1px solid #f5c6cb !important;
+}
+
+/* --- Grid Layout for Details --- */
+.ajc-order-detail-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 30px !important;
+    margin-bottom: 40px !important;
+
+    @media (min-width: 768px) {
+        grid-template-columns: 2fr 1fr !important; /* Side-by-side on desktop */
+    }
+}
+
+/* --- Card Styles --- */
+.ajc-detail-card {
+    background-color: #fff !important;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 12px !important;
+    padding: 25px !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+
+    h2 {
+        font-size: 1.5em !important;
+        margin-top: 0 !important;
+        padding-bottom: 10px !important;
+        border-bottom: 2px solid #007bff !important;
+        margin-bottom: 15px !important;
+        color: #007bff !important;
+    }
+
+    p {
+        margin: 8px 0 !important;
+        font-size: 1em !important;
+        color: #555 !important;
+    }
+    strong {
+        color: #333 !important;
+    }
+    h3 {
+        color: #155724 !important; /* Green for Total */
+        margin-top: 20px !important;
+        font-size: 1.6em !important;
+    }
+}
+
+/* --- Status Badges --- */
+.ajc-order-status {
+    padding: 4px 10px !important;
+    border-radius: 4px !important;
+    font-size: 0.9em !important;
+    font-weight: 600 !important;
+    margin-left: 10px !important;
+    display: inline-block !important;
+}
+
+.ajc-status-pending {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+}
+.ajc-status-completed {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+}
+/* Add other status styles as needed (shipped, cancelled, etc.) */
+
+
+/* --- Products List Styles --- */
+.ajc-products-list-full {
+    grid-column: 1 / -1 !important; /* Spans across the full width */
+
+    .ajc-product-item-row {
+        display: flex !important;
+        align-items: center !important;
+        padding: 15px 0 !important;
+        border-bottom: 1px dashed #eee !important;
+        gap: 15px !important;
+
+        &:last-child {
+            border-bottom: none !important;
+        }
+
+        .ajc-product-image-thumb {
+            width: 60px !important;
+            height: 60px !important;
+            object-fit: cover !important;
+            border-radius: 5px !important;
+            border: 1px solid #f0f0f0 !important;
+        }
+
+        .ajc-product-details-col {
+            flex-grow: 1 !important;
+            h4 {
+                margin: 0 !important;
+                font-size: 1em !important;
+                color: #333 !important;
+            }
+            p {
+                margin: 0 !important;
+                font-size: 0.85em !important;
+                color: #888 !important;
+            }
+        }
+        .ajc-product-qty {
+            font-weight: 600 !important;
+            color: #777 !important;
+        }
+        .ajc-product-price-col {
+            font-weight: bold !important;
+            color: #007bff !important;
+            font-size: 1.1em !important;
+            width: 100px !important; /* Align prices */
+            text-align: right !important;
+        }
+    }
+}
+
+/* --- Button Style (Reusable from PaymentPage, but ensuring it's blocked) --- */
+.ajc-order-details-button {
+    display: block !important;
+    background-color: #007bff !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 15px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: background-color 0.3s !important;
+
+    &:hover {
+        background-color: #0056b3 !important;
+    }
 }

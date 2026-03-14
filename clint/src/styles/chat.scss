@@ -113,6 +113,19 @@ $input-bar-bg: #e6eefa;
       color: $text-dark;
     }
   }
+  .model-selector {
+    background: #f1f3f4;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    color: $text-dark;
+    cursor: pointer;
+    outline: none;
+    &:focus {
+      border-color: $brand-color;
+    }
+  }
 }
 
 .messages-list {

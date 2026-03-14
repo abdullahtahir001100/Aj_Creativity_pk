@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import Anthropic from "@anthropic-ai/sdk";
 import { randomUUID } from "crypto";
 import fetch from "node-fetch";
 import cors from "cors"; 
@@ -75,11 +76,25 @@ async function fetchAdditionalData() {
 }
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+// --- Supported Models ---
+const SUPPORTED_MODELS = {
+    "gemini-1.5-flash": "Gemini 1.5 Flash",
+    "claude-opus-4": "Claude Opus 4",
+};
+
+// --- Models Endpoint ---
+app.get("/models", (req, res) => {
+    const models = Object.entries(SUPPORTED_MODELS).map(([id, name]) => ({ id, name }));
+    res.json({ models });
+});
 
 // --- Chat Endpoint ---
 app.post("/chat", async (req, res) => {
-    const { message: userMessage, sessionId } = req.body;
+    const { message: userMessage, sessionId, model: selectedModel } = req.body;
     if (!userMessage) return res.status(400).json({ error: "Message is required" });
 
     const currentSessionId = sessionId || randomUUID();
@@ -88,8 +103,10 @@ app.post("/chat", async (req, res) => {
     }
     const history = conversations[currentSessionId];
 
+    const modelId = selectedModel && SUPPORTED_MODELS[selectedModel] ? selectedModel : "gemini-1.5-flash";
+
     try {
-        // Updated system instruction with data
+        // System instruction with data
         const systemInstruction = `You are an expert customer support assistant for "AJ Creativity," an online jewelry store. Answer questions based ONLY on the three data sources provided below: the Product Catalog, Customer Reviews, and Additional Product Information.
         
 --- IMPORTANT INSTRUCTIONS ---
@@ -114,21 +131,42 @@ ${JSON.stringify(additionalInfoDatabase, null, 2)}
 --- END OF ADDITIONAL PRODUCT INFORMATION ---
 `;
 
-        const chat = model.startChat({
-            history: [{ role: "user", parts: [{ text: systemInstruction }] }, { role: "model", parts: [{ text: "Okay, I am ready to help using the product catalog, customer reviews, and additional product information." }] }, ...history]
-        });
+        let reply;
 
-        const result = await chat.sendMessage(userMessage);
-        const reply = result.response.text();
+        if (modelId === "claude-opus-4") {
+            // --- Claude Opus 4 ---
+            const claudeMessages = history.map(h => ({
+                role: h.role === "model" ? "assistant" : "user",
+                content: h.parts[0].text,
+            }));
+            claudeMessages.push({ role: "user", content: userMessage });
+
+            const claudeResponse = await anthropic.messages.create({
+                model: "claude-opus-4-20250514",
+                max_tokens: 1024,
+                system: systemInstruction,
+                messages: claudeMessages,
+            });
+
+            reply = claudeResponse.content[0].text;
+        } else {
+            // --- Gemini 1.5 Flash (default) ---
+            const chat = geminiModel.startChat({
+                history: [{ role: "user", parts: [{ text: systemInstruction }] }, { role: "model", parts: [{ text: "Okay, I am ready to help using the product catalog, customer reviews, and additional product information." }] }, ...history]
+            });
+
+            const result = await chat.sendMessage(userMessage);
+            reply = result.response.text();
+        }
 
         history.push({ role: "user", parts: [{ text: userMessage }] });
         history.push({ role: "model", parts: [{ text: reply }] });
 
-        res.json({ reply, sessionId: currentSessionId });
+        res.json({ reply, sessionId: currentSessionId, model: modelId });
 
     } catch (err) {
-        console.error("❌ Gemini error:", err);
-        res.status(500).json({ error: "Gemini response error", details: err.message });
+        console.error(`❌ ${modelId} error:`, err);
+        res.status(500).json({ error: `${SUPPORTED_MODELS[modelId]} response error`, details: err.message });
     }
 });
 
@@ -145,12 +183,10 @@ async function startServer() {
         fetchAdditionalData()
     ]);
     
-    // Start the server only after all data is ready ho gaya ha 
     app.listen(PORT, () => {
-        console.log(`✅ Chatbot (Gemini) running on http://localhost:${PORT}`);
+        console.log(`✅ Chatbot (Gemini + Claude Opus 4) running on http://localhost:${PORT}`);
     });
 }
 
 // Call the async function to start the process
 startServer();
-///pppppppppppppppppp

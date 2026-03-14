@@ -25,6 +25,7 @@ const ChatWidget = () => {
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedModel, setSelectedModel] = useState('gemini-1.5-flash');
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -59,7 +60,7 @@ const ChatWidget = () => {
             const res = await fetch(serverUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: msgText, sessionId: sessionId })
+                body: JSON.stringify({ message: msgText, sessionId: sessionId, model: selectedModel })
             });
 
             if (!res.ok) throw new Error(`Server error: ${res.status}`);
@@ -106,6 +107,14 @@ const ChatWidget = () => {
                 <div className="chat-header">
                     <h3>Jave HandMade Assistant</h3>
                     <div className="header-icons">
+                        <select
+                            className="model-selector"
+                            value={selectedModel}
+                            onChange={(e) => setSelectedModel(e.target.value)}
+                        >
+                            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                            <option value="claude-opus-4">Claude Opus 4</option>
+                        </select>
                         <button onClick={() => setIsFullScreen(!isFullScreen)} className="header-icon-btn">
                            <FullscreenIcon />
                         </button>

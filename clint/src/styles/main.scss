@@ -141,3 +141,161 @@
 .leaflet-control-attribution {
 	display: none !important;
 }
+
+// Landing page enhancements
+.banner.enhanced {
+	position: relative;
+	overflow: hidden;
+	padding: 6rem 0 4rem;
+}
+
+.hero-backdrop {
+	position: absolute;
+	inset: 0;
+	opacity: 0.55;
+	filter: blur(0px);
+}
+
+.hero-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	align-items: center;
+	gap: 32px;
+	position: relative;
+	z-index: 1;
+}
+
+.glass-card {
+	background: rgba(255, 255, 255, 0.08);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	box-shadow: 0 20px 80px rgba(0, 0, 0, 0.22);
+	backdrop-filter: blur(16px);
+	border-radius: 24px;
+	padding: 32px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	color: #f2f2f2;
+}
+
+.glass-card h1 {
+	font-size: clamp(2rem, 3vw, 3rem);
+	line-height: 1.15;
+	margin: 0;
+	color: #fff;
+}
+
+.glass-card .lede {
+	color: #d8d8d8;
+	max-width: 38ch;
+}
+
+.eyebrow {
+	text-transform: uppercase;
+	letter-spacing: 0.18em;
+	font-size: 0.82rem;
+	color: #c6a56a;
+	font-weight: 700;
+	margin: 0;
+}
+
+.hero-actions {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.button.primary {
+	background: linear-gradient(135deg, #c0a164, #f9e7c4);
+	color: #1a1a1a;
+	border: none;
+}
+
+.button.ghost {
+	border: 1px solid rgba(255, 255, 255, 0.28);
+	color: #fff;
+	background: transparent;
+}
+
+.hero-inline {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	flex-wrap: wrap;
+}
+
+.hero-lottie {
+	width: 72px;
+	height: 72px;
+}
+
+.hero-metrics {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.pill {
+	background: rgba(255, 255, 255, 0.12);
+	color: #fff;
+	border-radius: 999px;
+	padding: 8px 14px;
+	font-size: 0.85rem;
+	border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.pill-outline {
+	background: transparent;
+	border: 1px dashed rgba(255, 255, 255, 0.35);
+}
+
+.hero-media {
+	width: 100%;
+	border-radius: 24px;
+	overflow: hidden;
+	box-shadow: 0 20px 70px rgba(0, 0, 0, 0.28);
+	background: rgba(0, 0, 0, 0.4);
+	min-height: 260px;
+}
+
+.hero-video {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.hero-fallback {
+	padding: 32px;
+	text-align: center;
+	color: #e8e8e8;
+	font-weight: 600;
+}
+
+.sec-1.elevated {
+	border-radius: 18px;
+	overflow: hidden;
+	box-shadow: 0 14px 45px rgba(0, 0, 0, 0.18);
+}
+
+.add-to-cart.neon {
+	background: linear-gradient(135deg, #1d1d1d, #2c2c2c);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	box-shadow: 0 0 18px rgba(192, 161, 100, 0.35);
+}
+
+.section-animated {
+	scroll-margin-top: 120px;
+}
+
+@media (max-width: 768px) {
+	.banner.enhanced {
+		padding-top: 4rem;
+	}
+	.glass-card {
+		padding: 24px;
+	}
+	.hero-grid {
+		gap: 20px;
+	}
+}
